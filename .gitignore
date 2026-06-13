@@ -1,43 +1,30 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# OS
 .DS_Store
-*.pem
+Thumbs.db
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# IDE / Editor
+.vscode/
+.idea/
+.cursor/
+.zed/
+.nova/
 
-# env files (can opt-in for committing if needed)
-.env*
+# Agent runtime files
+.agents/preview.log
+.agents/preview.pid
+.temp_ag_kit/
+ag-kit-doc
 
-# vercel
-.vercel
+# Scratch / temp files from AI sessions
+web/scratch_step_*.txt
+scratch_step_*.txt
+.gemini/
+.impeccable/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Dependency directories
+node_modules/
 
-.agent
+# Excluded directories (project-specific)
+tests
+others
+.claude

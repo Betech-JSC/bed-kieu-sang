@@ -1,0 +1,95 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const props = defineProps({
+    settings: Object
+});
+
+const settingLabels = {
+    'store_hotline': 'Hotline cửa hàng',
+    'store_email': 'Email liên hệ',
+    'store_address': 'Địa chỉ cửa hàng (chân trang)',
+};
+
+// Flatten grouped settings into a list for the form payload
+const getSettingsPayload = () => {
+    const list = [];
+    Object.values(props.settings).forEach(groupItems => {
+        groupItems.forEach(item => {
+            list.push({
+                key: item.key,
+                value: item.value || ''
+            });
+        });
+    });
+    return list;
+};
+
+const form = useForm({
+    settings: getSettingsPayload()
+});
+
+const submit = () => {
+    form.post(route('admin.settings.update'));
+};
+</script>
+
+<template>
+    <Head title="Cấu hình hệ thống" />
+
+    <AuthenticatedLayout>
+        <template #header>
+            <div class="flex justify-between items-center w-full gap-4">
+                <h2 class="text-lg font-bold uppercase tracking-wider text-emerald-950 font-sans">
+                    CẤU HÌNH CHUNG HỆ THỐNG
+                </h2>
+            </div>
+        </template>
+
+        <div class="space-y-6 max-w-3xl">
+            <!-- Notifications -->
+            <div v-if="$page.props.flash?.success" class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-medium">
+                {{ $page.props.flash.success }}
+            </div>
+
+            <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
+                <form @submit.prevent="submit" class="p-8 space-y-6">
+                    <div class="space-y-6">
+                        <!-- Group sections -->
+                        <div v-for="(items, groupName) in settings" :key="groupName" class="space-y-4">
+                            <h3 class="text-sm font-serif font-bold text-emerald-950 uppercase border-b border-zinc-100 pb-2 tracking-wide">
+                                {{ groupName === 'contact' ? 'Thông tin liên hệ cửa hàng' : groupName }}
+                            </h3>
+
+                            <div class="grid grid-cols-1 gap-4">
+                                <div 
+                                    v-for="(item, index) in form.settings.filter(s => items.some(i => i.key === s.key))" 
+                                    :key="item.key"
+                                    class="flex flex-col space-y-1.5 text-sm"
+                                >
+                                    <label class="font-semibold text-zinc-800">
+                                        {{ settingLabels[item.key] || item.key }}
+                                    </label>
+                                    <input 
+                                        v-model="item.value" 
+                                        type="text" 
+                                        class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex justify-end pt-4 border-t border-zinc-100">
+                        <button type="submit" :disabled="form.processing" class="px-8 py-2.5 bg-[#043616] text-[#FFFDF9] rounded-lg text-sm font-semibold hover:bg-[#112215] transition-all disabled:opacity-50 hover:shadow-sm">
+                            Lưu cấu hình
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>

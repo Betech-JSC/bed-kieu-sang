@@ -1,72 +1,91 @@
-# 🌿 Thảo Mộc Kiều Sang - Website Cửa Hàng Thảo Mộc Thiên Nhiên
+# Sophpower Vietnam Website Redesign & Localization
 
-Chào mừng đến với dự án website thương mại điện tử của **Thảo Mộc Kiều Sang** — Thương hiệu thảo mộc thiên nhiên cao cấp giúp thanh lọc không gian sống, chăm sóc sức khỏe tinh thần và khơi thông vượng khí an lành.
+This repository contains the source code for the clone, redesign, and localization of the **Sophchem** website (https://www.sophchem.com/) customized for **Sophpower Vietnam Co., Ltd.** (Pioneer Herb Industrial Co., Ltd.), developed by **Betech JSC**.
 
-Dự án được xây dựng và thiết kế theo ngôn ngữ thiết kế **Organic Zen** hiện đại, chú trọng đến sự tối giản, tinh tế và trải nghiệm người dùng mượt mà trên mọi thiết bị.
-
----
-
-## 🎨 Ngôn Ngữ Thiết Kế (Organic Zen Style)
-*   **Tone màu chủ đạo**: Sự kết hợp hài hòa giữa màu kem ấm áp (`#FAF6EE`/`#FFFDF9`), sắc xanh lá rừng thẳm (`#043616`) làm điểm nhấn thương hiệu và sắc vàng hoàng kim (`#E5C44B`) cho các yếu tố nổi bật.
-*   **Hình học & Bố cục**: Các góc bo tròn mềm mại (`rounded-[32px]`), khoảng trắng thoáng đãng, các đường viền siêu mảnh, họa tiết Feng Shui phương Đông tinh tế (`asian-pattern`) cùng hiệu ứng chiều sâu cao cấp.
-*   **Hiệu ứng động**: Tích hợp các hạt hơi nước bay nhẹ (`steam-particle`), hiệu ứng di chuột mượt mà (`hover:scale-103 hover:-translate-y-1`) và tối ưu hóa hiệu năng cuộn trang 60fps bằng `requestAnimationFrame`.
+The project transforms the original multi-language, complex portal into a highly optimized, minimalist, and clean B2B landing and catalog site tailored to the Vietnamese market.
 
 ---
 
-## ✨ Tính Năng Nổi Bật
-1.  **Trang Chủ Trực Quan ([page.tsx](src/app/page.tsx))**:
-    *   Hero Banner tỉ lệ **2:1** với hình nền phong cảnh thiên nhiên hòa hợp cùng hình ảnh sản phẩm tách nền nổi bật, hỗ trợ hiển thị đẹp mắt trên cả Mobile.
-    *   Khối giá trị "Năng Lượng Chữa Lành" được thiết kế tối giản, loại bỏ đường viền rườm rà.
-    *   Mục Blog và Nhận xét khách hàng được tối ưu hóa cân đối về mặt thị giác.
-2.  **Cửa Hàng & Danh Mục Sản Phẩm ([products/page.tsx](src/app/products/page.tsx))**:
-    *   Sidebar lọc danh mục tiện lợi tích hợp thanh tìm kiếm và bộ lọc sắp xếp giá bán.
-    *   Bộ lọc hoạt động dựa trên URL Parameter (`/products?category=...`), giúp đường link có thể dễ dàng chia sẻ, lưu dấu trang (bookmark) và hỗ trợ SEO tốt nhất.
-3.  **Trang Chi Tiết Sản Phẩm ([products/[id]/page.tsx](src/app/products/[id]/page.tsx))**:
-    *   Hiển thị thông tin chi tiết, hình ảnh thư viện slide, thông số kích thước, đặc tính và các chứng nhận chất lượng (100% tự nhiên, lành tính).
-    *   Đề xuất các sản phẩm liên quan cùng danh mục phía dưới.
-4.  **Đồng Bộ Giỏ Hàng Động (Cart Drawer)**:
-    *   Sử dụng cơ chế Custom Window Event (`kieu-sang-cart-update`) để đồng bộ giỏ hàng và số lượng trên Badge Header ngay lập tức giữa tất cả các trang Next.js mà không cần dùng đến Context Provider phức tạp.
-5.  **Góc An Yên / Blog Tin Tức ([blog/page.tsx](src/app/blog/page.tsx))**:
-    *   Chia sẻ các bí quyết xông nhà, liệu pháp hương thơm giảm stress. Trang chi tiết bài viết thiết kế tinh giản, tối ưu cỡ chữ thân thiện với người đọc.
-6.  **Trang Giới Thiệu & Liên Hệ**:
-    *   [about/page.tsx](src/app/about/page.tsx) kể về hành trình và cam kết thảo mộc sạch.
-    *   [contact/page.tsx](src/app/contact/page.tsx) cung cấp form gửi thông tin liên hệ gọn gàng và trực quan.
+## 🎯 Project Goals
+
+*   **Full Localization (Vietnamese):** All product specifications, news articles, certificates, and company information are fully localized into professional Vietnamese.
+*   **Minimalist B2B Redesign:** Flat UI structure, sharp container geometries (`rounded-xl` corners), clean list views, and clutter-free details pages focusing purely on industrial technical details.
+*   **Brand Uniformity:** Replaced Navy Blue with Sophpower's official **Brand Green** (`#106d38`) across the navigation menu, call-to-actions, contact cards, and indicators.
+*   **Technical Optimization:** Built on Next.js 16 (App Router) & Tailwind CSS v4 to guarantee SEO compliance, responsive performance, and perfect font rendering.
 
 ---
 
-## 🛠️ Công Nghệ Sử Dụng
-*   **Framework:** [Next.js 16 (App Router)](https://nextjs.org/)
-*   **Thư viện UI:** [React 19](https://react.dev/)
-*   **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-*   **Icons:** [Lucide React](https://lucide.dev/)
-*   **Component Foundation:** [@base-ui/react](https://base-ui.com/)
-*   **Tối ưu hóa hình ảnh:** Component `<Image />` mặc định từ Next.js hỗ trợ nén WebP/AVIF và Lazy Loading tự động.
+## 💻 Tech Stack
+
+*   **Framework:** Next.js 16.1.3 (React 19, App Router)
+*   **Styling:** Tailwind CSS v4 (using `@theme` configuration directives)
+*   **Typography:** **Roboto** Google Font (with `latin` and `vietnamese` subsets to prevent layout breakages, with standard system fallbacks for multi-language flexibility).
+*   **Icons:** Lucide React
+*   **Deployment:** Vercel (configured to deploy the `web/` subdirectory)
 
 ---
 
-## ⚡ Hướng Dẫn Chạy Dự Án (Local Development)
+## 🗺️ Sitemap & Implemented Routes
 
-### 1. Cài đặt các gói phụ thuộc:
-```bash
-npm install
+The web application is modular and structured as follows:
+
+1.  **Home Page (`/`):** Simplified slider banner showing raw ingredients without dark overlays, active category lists, and value-added core competencies cards.
+2.  **About Us (`/about`):** Company history, mission, and global standard certifications (ISO, HACCP, HALAL, Kosher, FDA).
+3.  **Ingredients Listing Pages (`/list_2` - Food & `/list_3` - Cosmetic):** Grid index of key industrial raw materials (Beta-carotene, Carmine, Niacinamide, Panthenol, Ectoin, etc.) with fully clickable card elements.
+4.  **Product Details Template (`/list_2/[id]` & `/list_3/[id]`):** Details pages displaying raw ingredient properties, industrial applications, and packaging standards.
+5.  **News Center (`/news` & `/news/[id]`):** Simple background banner + B2B Grid view showcasing clean article content, integrated search, category filter tags, and full card clickability.
+6.  **Contact (`/page_5`):** Feedback and sample/quote request forms, interactive coordinates, and high-contrast contact details.
+7.  **Recruitment (`/recruitment` & `/recruitment/[id]`):** Full careers board detailing available job positions.
+8.  **Search (`/search`):** Search result listing for queries.
+9.  **Admin Dashboard (`/admin`):** Mock dashboard to manage forms, news posts, jobs, and catalogs.
+
+---
+
+## 📁 Repository Structure
+
+```
+├── .agents/                 # AI development workflow configurations
+├── web/                     # Next.js 16 project folder (actual web application)
+│   ├── public/              # Static images, icons, and assets
+│   └── src/
+│       ├── app/             # App router pages and layouts
+│       └── components/      # UI components (Header, Footer, Dialogs)
+├── BRAND_COLORS.md          # Brand Color Palette guidelines
+└── PROJECT_OVERVIEW.md      # Detailed Vietnamese project specifications
 ```
 
-### 2. Khởi chạy máy chủ phát triển nội bộ:
-```bash
-npm run dev
-```
-Truy cập [http://localhost:3000](http://localhost:3000) trên trình duyệt của bạn.
+---
 
-### 3. Tạo bản build tối ưu hóa sản xuất:
-```bash
-npm run build
-```
+## 🚀 Running Locally
 
-### 4. Triển khai Docker:
-Dự án đã tích hợp sẵn [Dockerfile](Dockerfile) để bạn dễ dàng đóng gói Container và triển khai lên các dịch vụ VPS/CapRover.
+1.  Clone this repository.
+2.  Navigate to the `web` directory:
+    ```bash
+    cd web
+    ```
+3.  Install dependencies:
+    ```bash
+    npm install
+    ```
+4.  Start the Next.js development server:
+    ```bash
+    npm run dev
+    ```
+5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📄 Bản Quyền
-Dự án được phát triển và sở hữu bởi **Thảo Mộc Kiều Sang** và **Betech JSC**.
-Lưu hành nội bộ và bảo mật thông tin mã nguồn.
+## ☁️ Deploying on Vercel
+
+Since the Next.js source code is located in the `web/` subdirectory, you **MUST** configure the **Root Directory** setting on Vercel:
+
+1.  Create a new project on **Vercel** and link it to this Git repository.
+2.  In Vercel's project creation screen (or inside **Project Settings > General**):
+    *   Set **Root Directory** to `web`.
+3.  Click **Save** and trigger a deployment. Vercel will automatically configure the build commands and output folders.
+
+---
+
+## 📄 License
+
+Released under the [MIT License](LICENSE). Developed for Sophpower Vietnam.
