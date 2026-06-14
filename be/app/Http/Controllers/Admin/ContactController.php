@@ -12,10 +12,31 @@ use Illuminate\Http\RedirectResponse;
 
 class ContactController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $contacts = Contact::latest()->paginate(15);
-        return Inertia::render('Contacts/Index', ['contacts' => $contacts]);
+        $query = Contact::latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('subject', 'like', '%' . $search . '%')
+                  ->orWhere('message', 'like', '%' . $search . '%')
+                  ->orWhere('phone', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $contacts = $query->paginate(15)->withQueryString();
+
+        return Inertia::render('Contacts/Index', [
+            'contacts' => $contacts,
+            'filters' => $request->only(['search', 'status'])
+        ]);
     }
 
     public function show(Contact $contact): Response

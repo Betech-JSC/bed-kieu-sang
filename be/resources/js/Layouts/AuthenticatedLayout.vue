@@ -1,11 +1,37 @@
 <script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const showingSidebarMobile = ref(false);
+const page = usePage();
+
+const toast = ref({ show: false, message: '', type: 'success' });
+let toastTimeout = null;
+
+const showToast = (message, type) => {
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toast.value = { show: true, message, type };
+    toastTimeout = setTimeout(() => {
+        toast.value.show = false;
+    }, 4000);
+};
+
+watch(
+    () => page.props.flash,
+    (flash) => {
+        if (flash?.success) {
+            showToast(flash.success, 'success');
+        } else if (flash?.error) {
+            showToast(flash.error, 'error');
+        }
+    },
+    { deep: true, immediate: true }
+);
+
+const closeToast = () => {
+    toast.value.show = false;
+    if (toastTimeout) clearTimeout(toastTimeout);
+};
 
 const navigationItems = [
     { name: 'Tổng quan', routeName: 'admin.dashboard', activePattern: 'admin.dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -23,44 +49,47 @@ const navigationItems = [
 </script>
 
 <template>
-    <div class="min-h-screen flex bg-[#FAF6EE] font-sans">
+    <div class="h-screen flex bg-[#FAF6EE] font-sans overflow-hidden">
         <!-- Desktop Sidebar -->
-        <aside class="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#043616] text-[#FFFDF9] border-r border-[#FAF6EE]/10 shrink-0">
-            <!-- Sidebar Header -->
-            <div class="h-16 flex items-center px-6 border-b border-[#FAF6EE]/10 bg-[#021f0c]/30">
-                <Link :href="route('admin.dashboard')" class="flex items-center gap-3">
-                    <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
-                </Link>
+        <aside class="hidden lg:flex flex-col w-64 h-screen bg-[#043616] text-[#FFFDF9] border-r border-[#FAF6EE]/10 shrink-0 justify-between">
+            <div class="flex flex-col flex-1 min-h-0">
+                <!-- Sidebar Header -->
+                <div class="h-16 flex items-center px-6 border-b border-[#FAF6EE]/10 bg-[#021f0c]/30 shrink-0">
+                    <Link :href="route('admin.dashboard')" class="flex items-center gap-3">
+                        <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
+                    </Link>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+                    <Link
+                        v-for="item in navigationItems"
+                        :key="item.name"
+                        :href="route(item.routeName)"
+                        :class="[
+                            route().current(item.activePattern)
+                                ? 'bg-[#FAF6EE]/15 text-[#E5C44B] font-semibold border-l-4 border-[#E5C44B] px-3'
+                                : 'text-[#FAF6EE]/75 hover:bg-[#FAF6EE]/5 hover:text-[#FFFDF9] border-l-4 border-transparent px-3',
+                            'flex items-center py-2.5 rounded-r-lg text-sm transition-all duration-200 group'
+                        ]"
+                    >
+                        <svg
+                            class="w-5 h-5 mr-3 shrink-0 transition-opacity duration-200"
+                            :class="route().current(item.activePattern) ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
+                        </svg>
+                        {{ item.name }}
+                    </Link>
+                </nav>
             </div>
 
-            <!-- Navigation Links -->
-            <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                <Link
-                    v-for="item in navigationItems"
-                    :key="item.name"
-                    :href="route(item.routeName)"
-                    :class="[
-                        route().current(item.activePattern)
-                            ? 'bg-[#FAF6EE]/15 text-[#E5C44B] font-semibold border-l-2 border-[#E5C44B] px-3'
-                            : 'text-[#FAF6EE]/75 hover:bg-[#FAF6EE]/5 hover:text-[#FFFDF9] px-3',
-                        'flex items-center py-2.5 rounded-lg text-sm transition-all duration-200'
-                    ]"
-                >
-                    <svg
-                        class="w-5 h-5 mr-3 shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
-                    </svg>
-                    {{ item.name }}
-                </Link>
-            </nav>
-
             <!-- Sidebar Footer User Profile -->
-            <div class="p-4 border-t border-[#FAF6EE]/10 bg-[#021f0c]/20">
+            <div class="p-4 border-t border-[#FAF6EE]/10 bg-[#021f0c]/20 shrink-0">
                 <div class="flex items-center justify-between">
                     <div class="truncate mr-2">
                         <p class="text-sm font-semibold text-[#FFFDF9] truncate">{{ $page.props.auth.user.name }}</p>
@@ -81,8 +110,8 @@ const navigationItems = [
             </div>
         </aside>
 
-        <!-- Mobile Layout Wrapper -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <!-- Mobile Layout Wrapper & Main Wrapper -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
             <!-- Mobile Header Topbar -->
             <header class="lg:hidden h-16 flex items-center justify-between px-6 bg-[#043616] text-[#FFFDF9] border-b border-[#FAF6EE]/10 shrink-0">
                 <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
@@ -107,40 +136,42 @@ const navigationItems = [
             <aside
                 :class="[
                     showingSidebarMobile ? 'translate-x-0' : '-translate-x-full',
-                    'fixed inset-y-0 left-0 z-50 w-64 bg-[#043616] text-[#FFFDF9] flex flex-col transition-transform duration-300 ease-in-out lg:hidden'
+                    'fixed inset-y-0 left-0 z-50 w-64 bg-[#043616] text-[#FFFDF9] flex flex-col transition-transform duration-300 ease-in-out lg:hidden justify-between'
                 ]"
             >
-                <div class="h-16 flex items-center justify-between px-6 border-b border-[#FAF6EE]/10 bg-[#021f0c]/30">
-                    <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
-                    <button
-                        @click="showingSidebarMobile = false"
-                        class="p-2 text-[#FAF6EE]/70 hover:text-white rounded-lg focus:outline-none"
-                    >
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                <div class="flex flex-col flex-1 min-h-0">
+                    <div class="h-16 flex items-center justify-between px-6 border-b border-[#FAF6EE]/10 bg-[#021f0c]/30 shrink-0">
+                        <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
+                        <button
+                            @click="showingSidebarMobile = false"
+                            class="p-2 text-[#FAF6EE]/70 hover:text-white rounded-lg focus:outline-none"
+                        >
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+                        <Link
+                            v-for="item in navigationItems"
+                            :key="item.name"
+                            :href="route(item.routeName)"
+                            @click="showingSidebarMobile = false"
+                            :class="[
+                                route().current(item.activePattern)
+                                    ? 'bg-[#FAF6EE]/15 text-[#E5C44B] font-semibold border-l-4 border-[#E5C44B] px-3'
+                                    : 'text-[#FAF6EE]/75 hover:bg-[#FAF6EE]/5 hover:text-[#FFFDF9] border-l-4 border-transparent px-3',
+                                'flex items-center py-2.5 rounded-r-lg text-sm transition-all duration-200'
+                            ]"
+                        >
+                            <svg class="w-5 h-5 mr-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
+                            </svg>
+                            {{ item.name }}
+                        </Link>
+                    </nav>
                 </div>
-                <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                    <Link
-                        v-for="item in navigationItems"
-                        :key="item.name"
-                        :href="route(item.routeName)"
-                        @click="showingSidebarMobile = false"
-                        :class="[
-                            route().current(item.activePattern)
-                                ? 'bg-[#FAF6EE]/15 text-[#E5C44B] font-semibold border-l-2 border-[#E5C44B] px-3'
-                                : 'text-[#FAF6EE]/75 hover:bg-[#FAF6EE]/5 hover:text-[#FFFDF9] px-3',
-                            'flex items-center py-2.5 rounded-lg text-sm transition-all duration-200'
-                        ]"
-                    >
-                        <svg class="w-5 h-5 mr-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
-                        </svg>
-                        {{ item.name }}
-                    </Link>
-                </nav>
-                <div class="p-4 border-t border-[#FAF6EE]/10 bg-[#021f0c]/20">
+                <div class="p-4 border-t border-[#FAF6EE]/10 bg-[#021f0c]/20 shrink-0">
                     <div class="flex items-center justify-between">
                         <div class="truncate mr-2">
                             <p class="text-sm font-semibold text-[#FFFDF9] truncate">{{ $page.props.auth.user.name }}</p>
@@ -163,19 +194,48 @@ const navigationItems = [
             <!-- Main Top Bar (Desktop Only) -->
             <header class="hidden lg:flex items-center justify-between h-16 px-8 bg-white border-b border-zinc-200/80 shrink-0">
                 <div class="flex items-center">
-                    <!-- Page Header Title Slot -->
                     <slot name="header" />
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right">
-                        <span class="text-sm font-medium text-zinc-800">{{ $page.props.auth.user.name }}</span>
-                        <span class="block text-[11px] text-zinc-500 font-semibold tracking-wide uppercase">Quản trị viên</span>
+                        <span class="text-sm font-semibold text-[#043616]">{{ $page.props.auth.user.name }}</span>
+                        <span class="block text-[11px] text-zinc-500 font-bold tracking-wide uppercase">Quản trị viên</span>
                     </div>
                 </div>
             </header>
 
-            <!-- Page Content -->
+            <!-- Scrollable Main -->
             <main class="flex-1 overflow-y-auto p-8 bg-[#FAF6EE]">
+                <!-- Toast Notification System -->
+                <div 
+                    v-if="toast.show" 
+                    :class="[
+                        toast.type === 'success' 
+                            ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                            : 'bg-rose-50 border-rose-200 text-rose-800',
+                        'mb-6 p-4 rounded-xl border flex items-center justify-between shadow-sm transition-all duration-300'
+                    ]"
+                >
+                    <div class="flex items-center gap-3">
+                        <span v-if="toast.type === 'success'" class="text-emerald-600">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                        <span v-else class="text-rose-600">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                        <span class="text-sm font-medium">{{ toast.message }}</span>
+                    </div>
+                    <button @click="closeToast" class="p-1 hover:bg-black/5 rounded-lg transition-colors ml-4 text-zinc-500 hover:text-zinc-800">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
                 <slot />
             </main>
         </div>

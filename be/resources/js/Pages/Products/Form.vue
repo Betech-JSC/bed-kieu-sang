@@ -10,6 +10,15 @@ const props = defineProps({
 
 const isEdit = ref(!!props.product);
 
+const imagePreview = ref('');
+const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        form.image = file;
+        imagePreview.value = URL.createObjectURL(file);
+    }
+};
+
 const form = useForm({
     category_id: props.product?.category_id || '',
     name: props.product?.name || '',
@@ -18,6 +27,7 @@ const form = useForm({
     original_price: props.product?.original_price || '',
     description: props.product?.description || '',
     image_path: props.product?.image_path || '',
+    image: null,
     benefits: props.product?.benefits || [],
     badge: props.product?.badge || '',
     status: props.product?.status || 'active',
@@ -34,9 +44,28 @@ const removeBenefit = (index) => {
     form.benefits.splice(index, 1);
 };
 
+// Auto-generate slug from name
+const generateSlug = () => {
+    if (!isEdit.value) {
+        form.slug = form.name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    }
+};
+
 const submit = () => {
     if (isEdit.value) {
-        form.put(route('admin.products.update', props.product.id));
+        // Use POST with _method: 'PUT' for Inertia file upload compatibility on update
+        form.transform((data) => ({
+            ...data,
+            _method: 'PUT'
+        })).post(route('admin.products.update', props.product.id));
     } else {
         form.post(route('admin.products.store'));
     }
@@ -62,13 +91,20 @@ const submit = () => {
         </template>
 
         <div class="max-w-4xl mx-auto space-y-6">
+            <!-- Validation Errors -->
+            <div v-if="Object.keys(form.errors).length > 0" class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-sm font-medium">
+                <ul class="list-disc pl-5 space-y-1">
+                    <li v-for="(error, key) in form.errors" :key="key">{{ error }}</li>
+                </ul>
+            </div>
+
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <form @submit.prevent="submit" class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Name -->
                         <div class="flex flex-col space-y-2">
                             <label class="text-sm font-serif font-bold text-emerald-950">Tên sản phẩm *</label>
-                            <input v-model="form.name" type="text" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <input v-model="form.name" type="text" required @input="generateSlug" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
                         <!-- Slug -->
@@ -104,10 +140,17 @@ const submit = () => {
                             <input v-model="form.original_price" type="number" min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
-                        <!-- Image Path -->
+                        <!-- Image Upload -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Đường dẫn hình ảnh *</label>
-                            <input v-model="form.image_path" type="text" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <label class="text-sm font-serif font-bold text-emerald-950">Hình ảnh sản phẩm *</label>
+                            <div class="flex items-center gap-4">
+                                <div v-if="imagePreview || form.image_path" class="w-12 h-12 rounded-lg overflow-hidden border border-zinc-200 shrink-0 bg-zinc-50 flex items-center justify-center">
+                                    <img :src="imagePreview || form.image_path" alt="Xem trước" class="w-full h-full object-cover" />
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" @change="handleImageChange" accept="image/*" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Status -->

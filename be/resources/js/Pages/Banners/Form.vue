@@ -9,10 +9,20 @@ const props = defineProps({
 
 const isEdit = ref(!!props.banner);
 
+const imagePreview = ref('');
+const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        form.image = file;
+        imagePreview.value = URL.createObjectURL(file);
+    }
+};
+
 const form = useForm({
     title: props.banner?.title || '',
     subtitle: props.banner?.subtitle || '',
     image_path: props.banner?.image_path || '',
+    image: null,
     link_url: props.banner?.link_url || '',
     order_index: props.banner?.order_index || 0,
     status: props.banner?.status || 'active',
@@ -20,7 +30,10 @@ const form = useForm({
 
 const submit = () => {
     if (isEdit.value) {
-        form.put(route('admin.banners.update', props.banner.id));
+        form.transform((data) => ({
+            ...data,
+            _method: 'PUT'
+        })).post(route('admin.banners.update', props.banner.id));
     } else {
         form.post(route('admin.banners.store'));
     }
@@ -68,16 +81,16 @@ const submit = () => {
                             <input v-model="form.subtitle" type="text" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
-                        <!-- Image Path -->
+                        <!-- Image Upload -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Đường dẫn hình ảnh *</label>
-                            <input v-model="form.image_path" type="text" required placeholder="/images/hero_lifestyle.png" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <label class="text-sm font-serif font-bold text-emerald-950">Hình ảnh slide *</label>
+                            <input type="file" @change="handleImageChange" accept="image/*" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
                         </div>
 
                         <!-- Link URL -->
                         <div class="flex flex-col space-y-2">
                             <label class="text-sm font-serif font-bold text-emerald-950">Liên kết khi click (Link URL)</label>
-                            <input v-model="form.link_url" type="placeholder" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <input v-model="form.link_url" type="text" placeholder="Ví dụ: /products" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
                         <!-- Order Index -->
@@ -97,10 +110,10 @@ const submit = () => {
                     </div>
 
                     <!-- Image Preview -->
-                    <div v-if="form.image_path" class="flex flex-col space-y-2">
+                    <div v-if="imagePreview || form.image_path" class="flex flex-col space-y-2">
                         <label class="text-sm font-serif font-bold text-emerald-950">Xem trước hình ảnh</label>
                         <div class="border border-zinc-200 rounded-lg p-3 bg-zinc-50 flex justify-center items-center">
-                            <img :src="form.image_path" alt="Xem trước ảnh banner" class="max-h-60 rounded-lg object-contain" @error="(e) => e.target.style.display='none'" />
+                            <img :src="imagePreview || form.image_path" alt="Xem trước ảnh banner" class="max-h-60 rounded-lg object-contain" @error="(e) => e.target.style.display='none'" />
                         </div>
                     </div>
 

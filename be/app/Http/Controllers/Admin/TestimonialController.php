@@ -12,10 +12,28 @@ use Illuminate\Http\RedirectResponse;
 
 class TestimonialController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $testimonials = Testimonial::with('product')->latest()->paginate(15);
-        return Inertia::render('Reviews/Index', ['testimonials' => $testimonials]);
+        $query = Testimonial::with('product')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('customer_name', 'like', '%' . $search . '%')
+                  ->orWhere('comment', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $testimonials = $query->paginate(15)->withQueryString();
+
+        return Inertia::render('Reviews/Index', [
+            'testimonials' => $testimonials,
+            'filters' => $request->only(['search', 'status'])
+        ]);
     }
 
     public function updateStatus(Request $request, Testimonial $testimonial): RedirectResponse

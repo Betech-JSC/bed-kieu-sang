@@ -15,6 +15,7 @@ export interface Product {
   benefits: string[];
   badge?: string;
   originalPrice?: number;
+  slug?: string;
 }
 
 interface ProductCardProps {
@@ -32,7 +33,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
   return (
     <div className="group relative flex flex-col w-full h-full overflow-hidden rounded-[32px] border border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_20px_40px_rgba(4,54,22,0.06)]">
-      <Link href={`/products/${product.id}`} className="flex flex-col flex-1">
+      <Link href={`/products/${product.slug || product.id}`} className="flex flex-col flex-1">
         {/* Product Image Container */}
         <div className="relative aspect-square w-full overflow-hidden bg-background/50 border-b border-border/40">
           {product.badge && (

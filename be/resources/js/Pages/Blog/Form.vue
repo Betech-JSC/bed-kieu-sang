@@ -11,6 +11,15 @@ const props = defineProps({
 const isEdit = ref(!!props.post);
 const contentText = ref(props.post?.content ? props.post.content.join('\n\n') : '');
 
+const imagePreview = ref('');
+const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        form.image = file;
+        imagePreview.value = URL.createObjectURL(file);
+    }
+};
+
 const form = useForm({
     category_id: props.post?.category_id || '',
     title: props.post?.title || '',
@@ -18,6 +27,7 @@ const form = useForm({
     excerpt: props.post?.excerpt || '',
     content: props.post?.content || [],
     image_path: props.post?.image_path || '',
+    image: null,
     read_time: props.post?.read_time || '5 phút',
     status: props.post?.status || 'draft',
     published_at: props.post?.published_at ? props.post.published_at.substring(0, 10) : '',
@@ -46,7 +56,10 @@ const submit = () => {
         .filter(p => p.length > 0);
 
     if (isEdit.value) {
-        form.put(route('admin.blogs.update', props.post.id));
+        form.transform((data) => ({
+            ...data,
+            _method: 'PUT'
+        })).post(route('admin.blogs.update', props.post.id));
     } else {
         form.post(route('admin.blogs.store'));
     }
@@ -109,10 +122,17 @@ const submit = () => {
                             </select>
                         </div>
 
-                        <!-- Image Path -->
+                        <!-- Image Upload -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Đường dẫn hình ảnh *</label>
-                            <input v-model="form.image_path" type="text" required placeholder="/images/hero_lifestyle.png" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <label class="text-sm font-serif font-bold text-emerald-950">Hình ảnh bài viết *</label>
+                            <div class="flex items-center gap-4">
+                                <div v-if="imagePreview || form.image_path" class="w-12 h-12 rounded-lg overflow-hidden border border-zinc-200 shrink-0 bg-zinc-50 flex items-center justify-center">
+                                    <img :src="imagePreview || form.image_path" alt="Xem trước" class="w-full h-full object-cover" />
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" @change="handleImageChange" accept="image/*" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Read Time -->

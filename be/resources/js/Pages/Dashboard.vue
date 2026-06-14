@@ -17,13 +17,13 @@ defineProps({
             </h2>
         </template>
 
-        <div class="space-y-8">
+        <div class="space-y-6">
             <!-- Welcome Banner -->
             <div class="bg-gradient-to-r from-[#043616] to-[#112215] rounded-xl p-8 text-[#FFFDF9] relative overflow-hidden border border-[#E5C44B]/20 hover:shadow-md transition-shadow duration-300">
                 <div class="absolute -right-16 -top-16 w-60 h-60 rounded-full bg-[#E5C44B]/10 blur-2xl pointer-events-none"></div>
                 <div class="relative z-10 space-y-2 max-w-xl">
                     <h3 class="text-xl font-serif font-bold tracking-wide">Xin chào, {{ $page.props.auth.user.name }}!</h3>
-                    <p class="text-sm text-[#FAF6EE]/80 leading-relaxed">
+                    <p class="text-sm text-[#FAF6EE]/80 leading-relaxed font-sans">
                         Chào mừng bạn trở lại hệ thống quản trị cửa hàng thảo dược. Hôm nay bạn có thể dễ dàng quản lý thông tin sản phẩm, cập nhật tin tức mới, xét duyệt đánh giá khách hàng và xử lý nhanh chóng các đơn đặt hàng.
                     </p>
                 </div>
@@ -76,7 +76,7 @@ defineProps({
                         <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider block">Thư liên hệ mới</span>
                         <span class="text-3xl font-sans font-bold text-[#043616]">{{ stats.contacts_count }}</span>
                     </div>
-                    <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-100">
+                    <div class="w-12 h-12 rounded-lg bg-[#FAF6EE] text-[#043616] flex items-center justify-center border border-zinc-200">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
@@ -86,62 +86,62 @@ defineProps({
 
             <!-- Recent Orders list -->
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
-                <div class="px-6 py-5 border-b border-zinc-100 flex justify-between items-center bg-[#021f0c]/5">
-                    <h4 class="text-sm font-serif font-bold text-emerald-950 uppercase tracking-wider">Đơn Hàng Gần Đây</h4>
-                    <Link :href="route('admin.orders.index')" class="text-[#043616] hover:underline text-xs font-bold">Xem tất cả &rarr;</Link>
+                <div class="px-6 py-4 border-b border-zinc-200 flex justify-between items-center bg-[#FAF6EE]/20">
+                    <h4 class="text-sm font-sans font-bold text-[#043616] uppercase tracking-wider">Đơn Hàng Gần Đây</h4>
+                    <Link :href="route('admin.orders.index')" class="text-[#043616] hover:text-emerald-800 text-xs font-bold transition-colors">Xem tất cả &rarr;</Link>
                 </div>
-                <div class="p-6">
-                    <table class="w-full text-left border-collapse text-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm text-zinc-700">
                         <thead>
-                            <tr class="border-b border-zinc-200 text-[#043616] font-serif text-xs font-bold uppercase tracking-wider">
-                                <th class="py-3 px-4">Mã đơn</th>
-                                <th class="py-3 px-4">Khách hàng</th>
-                                <th class="py-3 px-4">Tổng tiền</th>
-                                <th class="py-3 px-4">Thanh toán</th>
-                                <th class="py-3 px-4">Trạng thái</th>
-                                <th class="py-3 px-4 text-right">Xem</th>
+                            <tr class="bg-zinc-50 border-b border-zinc-200 text-[#043616] font-sans text-xs font-bold uppercase tracking-wider">
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-32">Mã đơn</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60">Khách hàng</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-36">Tổng tiền</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-28">Thanh toán</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-28">Trạng thái</th>
+                                <th class="py-4 px-4 w-24 text-center">Xem</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-zinc-200/80">
                             <tr 
                                 v-for="order in stats.recent_orders" 
                                 :key="order.id"
-                                class="border-b border-zinc-50 hover:bg-[#FAF6EE]/20 transition-colors text-sm text-zinc-700"
+                                class="hover:bg-[#FAF6EE]/30 transition-colors"
                             >
-                                <td class="py-3 px-4 font-mono font-bold text-zinc-800">#{{ order.order_code }}</td>
-                                <td class="py-3 px-4 text-zinc-900 font-medium">{{ order.customer_name }}</td>
-                                <td class="py-3 px-4 font-sans text-zinc-700 font-bold">
+                                <td class="py-4 px-4 border-r border-zinc-200/60 font-mono font-bold text-zinc-900 align-middle">#{{ order.order_code }}</td>
+                                <td class="py-4 px-4 border-r border-zinc-200/60 text-zinc-900 font-medium align-middle">{{ order.customer_name }}</td>
+                                <td class="py-4 px-4 border-r border-zinc-200/60 font-sans text-zinc-800 font-bold align-middle">
                                     {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_amount) }}
                                 </td>
-                                <td class="py-3 px-4">
+                                <td class="py-4 px-4 border-r border-zinc-200/60 align-middle">
                                     <span 
-                                        :class="order.payment_status === 'paid' ? 'bg-emerald-50 text-emerald-800 border-emerald-200/50' : 'bg-amber-50 text-amber-800 border-amber-200/50'"
-                                        class="px-2 py-0.5 rounded-full border text-[10px] font-semibold"
+                                        :class="order.payment_status === 'paid' ? 'bg-emerald-50 text-emerald-800 border-emerald-200/60' : 'bg-amber-50 text-amber-800 border-amber-200/60'"
+                                        class="px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider"
                                     >
                                         {{ order.payment_status === 'paid' ? 'Đã thu' : 'Chờ thu' }}
                                     </span>
                                 </td>
-                                <td class="py-3 px-4">
+                                <td class="py-4 px-4 border-r border-zinc-200/60 align-middle">
                                     <span 
                                         :class="{
-                                            'bg-emerald-100 text-emerald-800': order.status === 'completed',
-                                            'bg-blue-100 text-blue-800': order.status === 'processing',
-                                            'bg-amber-100 text-amber-800': order.status === 'pending',
-                                            'bg-zinc-100 text-zinc-800': order.status === 'cancelled',
+                                            'bg-emerald-50 text-emerald-800 border-emerald-200': order.status === 'completed',
+                                            'bg-blue-50 text-blue-800 border-blue-200': order.status === 'processing',
+                                            'bg-amber-50 text-amber-800 border-amber-200': order.status === 'pending',
+                                            'bg-zinc-50 text-zinc-700 border-zinc-200': order.status === 'cancelled',
                                         }" 
-                                        class="px-2 py-0.5 rounded-full text-[10px] font-semibold"
+                                        class="px-2.5 py-1 rounded-full text-[10px] font-bold border"
                                     >
                                         {{ order.status === 'completed' ? 'Xong' : order.status === 'processing' ? 'Xử lý' : order.status === 'pending' ? 'Chờ' : 'Huỷ' }}
                                     </span>
                                 </td>
-                                <td class="py-3 px-4 text-right">
-                                    <Link :href="route('admin.orders.show', order.id)" class="text-[#043616] hover:text-emerald-700 font-bold">
+                                <td class="py-4 px-4 align-middle text-center w-24 whitespace-nowrap">
+                                    <Link :href="route('admin.orders.show', order.id)" class="text-[#043616] hover:text-emerald-800 font-bold text-sm transition-colors">
                                         Chi tiết
                                     </Link>
                                 </td>
                             </tr>
                             <tr v-if="stats.recent_orders.length === 0">
-                                <td colspan="6" class="py-8 text-center text-zinc-400">
+                                <td colspan="6" class="py-8 text-center text-zinc-500">
                                     Chưa ghi nhận đơn hàng nào.
                                 </td>
                             </tr>
@@ -152,3 +152,4 @@ defineProps({
         </div>
     </AuthenticatedLayout>
 </template>
+

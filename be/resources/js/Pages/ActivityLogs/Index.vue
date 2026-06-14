@@ -37,54 +37,55 @@ const formatJson = (val) => {
         </template>
 
         <div class="space-y-6">
+            <!-- Table System (Bordered) -->
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
-                <div class="p-6">
+                <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm text-zinc-700">
                         <thead>
-                            <tr class="border-b border-zinc-200 text-[#043616] font-serif text-sm font-bold">
-                                <th class="py-4 px-4 w-48">Thời gian</th>
-                                <th class="py-4 px-4">Quản trị viên</th>
-                                <th class="py-4 px-4">Hành động</th>
-                                <th class="py-4 px-4">Phân hệ</th>
-                                <th class="py-4 px-4">Chi tiết hoạt động</th>
-                                <th class="py-4 px-4 text-right">Dữ liệu</th>
+                            <tr class="bg-zinc-50 border-b border-zinc-200 text-[#043616] font-sans text-xs font-bold uppercase tracking-wider">
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-48">Thời gian</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-52">Quản trị viên</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-32">Hành động</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-40">Phân hệ</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60">Chi tiết hoạt động</th>
+                                <th class="py-4 px-4 w-28 text-center">Dữ liệu</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-zinc-200/80">
                             <template v-for="log in logs.data" :key="log.id">
                                 <tr 
-                                    class="border-b border-zinc-100 hover:bg-[#FAF6EE]/30 transition-colors text-sm"
+                                    class="hover:bg-[#FAF6EE]/30 transition-colors text-sm"
                                     :class="expandedLogId === log.id ? 'bg-[#FAF6EE]/20' : ''"
                                 >
-                                    <td class="py-4 px-4 text-zinc-500 text-xs font-sans">
+                                    <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-zinc-500 text-xs font-sans">
                                         {{ new Date(log.created_at).toLocaleString('vi-VN') }}
                                     </td>
-                                    <td class="py-4 px-4 text-zinc-900 font-medium">
+                                    <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-zinc-900 font-bold">
                                         {{ log.user?.name || 'Hệ thống' }}
                                     </td>
-                                    <td class="py-4 px-4">
+                                    <td class="py-4 px-4 border-r border-zinc-200/60 align-middle">
                                         <span 
                                             :class="{
-                                                'bg-emerald-100 text-emerald-800 border-emerald-200': log.action === 'CREATE',
-                                                'bg-blue-100 text-blue-800 border-blue-200': log.action === 'UPDATE',
-                                                'bg-rose-100 text-rose-800': log.action === 'DELETE',
+                                                'bg-emerald-50 text-emerald-800 border-emerald-200': log.action === 'CREATE',
+                                                'bg-blue-50 text-blue-800 border-blue-200': log.action === 'UPDATE',
+                                                'bg-rose-50 text-rose-800 border-rose-200': log.action === 'DELETE',
                                             }"
-                                            class="px-2.5 py-0.5 rounded border text-[11px] font-bold uppercase tracking-wider"
+                                            class="px-2.5 py-1 rounded border text-[10px] font-bold uppercase tracking-wider"
                                         >
                                             {{ log.action }}
                                         </span>
                                     </td>
-                                    <td class="py-4 px-4 text-zinc-600 font-mono text-xs uppercase">
+                                    <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-[#043616] font-mono text-xs uppercase font-bold">
                                         {{ log.table_name }}
                                     </td>
-                                    <td class="py-4 px-4 text-zinc-700 text-xs font-medium">
+                                    <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-zinc-700 text-xs font-medium">
                                         {{ log.description }}
                                     </td>
-                                    <td class="py-4 px-4 text-right">
+                                    <td class="py-4 px-4 align-middle text-center w-28 whitespace-nowrap">
                                         <button 
                                             v-if="log.old_value || log.new_value"
                                             @click="toggleExpand(log.id)"
-                                            class="text-[#043616] hover:text-emerald-800 text-xs font-semibold underline"
+                                            class="text-[#043616] hover:text-emerald-800 text-xs font-bold underline"
                                         >
                                             {{ expandedLogId === log.id ? 'Thu gọn' : 'Xem JSON' }}
                                         </button>
@@ -92,16 +93,16 @@ const formatJson = (val) => {
                                     </td>
                                 </tr>
                                 <!-- Expandable JSON Diffs -->
-                                <tr v-if="expandedLogId === log.id" class="bg-zinc-50/70 border-b border-zinc-100">
+                                <tr v-if="expandedLogId === log.id" class="bg-zinc-50/70 border-b border-zinc-200/80">
                                     <td colspan="6" class="p-6">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                                             <div>
-                                                <span class="font-bold text-zinc-500 uppercase block mb-1">Dữ liệu cũ (Old Value)</span>
-                                                <pre class="bg-zinc-950 text-emerald-400 p-4 rounded-lg overflow-x-auto font-mono max-h-60 leading-relaxed border border-zinc-800">{{ formatJson(log.old_value) }}</pre>
+                                                <span class="font-bold text-zinc-500 uppercase block mb-2 font-sans tracking-wide">Dữ liệu cũ (Old Value)</span>
+                                                <pre class="bg-zinc-950 text-emerald-400 p-4 rounded-xl overflow-x-auto font-mono max-h-60 leading-relaxed border border-zinc-800">{{ formatJson(log.old_value) }}</pre>
                                             </div>
                                             <div>
-                                                <span class="font-bold text-zinc-500 uppercase block mb-1">Dữ liệu mới (New Value)</span>
-                                                <pre class="bg-zinc-950 text-emerald-400 p-4 rounded-lg overflow-x-auto font-mono max-h-60 leading-relaxed border border-zinc-800">{{ formatJson(log.new_value) }}</pre>
+                                                <span class="font-bold text-zinc-500 uppercase block mb-2 font-sans tracking-wide">Dữ liệu mới (New Value)</span>
+                                                <pre class="bg-zinc-950 text-emerald-400 p-4 rounded-xl overflow-x-auto font-mono max-h-60 leading-relaxed border border-zinc-800">{{ formatJson(log.new_value) }}</pre>
                                             </div>
                                         </div>
                                     </td>
@@ -114,28 +115,29 @@ const formatJson = (val) => {
                             </tr>
                         </tbody>
                     </table>
+                </div>
 
-                    <!-- Pagination -->
-                    <div v-if="logs.links && logs.total > logs.per_page" class="flex justify-between items-center mt-6 pt-4 border-t border-zinc-100">
-                        <div class="text-xs text-zinc-500">
-                            Hiển thị từ {{ logs.from || 0 }} đến {{ logs.to || 0 }} của {{ logs.total }} dòng nhật ký
-                        </div>
-                        <div class="flex gap-1">
-                            <Link
-                                v-for="(link, idx) in logs.links"
-                                :key="idx"
-                                :href="link.url || '#'"
-                                v-html="link.label"
-                                :class="[
-                                    link.active ? 'bg-[#043616] text-[#FFFDF9] font-bold border border-[#043616]' : 'bg-white text-zinc-700 hover:bg-zinc-50 border border-zinc-200/80',
-                                    !link.url ? 'opacity-50 pointer-events-none' : '',
-                                    'px-3 py-1.5 rounded-lg text-xs transition-all duration-200'
-                                ]"
-                            />
-                        </div>
+                <!-- Pagination -->
+                <div v-if="logs.links && logs.total > logs.per_page" class="flex justify-between items-center p-6 border-t border-zinc-200/80">
+                    <div class="text-xs text-zinc-500">
+                        Hiển thị từ {{ logs.from || 0 }} đến {{ logs.to || 0 }} của {{ logs.total }} dòng nhật ký
+                    </div>
+                    <div class="flex gap-1">
+                        <Link
+                            v-for="(link, idx) in logs.links"
+                            :key="idx"
+                            :href="link.url || '#'"
+                            v-html="link.label"
+                            :class="[
+                                link.active ? 'bg-[#043616] text-[#FFFDF9] font-bold border border-[#043616]' : 'bg-white text-zinc-700 hover:bg-zinc-50 border border-zinc-200/80',
+                                !link.url ? 'opacity-50 pointer-events-none' : '',
+                                'px-3 py-1.5 rounded-lg text-xs transition-all duration-200'
+                            ]"
+                        />
                     </div>
                 </div>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+

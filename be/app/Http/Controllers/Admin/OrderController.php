@@ -12,10 +12,30 @@ use Illuminate\Http\RedirectResponse;
 
 class OrderController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $orders = Order::latest()->paginate(15);
-        return Inertia::render('Orders/Index', ['orders' => $orders]);
+        $query = Order::latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('order_code', 'like', '%' . $search . '%')
+                  ->orWhere('customer_name', 'like', '%' . $search . '%')
+                  ->orWhere('customer_phone', 'like', '%' . $search . '%')
+                  ->orWhere('customer_email', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(15)->withQueryString();
+
+        return Inertia::render('Orders/Index', [
+            'orders' => $orders,
+            'filters' => $request->only(['search', 'status'])
+        ]);
     }
 
     public function show(Order $order): Response

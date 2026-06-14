@@ -24,7 +24,7 @@ import { BLOG_POSTS } from "@/data/blog-posts";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import { NEW_PRODUCTS, SALE_PRODUCTS, SEEDED_PRODUCTS } from "@/data/products";
-import { getProducts, getBlogs } from "@/lib/api";
+import { getProducts, getBlogs, getBanners, getTestimonials } from "@/lib/api";
 
 const REVIEWS = [
   {
@@ -80,8 +80,24 @@ export default function Home() {
   const [saleProducts, setSaleProducts] = useState<Product[]>(SALE_PRODUCTS);
   const [blogPosts, setBlogPosts] = useState<any[]>(BLOG_POSTS);
 
+  const [banners, setBanners] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>(REVIEWS);
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+
   const newProductsScrollRef = useRef<HTMLDivElement>(null);
   const saleProductsScrollRef = useRef<HTMLDivElement>(null);
+
+  const nextBanner = () => {
+    if (banners.length > 0) {
+      setActiveBannerIndex((prev) => (prev + 1) % banners.length);
+    }
+  };
+
+  const prevBanner = () => {
+    if (banners.length > 0) {
+      setActiveBannerIndex((prev) => (prev - 1 + banners.length) % banners.length);
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -104,6 +120,16 @@ export default function Home() {
           date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : "Gần đây"
         }));
         setBlogPosts(mappedBlogs);
+      }
+
+      const dbBanners = await getBanners();
+      if (dbBanners && dbBanners.length > 0) {
+        setBanners(dbBanners);
+      }
+
+      const dbReviews = await getTestimonials();
+      if (dbReviews && dbReviews.length > 0) {
+        setReviews(dbReviews);
       }
     }
     loadData();
@@ -226,32 +252,62 @@ export default function Home() {
         {/* Hero Section (Full-Width 2:1 Aspect Ratio Background Banner) */}
         <section
           id="hero"
-          className="relative min-h-[550px] md:min-h-0 md:aspect-[2/1] w-full flex items-center overflow-hidden border-b border-border/10 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/hero_banner.png')" }}
+          className="relative min-h-[550px] md:min-h-0 md:aspect-[2/1] w-full flex items-center overflow-hidden border-b border-border/10 bg-cover bg-center bg-no-repeat transition-all duration-700"
+          style={{ backgroundImage: `url('${banners.length > 0 ? banners[activeBannerIndex].image : "/images/hero_banner.png"}')` }}
         >
-          
           {/* Atmospheric Steam Particles */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
             <div className="steam-particle" style={{ left: "15%", bottom: "12%", animationDelay: "0s" }} />
             <div className="steam-particle" style={{ left: "45%", bottom: "6%", animationDelay: "2.5s" }} />
             <div className="steam-particle" style={{ left: "75%", bottom: "18%", animationDelay: "5s" }} />
           </div>
+
+          {/* Hero Slider Navigation Arrows */}
+          {banners.length > 1 && (
+            <>
+              <button
+                onClick={prevBanner}
+                className="absolute left-6 z-25 p-2.5 rounded-full bg-white/25 hover:bg-white/40 text-primary backdrop-blur-xs transition-all duration-200"
+                title="Banner trước"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={nextBanner}
+                className="absolute right-6 z-25 p-2.5 rounded-full bg-white/25 hover:bg-white/40 text-primary backdrop-blur-xs transition-all duration-200"
+                title="Banner tiếp theo"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </>
+          )}
  
           <div className="relative z-10 px-6 md:px-12 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
             {/* Hero Left Info */}
             <div className="space-y-6 text-left">
               <div className="inline-block border border-primary/30 px-3.5 py-1 rounded-full text-primary text-xs font-semibold uppercase tracking-[0.2em]">
-                Tinh Hoa Thảo Mộc
+                {banners.length > 0 ? (banners[activeBannerIndex].subtitle || "Tinh Hoa Thảo Mộc") : "Tinh Hoa Thảo Mộc"}
               </div>
               <h1 className="font-serif text-primary leading-tight text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Thảo Mộc Xông Nhà
+                {banners.length > 0 ? (banners[activeBannerIndex].title || "Thảo Mộc Xông Nhà") : "Thảo Mộc Xông Nhà"}
               </h1>
               <p className="text-sm md:text-base text-muted-foreground max-w-md leading-relaxed font-light">
-                Thanh lọc không gian sống, khơi thông vận khí lành và mang lại sự bình an tuyệt đối cho tâm trí.
+                {banners.length > 0 ? "Thanh lọc không gian sống với các sản phẩm thảo mộc chữa lành và bình an tinh thần." : "Thanh lọc không gian sống, khơi thông vận khí lành và mang lại sự bình an tuyệt đối cho tâm trí."}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <button
-                  onClick={() => scrollToSection("products")}
+                  onClick={() => {
+                    const linkUrl = banners.length > 0 ? banners[activeBannerIndex].link_url : "";
+                    if (linkUrl) {
+                      if (linkUrl.startsWith("http")) {
+                        window.open(linkUrl, "_blank");
+                      } else {
+                        window.location.href = linkUrl;
+                      }
+                    } else {
+                      scrollToSection("products");
+                    }
+                  }}
                   className="bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-serif font-bold text-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Đặt Hàng Ngay
@@ -628,7 +684,7 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-8">
-                {REVIEWS.map((review) => (
+                {reviews.map((review) => (
                   <div
                     key={review.id}
                     className="relative p-8 md:p-10 bg-white rounded-[36px] flex flex-col justify-between text-center shadow-xs hover:shadow-md transition-all duration-300 border border-border/40"

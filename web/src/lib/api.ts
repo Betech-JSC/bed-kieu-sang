@@ -94,6 +94,31 @@ export async function getBlog(slug: string) {
   return BLOG_POSTS.find(p => p.slug === slug) || null;
 }
 
+export async function getBanners() {
+  const data = await fetchJson<{ data: any[] }>("/banners");
+  if (data && Array.isArray(data.data)) {
+    return data.data.map(b => ({
+      ...b,
+      image: b.image_path || b.image
+    }));
+  }
+  return [];
+}
+
+export async function getTestimonials() {
+  const data = await fetchJson<{ data: any[] }>("/testimonials");
+  if (data && Array.isArray(data.data)) {
+    return data.data.map(t => ({
+      id: t.id,
+      name: t.customer_name,
+      role: t.is_featured ? "Khách hàng thân thiết" : "Khách hàng",
+      text: t.comment,
+      avatar: t.customer_avatar || "/images/avatar_woman_1.png"
+    }));
+  }
+  return [];
+}
+
 export async function submitContact(payload: {
   name: string;
   email: string;

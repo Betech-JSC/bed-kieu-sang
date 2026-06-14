@@ -43,7 +43,9 @@ function ProductsCatalogContent() {
   }, []);
 
   useEffect(() => {
-    setCurrentPage(1);
+    setTimeout(() => {
+      setCurrentPage(1);
+    }, 0);
   }, [selectedCategory, searchQuery, sortBy]);
 
   // Load cart from LocalStorage on mount

@@ -22,6 +22,10 @@ export interface OrderDetails {
   total: number;
 }
 
+function generateRandomId() {
+  return "KS-" + Math.floor(10000 + Math.random() * 90000);
+}
+
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -117,7 +121,7 @@ export default function CartDrawer({
     });
 
     onCheckoutComplete({
-      id: result?.order_code || ("KS-" + Math.floor(10000 + Math.random() * 90000)),
+      id: result?.order_code || generateRandomId(),
       ...formData,
       items: cartItems,
       total,

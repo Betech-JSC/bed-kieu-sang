@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\V1\PublicPageController;
 use App\Http\Controllers\Api\V1\PublicOrderController;
 use App\Http\Controllers\Api\V1\PublicContactController;
 use App\Http\Controllers\Api\V1\PublicSettingController;
+use App\Http\Controllers\Api\V1\PublicBannerController;
+use App\Http\Controllers\Api\V1\PublicTestimonialController;
 
 Route::prefix('v1')->group(function () {
     Route::get('/products', [PublicProductController::class, 'index']);
@@ -15,6 +17,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/blogs/{slug}', [PublicBlogController::class, 'show']);
     Route::get('/pages/{slug}', [PublicPageController::class, 'show']);
     Route::get('/settings', [PublicSettingController::class, 'index']);
+    Route::get('/banners', [PublicBannerController::class, 'index']);
+    Route::get('/testimonials', [PublicTestimonialController::class, 'index']);
     
     // Storefront client form submissions
     Route::post('/contacts', [PublicContactController::class, 'store']);

@@ -13,10 +13,26 @@ use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $products = Product::with('category')->latest()->paginate(15);
-        return Inertia::render('Products/Index', ['products' => $products]);
+        $query = Product::with('category')->latest();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $products = $query->paginate(15)->withQueryString();
+        $categories = Category::where('type', 'product')->get();
+
+        return Inertia::render('Products/Index', [
+            'products' => $products,
+            'categories' => $categories,
+            'filters' => $request->only(['search', 'category_id'])
+        ]);
     }
 
     public function create(): Response
@@ -34,12 +50,28 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
-            'image_path' => 'required|string',
-            'benefits' => 'required|array',
+            'image_path' => 'required_without:image|nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'benefits' => 'nullable|array',
             'badge' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',
         ]);
 
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            $validated['image_path'] = '/images/' . $filename;
+            
+            // Copy to storefront
+            $fePath = base_path('../web/public/images');
+            if (file_exists($fePath)) {
+                copy(public_path('images/' . $filename), $fePath . '/' . $filename);
+            }
+        }
+
+        unset($validated['image']);
+        $validated['benefits'] = $validated['benefits'] ?? [];
         $product = Product::create($validated);
 
         ActivityLogger::log('CREATE', 'products', "Created product '{$product->name}'", null, $product->toArray());
@@ -65,12 +97,28 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
-            'image_path' => 'required|string',
-            'benefits' => 'required|array',
+            'image_path' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'benefits' => 'nullable|array',
             'badge' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',
         ]);
 
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            $validated['image_path'] = '/images/' . $filename;
+            
+            // Copy to storefront
+            $fePath = base_path('../web/public/images');
+            if (file_exists($fePath)) {
+                copy(public_path('images/' . $filename), $fePath . '/' . $filename);
+            }
+        }
+
+        unset($validated['image']);
+        $validated['benefits'] = $validated['benefits'] ?? [];
         $oldValue = $product->toArray();
         $product->update($validated);
 

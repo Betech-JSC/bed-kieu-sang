@@ -1,7 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
 const props = defineProps({
     settings: Object
@@ -48,28 +47,23 @@ const submit = () => {
             </div>
         </template>
 
-        <div class="space-y-6 max-w-3xl">
-            <!-- Notifications -->
-            <div v-if="$page.props.flash?.success" class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-medium">
-                {{ $page.props.flash.success }}
-            </div>
-
+        <div class="max-w-3xl mx-auto space-y-6">
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
-                <form @submit.prevent="submit" class="p-8 space-y-6">
-                    <div class="space-y-6">
+                <form @submit.prevent="submit" class="p-8 space-y-8">
+                    <div class="space-y-8">
                         <!-- Group sections -->
                         <div v-for="(items, groupName) in settings" :key="groupName" class="space-y-4">
-                            <h3 class="text-sm font-serif font-bold text-emerald-950 uppercase border-b border-zinc-100 pb-2 tracking-wide">
+                            <h3 class="text-sm font-sans font-bold text-[#043616] uppercase border-b border-zinc-200/80 pb-2.5 tracking-wider">
                                 {{ groupName === 'contact' ? 'Thông tin liên hệ cửa hàng' : groupName }}
                             </h3>
 
                             <div class="grid grid-cols-1 gap-4">
                                 <div 
-                                    v-for="(item, index) in form.settings.filter(s => items.some(i => i.key === s.key))" 
+                                    v-for="item in form.settings.filter(s => items.some(i => i.key === s.key))" 
                                     :key="item.key"
-                                    class="flex flex-col space-y-1.5 text-sm"
+                                    class="flex flex-col space-y-2"
                                 >
-                                    <label class="font-semibold text-zinc-800">
+                                    <label class="text-sm font-serif font-bold text-emerald-950">
                                         {{ settingLabels[item.key] || item.key }}
                                     </label>
                                     <input 
@@ -83,8 +77,8 @@ const submit = () => {
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex justify-end pt-4 border-t border-zinc-100">
-                        <button type="submit" :disabled="form.processing" class="px-8 py-2.5 bg-[#043616] text-[#FFFDF9] rounded-lg text-sm font-semibold hover:bg-[#112215] transition-all disabled:opacity-50 hover:shadow-sm">
+                    <div class="flex justify-end pt-4 border-t border-zinc-150">
+                        <button type="submit" :disabled="form.processing" class="px-8 py-2.5 bg-[#043616] text-[#FFFDF9] rounded-lg text-sm font-bold hover:bg-[#112215] transition-all disabled:opacity-50 hover:shadow-sm">
                             Lưu cấu hình
                         </button>
                     </div>
@@ -93,3 +87,4 @@ const submit = () => {
         </div>
     </AuthenticatedLayout>
 </template>
+
