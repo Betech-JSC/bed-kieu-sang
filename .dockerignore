@@ -1,7 +1,22 @@
-node_modules
-.next
+# Ignore everything by default
+*
+
+# Allow the web folder
+!web/
+
+# Exclude unnecessary files inside web folder
+web/node_modules
+web/.next
+web/.env*.local
+web/*.md
+
+# Ignore system files
 .git
-.gitignore
-README.md
-*.md
-.env*.local
+.github
+.agents
+.bin
+.gemini
+.impeccable
+.vscode
+be/
+node_modules/
