@@ -16,6 +16,8 @@ export interface Product {
   badge?: string;
   originalPrice?: number;
   slug?: string;
+  seo_title?: string;
+  seo_desc?: string;
 }
 
 interface ProductCardProps {

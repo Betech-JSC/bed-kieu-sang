@@ -16,6 +16,8 @@ const form = useForm({
     meta_title: props.page?.meta_title || '',
     meta_description: props.page?.meta_description || '',
     meta_keywords: props.page?.meta_keywords || '',
+    seo_title: props.page?.seo_title || '',
+    seo_desc: props.page?.seo_desc || '',
     status: props.page?.status || 'draft',
 });
 
@@ -105,8 +107,18 @@ const submit = () => {
                         <h3 class="text-md font-serif font-bold text-emerald-950">Cấu hình SEO Meta (Không bắt buộc)</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col space-y-2 col-span-2">
+                                <label class="text-xs font-bold text-zinc-700">Tiêu đề SEO (SEO Title)</label>
+                                <input v-model="form.seo_title" type="text" placeholder="Để trống sẽ tự động lấy tiêu đề trang..." class="border border-zinc-200 rounded-lg px-4 py-2 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" />
+                            </div>
+
+                            <div class="flex flex-col space-y-2 col-span-2">
+                                <label class="text-xs font-bold text-zinc-700">Mô tả SEO (SEO Description)</label>
+                                <textarea v-model="form.seo_desc" rows="2" placeholder="Để trống sẽ tự động lấy từ nội dung trang..." class="border border-zinc-200 rounded-lg px-4 py-2 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm"></textarea>
+                            </div>
+
                             <div class="flex flex-col space-y-2">
-                                <label class="text-xs font-bold text-zinc-700">Meta Title</label>
+                                <label class="text-xs font-bold text-zinc-700">Meta Title cũ (nếu có)</label>
                                 <input v-model="form.meta_title" type="text" class="border border-zinc-200 rounded-lg px-4 py-2 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" />
                             </div>
 
