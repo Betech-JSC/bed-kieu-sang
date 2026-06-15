@@ -13,6 +13,7 @@ import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product } from "@/components/product-card";
 import { PRODUCTS } from "@/data/products";
 import { getProduct, getProducts } from "@/lib/api";
+import { useSeo } from "@/hooks/useSeo";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 
@@ -32,6 +33,8 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
   // Find the current product (initially from mock data)
   const [product, setProduct] = useState<Product | null>(() => PRODUCTS.find((p) => p.id === id) || null);
+  
+  useSeo(product?.seo_title || product?.name, product?.seo_desc || product?.description);
   const [activeImage, setActiveImage] = useState(product?.image || "");
   const [selectedSize, setSelectedSize] = useState("Tiêu chuẩn (Standard)");
 
