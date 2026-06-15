@@ -9,7 +9,8 @@ class BlogPost extends Model
 {
     protected $fillable = [
         'category_id', 'slug', 'title', 'excerpt', 'content', 
-        'image_path', 'read_time', 'status', 'published_at'
+        'image_path', 'read_time', 'status', 'published_at',
+        'seo_title', 'seo_desc'
     ];
 
     protected $casts = [
