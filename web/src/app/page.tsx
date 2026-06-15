@@ -24,7 +24,8 @@ import { BLOG_POSTS } from "@/data/blog-posts";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import { NEW_PRODUCTS, SALE_PRODUCTS, SEEDED_PRODUCTS } from "@/data/products";
-import { getProducts, getBlogs, getBanners, getTestimonials } from "@/lib/api";
+import { getProducts, getBlogs, getBanners, getTestimonials, getSettings } from "@/lib/api";
+import { useSeo } from "@/hooks/useSeo";
 
 const REVIEWS = [
   {
@@ -83,6 +84,9 @@ export default function Home() {
   const [banners, setBanners] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>(REVIEWS);
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+  const [seoSettings, setSeoSettings] = useState<{ title?: string; desc?: string }>({});
+
+  useSeo(seoSettings.title, seoSettings.desc);
 
   const newProductsScrollRef = useRef<HTMLDivElement>(null);
   const saleProductsScrollRef = useRef<HTMLDivElement>(null);
@@ -130,6 +134,14 @@ export default function Home() {
       const dbReviews = await getTestimonials();
       if (dbReviews && dbReviews.length > 0) {
         setReviews(dbReviews);
+      }
+
+      const dbSettings = await getSettings();
+      if (dbSettings) {
+        setSeoSettings({
+          title: dbSettings.meta_title,
+          desc: dbSettings.meta_desc
+        });
       }
     }
     loadData();

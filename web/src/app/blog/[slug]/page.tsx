@@ -11,6 +11,7 @@ import Link from "next/link";
 import { CheckCircle, ChevronLeft, ShoppingBag, Facebook, Instagram } from "lucide-react";
 import { BLOG_POSTS } from "@/data/blog-posts";
 import { getBlog } from "@/lib/api";
+import { useSeo } from "@/hooks/useSeo";
 import { Product } from "@/components/product-card";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
@@ -52,6 +53,8 @@ export default function BlogPostDetail({ params }: BlogPostDetailProps) {
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
 
   const [post, setPost] = useState<any>(() => BLOG_POSTS.find((p) => p.slug === slug) || null);
+  
+  useSeo(post?.seo_title || post?.title, post?.seo_desc || post?.summary || post?.excerpt);
 
   useEffect(() => {
     async function loadPost() {

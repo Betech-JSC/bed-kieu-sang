@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\SeoRedirectController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,21 +49,51 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    Route::resource('products', ProductController::class);
-    Route::resource('blogs', BlogPostController::class);
-    Route::resource('pages', PageController::class);
-    Route::resource('banners', BannerController::class);
+    // Products
+    Route::resource('products', ProductController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_products');
+
+    // Categories
+    Route::resource('categories', CategoryController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('categories', CategoryController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_categories');
+
+    // Blogs
+    Route::resource('blogs', BlogPostController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('blogs', BlogPostController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_blogs');
+
+    // Pages
+    Route::resource('pages', PageController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('pages', PageController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_pages');
+
+    // Banners
+    Route::resource('banners', BannerController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('banners', BannerController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_settings');
     
+    // Testimonials
     Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
-    Route::patch('testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])->name('testimonials.status');
+    Route::patch('testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])->name('testimonials.status')->middleware('permission:manage_products');
     
-    Route::resource('contacts', ContactController::class)->only(['index', 'show', 'destroy']);
-    Route::resource('orders', OrderController::class)->only(['index', 'show', 'update']);
-    Route::resource('seo-redirects', SeoRedirectController::class);
+    // Contacts
+    Route::resource('contacts', ContactController::class)->only(['index', 'show']);
+    Route::resource('contacts', ContactController::class)->only(['destroy'])->middleware('permission:manage_settings');
+
+    // Orders
+    Route::resource('orders', OrderController::class)->only(['index', 'show']);
+    Route::resource('orders', OrderController::class)->only(['update'])->middleware('permission:manage_products');
+
+    // SEO Redirects
+    Route::resource('seo-redirects', SeoRedirectController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('seo-redirects', SeoRedirectController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_settings');
     
+    // Settings
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
-    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::post('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:manage_settings');
+
+    // Users
+    Route::resource('users', UserController::class)->middleware('permission:manage_users');
+
+    // Activity Logs
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index')->middleware('permission:view_activity_logs');
 });
 
 Route::middleware('auth')->group(function () {
