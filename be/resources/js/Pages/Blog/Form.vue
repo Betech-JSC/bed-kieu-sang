@@ -31,6 +31,8 @@ const form = useForm({
     read_time: props.post?.read_time || '5 phút',
     status: props.post?.status || 'draft',
     published_at: props.post?.published_at ? props.post.published_at.substring(0, 10) : '',
+    seo_title: props.post?.seo_title || '',
+    seo_desc: props.post?.seo_desc || '',
 });
 
 // Auto-generate slug from title
@@ -174,6 +176,21 @@ const submit = () => {
                             placeholder="Nhập nội dung bài viết ở đây..." 
                             class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"
                         ></textarea>
+                    </div>
+
+                    <!-- Cấu hình SEO -->
+                    <div class="border-t border-zinc-100 pt-6 space-y-4">
+                        <h3 class="text-md font-serif font-bold text-emerald-950 uppercase tracking-wider">Cấu hình SEO cho trang</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề SEO (SEO Title)</label>
+                                <input v-model="form.seo_title" type="text" placeholder="Để trống sẽ tự động lấy tiêu đề bài viết..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Mô tả SEO (SEO Meta Description)</label>
+                                <textarea v-model="form.seo_desc" rows="3" placeholder="Để trống sẽ tự động trích xuất từ tóm tắt bài viết..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"></textarea>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Actions -->

@@ -16,6 +16,7 @@ use App\Models\Page;
 use App\Models\SeoRedirect;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,12 +25,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Admin User
+        // 1. Create Admin Users with Roles
         User::updateOrCreate(
             ['email' => 'admin@kieusang.vn'],
             [
                 'name' => 'Kiều Sang Admin',
                 'password' => Hash::make('admin123'),
+                'role' => 'super_admin',
+                'permissions' => ['manage_products', 'manage_blogs', 'manage_categories', 'manage_pages', 'manage_settings', 'manage_users', 'view_activity_logs'],
+                'email_verified_at' => now(),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'editor@kieusang.vn'],
+            [
+                'name' => 'Kiều Sang Biên Tập',
+                'password' => Hash::make('editor123'),
+                'role' => 'editor',
+                'permissions' => ['manage_products', 'manage_blogs', 'manage_categories'],
+                'email_verified_at' => now(),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'viewer@kieusang.vn'],
+            [
+                'name' => 'Kiều Sang Người Xem',
+                'password' => Hash::make('viewer123'),
+                'role' => 'viewer',
+                'permissions' => [],
                 'email_verified_at' => now(),
             ]
         );
@@ -357,6 +382,11 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'store_hotline'], ['value' => '0987.654.321', 'type' => 'text', 'group' => 'contact']);
         Setting::updateOrCreate(['key' => 'store_email'], ['value' => 'lienhe@kieusang.vn', 'type' => 'text', 'group' => 'contact']);
         Setting::updateOrCreate(['key' => 'store_address'], ['value' => 'Số 12 Ngách Yên Tĩnh, Quận An Nhiên, Hà Nội', 'type' => 'text', 'group' => 'contact']);
+        
+        // Global SEO Settings (Vietnamese only)
+        Setting::updateOrCreate(['key' => 'meta_title'], ['value' => 'Thảo Mộc Kiều Sang - Sống Xanh, An Yên', 'type' => 'text', 'group' => 'seo']);
+        Setting::updateOrCreate(['key' => 'meta_desc'], ['value' => 'Thương hiệu thảo mộc thiên nhiên, thanh tẩy không gian, liệu pháp mùi hương hữu cơ an lành cho sức khỏe.', 'type' => 'text', 'group' => 'seo']);
+        Setting::updateOrCreate(['key' => 'meta_keywords'], ['value' => 'thao moc, kieu sang, white sage, organic, tra hoa cuc, xong nha', 'type' => 'text', 'group' => 'seo']);
 
         // 6. Create Extra Products for pagination testing
         Product::updateOrCreate(
@@ -661,6 +691,8 @@ class DatabaseSeeder extends Seeder
                 'meta_title' => 'Giới thiệu Kiều Sang | Thảo mộc tự nhiên',
                 'meta_description' => 'Khám phá câu chuyện thương hiệu Thảo Mộc Kiều Sang và sứ mệnh đem liệu pháp hương thơm chữa lành tâm hồn Việt.',
                 'meta_keywords' => 'gioi thieu kieu sang, thao moc tu nhien, chua lanh',
+                'seo_title' => 'Giới thiệu Kiều Sang | Thảo mộc tự nhiên',
+                'seo_desc' => 'Khám phá câu chuyện thương hiệu Thảo Mộc Kiều Sang và sứ mệnh đem liệu pháp hương thơm chữa lành tâm hồn Việt.',
                 'status' => 'published'
             ]
         );
@@ -673,6 +705,8 @@ class DatabaseSeeder extends Seeder
                 'meta_title' => 'Chính sách bảo mật | Thảo Mộc Kiều Sang',
                 'meta_description' => 'Chính sách bảo mật thông tin khách hàng mua sắm tại website Thảo Mộc Kiều Sang.',
                 'meta_keywords' => 'chinh sach bao mat, kieu sang',
+                'seo_title' => 'Chính sách bảo mật | Thảo Mộc Kiều Sang',
+                'seo_desc' => 'Chính sách bảo mật thông tin khách hàng mua sắm tại website Thảo Mộc Kiều Sang.',
                 'status' => 'published'
             ]
         );
@@ -685,6 +719,8 @@ class DatabaseSeeder extends Seeder
                 'meta_title' => 'Giao hàng và đổi trả | Thảo Mộc Kiều Sang',
                 'meta_description' => 'Chính sách giao nhận, cước phí vận chuyển và chế độ bảo hành đổi trả hàng lỗi do vận chuyển.',
                 'meta_keywords' => 'giao hang, doi tra kieu sang',
+                'seo_title' => 'Giao hàng và đổi trả | Thảo Mộc Kiều Sang',
+                'seo_desc' => 'Chính sách giao nhận, cước phí vận chuyển và chế độ bảo hành đổi trả hàng lỗi do vận chuyển.',
                 'status' => 'published'
             ]
         );
@@ -697,6 +733,8 @@ class DatabaseSeeder extends Seeder
                 'meta_title' => 'Cách xông nhà mới | Phong thủy Kiều Sang',
                 'meta_description' => 'Hướng dẫn chi tiết quy trình chuẩn bị và xông nhà mới đúng phong thủy rước tài lộc.',
                 'meta_keywords' => 'xong nha moi, huong dan xong nha',
+                'seo_title' => 'Cách xông nhà mới | Phong thủy Kiều Sang',
+                'seo_desc' => 'Hướng dẫn chi tiết quy trình chuẩn bị và xông nhà mới đúng phong thủy rước tài lộc.',
                 'status' => 'draft'
             ]
         );
@@ -989,5 +1027,20 @@ class DatabaseSeeder extends Seeder
             ['old_url' => '/tam-linh-phong-thuy'],
             ['new_url' => '/blog?category=phong-thuy', 'http_code' => 301, 'status' => 'inactive']
         );
+
+        // Auto-populate empty SEO fields for all products and blog posts
+        foreach (Product::all() as $prod) {
+            $prod->update([
+                'seo_title' => $prod->seo_title ?? $prod->name,
+                'seo_desc' => $prod->seo_desc ?? Str::limit(strip_tags($prod->description), 150),
+            ]);
+        }
+
+        foreach (BlogPost::all() as $post) {
+            $post->update([
+                'seo_title' => $post->seo_title ?? $post->title,
+                'seo_desc' => $post->seo_desc ?? Str::limit(strip_tags(implode(' ', $post->content)), 150),
+            ]);
+        }
     }
 }
