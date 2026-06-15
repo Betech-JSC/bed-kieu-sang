@@ -10,6 +10,9 @@ const settingLabels = {
     'store_hotline': 'Hotline cửa hàng',
     'store_email': 'Email liên hệ',
     'store_address': 'Địa chỉ cửa hàng (chân trang)',
+    'meta_title': 'Meta Title mặc định (Tiêu đề trang chủ)',
+    'meta_desc': 'Meta Description mặc định (Mô tả trang chủ)',
+    'meta_keywords': 'Meta Keywords mặc định (Từ khóa mặc định)',
 };
 
 // Flatten grouped settings into a list for the form payload
@@ -54,7 +57,7 @@ const submit = () => {
                         <!-- Group sections -->
                         <div v-for="(items, groupName) in settings" :key="groupName" class="space-y-4">
                             <h3 class="text-sm font-sans font-bold text-[#043616] uppercase border-b border-zinc-200/80 pb-2.5 tracking-wider">
-                                {{ groupName === 'contact' ? 'Thông tin liên hệ cửa hàng' : groupName }}
+                                {{ groupName === 'contact' ? 'Thông tin liên hệ cửa hàng' : (groupName === 'seo' ? 'Cấu hình SEO toàn cục (Mặc định)' : groupName) }}
                             </h3>
 
                             <div class="grid grid-cols-1 gap-4">
@@ -66,7 +69,14 @@ const submit = () => {
                                     <label class="text-sm font-serif font-bold text-emerald-950">
                                         {{ settingLabels[item.key] || item.key }}
                                     </label>
+                                    <textarea 
+                                        v-if="item.key === 'meta_desc' || item.key === 'store_address'"
+                                        v-model="item.value" 
+                                        rows="3"
+                                        class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" 
+                                    ></textarea>
                                     <input 
+                                        v-else
                                         v-model="item.value" 
                                         type="text" 
                                         class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" 

@@ -31,6 +31,8 @@ const form = useForm({
     benefits: props.product?.benefits || [],
     badge: props.product?.badge || '',
     status: props.product?.status || 'active',
+    seo_title: props.product?.seo_title || '',
+    seo_desc: props.product?.seo_desc || '',
 });
 
 const benefitInput = ref('');
@@ -181,6 +183,21 @@ const submit = () => {
                                 {{ benefit }}
                                 <button type="button" @click="removeBenefit(idx)" class="text-rose-600 font-bold hover:text-rose-800">&times;</button>
                             </span>
+                        </div>
+                    </div>
+
+                    <!-- Cấu hình SEO -->
+                    <div class="border-t border-zinc-100 pt-6 space-y-4">
+                        <h3 class="text-md font-serif font-bold text-emerald-950 uppercase tracking-wider">Cấu hình SEO cho trang</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề SEO (SEO Title)</label>
+                                <input v-model="form.seo_title" type="text" placeholder="Để trống sẽ tự động lấy tên sản phẩm..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Mô tả SEO (SEO Meta Description)</label>
+                                <textarea v-model="form.seo_desc" rows="3" placeholder="Để trống sẽ tự động trích xuất từ mô tả sản phẩm..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
 

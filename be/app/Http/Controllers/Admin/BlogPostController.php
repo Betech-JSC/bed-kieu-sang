@@ -57,6 +57,8 @@ class BlogPostController extends Controller
             'read_time' => 'required|string|max:50',
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_desc' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -106,6 +108,8 @@ class BlogPostController extends Controller
             'read_time' => 'required|string|max:50',
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_desc' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {

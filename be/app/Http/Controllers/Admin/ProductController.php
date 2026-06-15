@@ -55,6 +55,8 @@ class ProductController extends Controller
             'benefits' => 'nullable|array',
             'badge' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_desc' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -102,6 +104,8 @@ class ProductController extends Controller
             'benefits' => 'nullable|array',
             'badge' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_desc' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {

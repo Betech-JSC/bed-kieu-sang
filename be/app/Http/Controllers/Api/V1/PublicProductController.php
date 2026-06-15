@@ -33,4 +33,11 @@ class PublicProductController extends Controller
 
         return response()->json($product);
     }
+
+    public function categories(Request $request): JsonResponse
+    {
+        $type = $request->input('type', 'product');
+        $categories = \App\Models\Category::where('type', $type)->get();
+        return response()->json($categories);
+    }
 }

@@ -19,7 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleSeoRedirects::class,
         ]);
 
-        //
+        $middleware->alias([
+            'permission' => \App\Http\Middleware\CheckPermission::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

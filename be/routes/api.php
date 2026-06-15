@@ -19,6 +19,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/settings', [PublicSettingController::class, 'index']);
     Route::get('/banners', [PublicBannerController::class, 'index']);
     Route::get('/testimonials', [PublicTestimonialController::class, 'index']);
+    Route::get('/categories', [PublicProductController::class, 'categories']);
     
     // Storefront client form submissions
     Route::post('/contacts', [PublicContactController::class, 'store']);

@@ -13,8 +13,9 @@ import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product } from "@/components/product-card";
 import { PRODUCTS } from "@/data/products";
-import { getProducts } from "@/lib/api";
+import { getProducts, getCategories } from "@/lib/api";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
+import { useSeo } from "@/hooks/useSeo";
 import CheckoutModal from "@/components/checkout-modal";
 
 function ProductsCatalogContent() {
@@ -31,6 +32,14 @@ function ProductsCatalogContent() {
   const [sortBy, setSortBy] = useState("default");
   const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
   const [currentPage, setCurrentPage] = useState(1);
+  const [categories, setCategories] = useState<string[]>(["Tất cả"]);
+
+  useSeo(
+    selectedCategory === "Tất cả" 
+      ? "Sản phẩm Thảo Mộc Tự Nhiên" 
+      : `Danh mục ${selectedCategory}`,
+    `Khám phá các sản phẩm thảo mộc tự nhiên cao cấp thuộc danh mục ${selectedCategory} tại Thảo Mộc Kiều Sang.`
+  );
 
   useEffect(() => {
     async function loadProducts() {
@@ -40,6 +49,16 @@ function ProductsCatalogContent() {
       }
     }
     loadProducts();
+  }, []);
+
+  useEffect(() => {
+    async function loadCategories() {
+      const dbCats = await getCategories("product");
+      if (dbCats && dbCats.length > 0) {
+        setCategories(["Tất cả", ...dbCats.map((c: any) => c.name)]);
+      }
+    }
+    loadCategories();
   }, []);
 
   useEffect(() => {
@@ -108,13 +127,7 @@ function ProductsCatalogContent() {
     setIsCartOpen(false);
   };
 
-  // Categories list
-  const categories = [
-    "Tất cả",
-    "Thanh Lọc Không Gian",
-    "Thư Giãn Tinh Thần",
-    "Trà An Yên"
-  ];
+  // Dynamic categories list is managed by state
 
   // Filtering & Sorting Logic
   const filteredProducts = productsList.filter((product) => {
