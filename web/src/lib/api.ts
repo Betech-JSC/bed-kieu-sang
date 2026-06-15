@@ -148,3 +148,29 @@ export async function submitOrder(payload: {
   });
   return data || { success: true, order_code: "KS-MOCK123", message: "Mock order checkout success" };
 }
+
+export async function getCategories(type: "product" | "blog" = "product") {
+  const data = await fetchJson<any[]>(`/categories?type=${type}`);
+  if (data && Array.isArray(data)) {
+    return data;
+  }
+  
+  // Fallback to static mock categories
+  if (type === "product") {
+    return [
+      { id: "1", name: "Thanh Lọc Không Gian", slug: "thanh-loc-khong-gian" },
+      { id: "2", name: "Thư Giãn Tinh Thần", slug: "thu-gian-tinh-than" },
+      { id: "3", name: "Trà An Yên", slug: "tra-an-yen" }
+    ];
+  } else {
+    return [
+      { id: "1", name: "Phong Thủy", slug: "phong-thuy" },
+      { id: "2", name: "Wellness", slug: "wellness" }
+    ];
+  }
+}
+
+export async function getSettings() {
+  const data = await fetchJson<Record<string, string>>("/settings");
+  return data || null;
+}
