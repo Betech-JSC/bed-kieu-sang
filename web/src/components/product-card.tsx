@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
 export interface Product {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
   category: string;
@@ -16,6 +16,8 @@ export interface Product {
   badge?: string;
   originalPrice?: number;
   slug?: string;
+  total_sales?: number;
+  is_best_seller?: boolean;
   seo_title?: string;
   seo_desc?: string;
 }
@@ -82,6 +84,11 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
               </span>
             )}
           </div>
+          {(product.total_sales ?? 0) > 0 && (
+            <span className="mt-1 text-[10px] font-medium text-[#414941]">
+              {new Intl.NumberFormat("vi-VN").format(product.total_sales || 0)} lượt bán
+            </span>
+          )}
         </div>
 
         <button

@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Phone, Mail, MapPin, CheckCircle, Send } from "lucide-react";
+import { Phone, Mail, MapPin, CheckCircle, Send, Instagram, Facebook, Globe2 } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
@@ -49,7 +49,7 @@ export default function ContactPage() {
     window.dispatchEvent(new Event("kieu-sang-cart-update"));
   };
 
-  const handleUpdateQuantity = (productId: string, delta: number) => {
+  const handleUpdateQuantity = (productId: string | number, delta: number) => {
     const newCart = cart
       .map((item) => {
         if (item.product.id === productId) {
@@ -63,7 +63,7 @@ export default function ContactPage() {
     saveCart(newCart);
   };
 
-  const handleRemoveItem = (productId: string) => {
+  const handleRemoveItem = (productId: string | number) => {
     const newCart = cart.filter((item) => item.product.id !== productId);
     saveCart(newCart);
   };
@@ -107,7 +107,7 @@ export default function ContactPage() {
           
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 text-left space-y-3">
             <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Kết nối an yên</span>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">LIÊN HỆ</h1>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">LIÊN HỆ & HỒ SƠ THƯƠNG HIỆU</h1>
           </div>
         </section>
 
@@ -122,11 +122,51 @@ export default function ContactPage() {
                 <h2 className="font-serif text-2xl font-bold text-primary">
                   THẢO MỘC KIỀU SANG
                 </h2>
+                <p className="text-sm leading-7 text-[#414941]">
+                  Kiều Sang xây dựng các sản phẩm thảo mộc từ nguyên liệu bản địa, quy trình thủ công và trải nghiệm mùi hương phù hợp không gian sống Việt.
+                </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="rounded-xl border border-border bg-white p-5">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary">Tầm nhìn</p>
+                <p className="mt-2 text-sm leading-6 text-[#414941]">
+                  Trở thành thương hiệu thảo mộc tin cậy cho gia đình, studio yoga, spa và cửa hàng quà tặng yêu thích sản phẩm tự nhiên.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {[
+                  ["2022", "Khởi tạo công thức xông nhà"],
+                  ["2024", "Mở rộng dòng tinh dầu và trà"],
+                  ["2026", "Phát triển kênh bán đa nền tảng"],
+                ].map(([year, text]) => (
+                  <div key={year} className="rounded-xl border border-border bg-white p-4">
+                    <div className="text-lg font-bold text-primary">{year}</div>
+                    <p className="mt-1 text-xs leading-5 text-[#414941]">{text}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { Icon: Instagram, label: "Instagram", href: "https://www.instagram.com/kieusang.vn" },
+                  { Icon: Facebook, label: "Facebook", href: "https://www.facebook.com/kieusang.vn" },
+                  { Icon: Globe2, label: "Website", href: "/" },
+                ].map(({ Icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-xs font-semibold text-primary transition-colors hover:border-primary/50"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </a>
+                ))}
+              </div>
+
+              <div className="space-y-4">
                 {/* Detail Card 1: Address */}
-                <div className="flex gap-4 items-start p-6 border border-border rounded-[24px] bg-white shadow-xs">
+                <div className="flex gap-4 items-start p-6 border border-border rounded-xl bg-white shadow-xs">
                   <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                     <MapPin className="h-5 w-5" />
                   </div>
@@ -137,7 +177,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Detail Card 2: Phone */}
-                <div className="flex gap-4 items-start p-6 border border-border rounded-[24px] bg-white shadow-xs">
+                <div className="flex gap-4 items-start p-6 border border-border rounded-xl bg-white shadow-xs">
                   <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                     <Phone className="h-5 w-5" />
                   </div>
@@ -148,7 +188,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Detail Card 3: Email */}
-                <div className="flex gap-4 items-start p-6 border border-border rounded-[24px] bg-white shadow-xs">
+                <div className="flex gap-4 items-start p-6 border border-border rounded-xl bg-white shadow-xs">
                   <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                     <Mail className="h-5 w-5" />
                   </div>
@@ -161,7 +201,7 @@ export default function ContactPage() {
             </div>
 
             {/* Right Column: Interactive contact form */}
-            <div className="lg:col-span-7 bg-white border border-border rounded-[32px] p-6 md:p-10 shadow-xs relative">
+            <div className="lg:col-span-7 bg-white border border-border rounded-xl p-6 md:p-10 shadow-xs relative">
               {formSubmitted ? (
                 // Success State View
                 <div className="flex flex-col items-center justify-center text-center py-16 space-y-6 animate-fade-in h-full">
@@ -259,7 +299,7 @@ export default function ContactPage() {
 
         {/* Minimalist Map Visual Representation */}
         <section className="pb-24 px-6 md:px-12 max-w-7xl mx-auto">
-          <div className="border border-border rounded-[32px] bg-[#FAF6EE] p-8 text-center space-y-4 relative overflow-hidden min-h-[300px] flex flex-col justify-center items-center">
+          <div className="border border-border rounded-xl bg-[#FAF6EE] p-8 text-center space-y-4 relative overflow-hidden min-h-[300px] flex flex-col justify-center items-center">
             <div className="absolute inset-0 asian-pattern opacity-[0.03] pointer-events-none" />
             <div className="relative z-10 max-w-lg space-y-4">
               <MapPin className="h-8 w-8 text-secondary mx-auto animate-pulse" />

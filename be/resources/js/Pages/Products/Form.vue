@@ -30,6 +30,11 @@ const form = useForm({
     image: null,
     benefits: props.product?.benefits || [],
     badge: props.product?.badge || '',
+    channel_one_sales: props.product?.channel_one_sales || 0,
+    channel_two_sales: props.product?.channel_two_sales || 0,
+    virtual_sales: props.product?.virtual_sales || 0,
+    real_sales: props.product?.real_sales || 0,
+    is_best_seller: props.product?.is_best_seller || false,
     status: props.product?.status || 'active',
     seo_title: props.product?.seo_title || '',
     seo_desc: props.product?.seo_desc || '',
@@ -162,6 +167,38 @@ const submit = () => {
                                 <option value="active">Đang kinh doanh</option>
                                 <option value="inactive">Tạm ngưng / Nháp</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-zinc-100 pt-6 space-y-4">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h3 class="text-md font-serif font-bold text-emerald-950 uppercase tracking-wider">Cấu hình lượt bán</h3>
+                                <p class="text-xs text-zinc-500 mt-1">Tổng hiển thị = Kênh 1 + Kênh 2 + Số cấu hình + Đơn hàng trên website.</p>
+                            </div>
+                            <label class="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
+                                <input v-model="form.is_best_seller" type="checkbox" class="rounded border-emerald-300 text-[#043616] focus:ring-[#043616]" />
+                                Ghim vào Sản Phẩm Bán Chạy
+                            </label>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Kênh 1 / Website</label>
+                                <input v-model="form.channel_one_sales" type="number" min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Kênh 2 / Sàn TMĐT</label>
+                                <input v-model="form.channel_two_sales" type="number" min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Số bán cấu hình</label>
+                                <input v-model="form.virtual_sales" type="number" min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Đơn hàng hệ thống</label>
+                                <input v-model="form.real_sales" type="number" min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            </div>
                         </div>
                     </div>
 

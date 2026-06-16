@@ -10,6 +10,8 @@ const settingLabels = {
     'store_hotline': 'Hotline cửa hàng',
     'store_email': 'Email liên hệ',
     'store_address': 'Địa chỉ cửa hàng (chân trang)',
+    'social_proof_sales_count': 'Số sản phẩm đã bán trên trang chủ',
+    'social_proof_rating': 'Điểm đánh giá hiển thị trên trang chủ',
     'meta_title': 'Meta Title mặc định (Tiêu đề trang chủ)',
     'meta_desc': 'Meta Description mặc định (Mô tả trang chủ)',
     'meta_keywords': 'Meta Keywords mặc định (Từ khóa mặc định)',
@@ -57,7 +59,7 @@ const submit = () => {
                         <!-- Group sections -->
                         <div v-for="(items, groupName) in settings" :key="groupName" class="space-y-4">
                             <h3 class="text-sm font-sans font-bold text-[#043616] uppercase border-b border-zinc-200/80 pb-2.5 tracking-wider">
-                                {{ groupName === 'contact' ? 'Thông tin liên hệ cửa hàng' : (groupName === 'seo' ? 'Cấu hình SEO toàn cục (Mặc định)' : groupName) }}
+                                {{ groupName === 'contact' ? 'Thông tin liên hệ cửa hàng' : (groupName === 'seo' ? 'Cấu hình SEO toàn cục (Mặc định)' : (groupName === 'homepage' ? 'Trang chủ và số liệu uy tín' : groupName)) }}
                             </h3>
 
                             <div class="grid grid-cols-1 gap-4">
@@ -78,7 +80,7 @@ const submit = () => {
                                     <input 
                                         v-else
                                         v-model="item.value" 
-                                        type="text" 
+                                        :type="item.key === 'social_proof_sales_count' ? 'number' : 'text'" 
                                         class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" 
                                     />
                                 </div>
@@ -97,4 +99,3 @@ const submit = () => {
         </div>
     </AuthenticatedLayout>
 </template>
-

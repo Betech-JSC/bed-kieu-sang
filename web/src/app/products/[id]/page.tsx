@@ -123,7 +123,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string, delta: number) => {
+  const handleUpdateQuantity = (productId: string | number, delta: number) => {
     const newCart = cart
       .map((item) => {
         if (item.product.id === productId) {
@@ -137,7 +137,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     saveCart(newCart);
   };
 
-  const handleRemoveItem = (productId: string) => {
+  const handleRemoveItem = (productId: string | number) => {
     const newCart = cart.filter((item) => item.product.id !== productId);
     saveCart(newCart);
   };

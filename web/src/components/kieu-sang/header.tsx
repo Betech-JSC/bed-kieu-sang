@@ -46,6 +46,7 @@ export default function Header({ onCartOpen }: HeaderProps) {
     { name: "Trang Chủ", href: "/" },
     { name: "Giới Thiệu", href: "/about" },
     { name: "Sản Phẩm", href: "/products" },
+    { name: "Bán Chạy", href: "/best-sellers" },
     { name: "Góc An Yên", href: "/blog" },
     { name: "Liên Hệ", href: "/contact" },
   ];

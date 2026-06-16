@@ -14,7 +14,8 @@ import {
   ChevronLeft,
   ChevronRight,
   CheckCircle,
-  Leaf
+  Leaf,
+  Star
 } from "lucide-react";
 import ProductCard, { Product } from "@/components/product-card";
 import Link from "next/link";
@@ -70,6 +71,8 @@ const ZenIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const formatCounter = (value: number) => new Intl.NumberFormat("vi-VN").format(value);
+
 export default function Home() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -85,6 +88,8 @@ export default function Home() {
   const [reviews, setReviews] = useState<any[]>(REVIEWS);
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
   const [seoSettings, setSeoSettings] = useState<{ title?: string; desc?: string }>({});
+  const [socialProof, setSocialProof] = useState({ salesCount: 50000, rating: "4.9" });
+  const [displayedSalesCount, setDisplayedSalesCount] = useState(0);
 
   useSeo(seoSettings.title, seoSettings.desc);
 
@@ -142,10 +147,36 @@ export default function Home() {
           title: dbSettings.meta_title,
           desc: dbSettings.meta_desc
         });
+        setSocialProof({
+          salesCount: Number(dbSettings.social_proof_sales_count || 50000),
+          rating: dbSettings.social_proof_rating || "4.9"
+        });
       }
     }
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplayedSalesCount(socialProof.salesCount);
+      return;
+    }
+
+    let frame = 0;
+    const totalFrames = 54;
+    const timer = window.setInterval(() => {
+      frame += 1;
+      const progress = 1 - Math.pow(1 - frame / totalFrames, 3);
+      setDisplayedSalesCount(Math.round(socialProof.salesCount * progress));
+
+      if (frame >= totalFrames) {
+        window.clearInterval(timer);
+        setDisplayedSalesCount(socialProof.salesCount);
+      }
+    }, 24);
+
+    return () => window.clearInterval(timer);
+  }, [socialProof.salesCount]);
 
   const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, direction: "left" | "right") => {
     if (ref.current) {
@@ -212,7 +243,7 @@ export default function Home() {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string, delta: number) => {
+  const handleUpdateQuantity = (productId: string | number, delta: number) => {
     const newCart = cart
       .map((item) => {
         if (item.product.id === productId) {
@@ -226,7 +257,7 @@ export default function Home() {
     saveCart(newCart);
   };
 
-  const handleRemoveItem = (productId: string) => {
+  const handleRemoveItem = (productId: string | number) => {
     const newCart = cart.filter((item) => item.product.id !== productId);
     saveCart(newCart);
   };
@@ -346,8 +377,30 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Social Proof Counter */}
+        <section className="border-b border-border/60 bg-white">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-12">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">Được khách hàng tin chọn</p>
+              <h2 className="mt-2 font-serif text-2xl font-bold text-primary md:text-3xl">
+                Hơn {formatCounter(displayedSalesCount)}+ sản phẩm đã được bán ra
+              </h2>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-[#FFFDF9] px-5 py-4">
+              <div className="flex items-center gap-1 text-[#604b12]" aria-label={`${socialProof.rating} trên 5 sao`}>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star key={index} className="h-4 w-4 fill-[#E5C44B] text-[#E5C44B]" />
+                ))}
+              </div>
+              <div className="text-sm font-semibold text-primary">
+                {socialProof.rating}/5 đánh giá từ khách hàng
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Benefits Grid Section (Stitch Style Overlapping) */}
-        <section id="values" className="relative z-20 px-6 md:px-12 max-w-7xl mx-auto mt-[-50px]">
+        <section id="values" className="relative z-20 px-6 py-12 md:px-12 max-w-7xl mx-auto">
           <div className="bg-card rounded-[32px] border border-border/80 p-8 md:p-12 shadow-xl relative overflow-hidden">
             {/* Subtle Feng Shui background pattern */}
             <div className="absolute inset-0 asian-pattern opacity-[0.02] pointer-events-none" />
