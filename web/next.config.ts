@@ -1,10 +1,5 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
-// Import các plugins MDX trực tiếp
-import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
-import rehypePrettyCode from "rehype-pretty-code";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -21,27 +16,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-const withMDX = createMDX({
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [
-      rehypeSlug,
-      [
-        rehypePrettyCode,
-        {
-          theme: "github-dark-default",
-          keepBackground: false,
-        },
-      ],
-      [
-        rehypeAutolinkHeadings,
-        {
-          behavior: "wrap",
-          properties: { className: ["heading-anchor"] },
-        },
-      ],
-    ],
-  },
-});
+const withMDX = createMDX({});
 
 export default withMDX(nextConfig);
