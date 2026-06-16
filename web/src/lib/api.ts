@@ -10,6 +10,8 @@ function mapProduct(p: any) {
     category: typeof p.category === "object" && p.category !== null ? p.category.name : p.category,
     image: p.image_path || p.image,
     originalPrice: p.original_price !== undefined ? p.original_price : p.originalPrice,
+    total_sales: p.total_sales ?? p.totalSales ?? 0,
+    is_best_seller: Boolean(p.is_best_seller),
   };
 }
 
@@ -58,6 +60,18 @@ export async function getProducts(category?: string) {
     return PRODUCTS.filter(p => p.category.toLowerCase() === category.toLowerCase());
   }
   return PRODUCTS;
+}
+
+export async function getBestSellers() {
+  const data = await fetchJson<{ data: any[] }>("/products?best_seller=1&per_page=24");
+
+  if (data && Array.isArray(data.data)) {
+    return data.data.map(mapProduct);
+  }
+
+  return PRODUCTS
+    .filter((p: any) => p.is_best_seller || p.badge)
+    .map((p: any, index) => ({ ...p, total_sales: p.total_sales || 1200 - index * 75 }));
 }
 
 export async function getProduct(idOrSlug: string) {
