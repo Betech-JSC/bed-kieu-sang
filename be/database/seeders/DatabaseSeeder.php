@@ -382,6 +382,8 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'store_hotline'], ['value' => '0987.654.321', 'type' => 'text', 'group' => 'contact']);
         Setting::updateOrCreate(['key' => 'store_email'], ['value' => 'lienhe@kieusang.vn', 'type' => 'text', 'group' => 'contact']);
         Setting::updateOrCreate(['key' => 'store_address'], ['value' => 'Số 12 Ngách Yên Tĩnh, Quận An Nhiên, Hà Nội', 'type' => 'text', 'group' => 'contact']);
+        Setting::updateOrCreate(['key' => 'social_proof_sales_count'], ['value' => '50000', 'type' => 'number', 'group' => 'homepage']);
+        Setting::updateOrCreate(['key' => 'social_proof_rating'], ['value' => '4.9', 'type' => 'text', 'group' => 'homepage']);
         
         // Global SEO Settings (Vietnamese only)
         Setting::updateOrCreate(['key' => 'meta_title'], ['value' => 'Thảo Mộc Kiều Sang - Sống Xanh, An Yên', 'type' => 'text', 'group' => 'seo']);
@@ -1001,6 +1003,25 @@ class DatabaseSeeder extends Seeder
             OrderItem::create(['order_id' => $o10->id, 'product_id' => $p12->id, 'product_name' => $p12->name, 'price' => $p12->price, 'quantity' => 1]);
             OrderItem::create(['order_id' => $o10->id, 'product_id' => $p13->id, 'product_name' => $p13->name, 'price' => $p13->price, 'quantity' => 1]);
         }
+
+        Product::where('slug', 'bo-thao-moc-xong-nha')->update([
+            'channel_one_sales' => 860,
+            'channel_two_sales' => 1240,
+            'virtual_sales' => 3200,
+            'is_best_seller' => true,
+        ]);
+        Product::where('slug', 'nuoc-xit-thao-moc-thanh-loc')->update([
+            'channel_one_sales' => 740,
+            'channel_two_sales' => 960,
+            'virtual_sales' => 2450,
+            'is_best_seller' => true,
+        ]);
+        Product::where('slug', 'combo-3-bo-xong-nha-cat-tuong')->update([
+            'channel_one_sales' => 520,
+            'channel_two_sales' => 1180,
+            'virtual_sales' => 1800,
+            'is_best_seller' => true,
+        ]);
 
         // 13. Create SEO Redirects
         SeoRedirect::updateOrCreate(
