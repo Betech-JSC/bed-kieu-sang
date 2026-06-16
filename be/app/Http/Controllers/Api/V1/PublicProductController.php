@@ -19,7 +19,15 @@ class PublicProductController extends Controller
             });
         }
 
-        $products = $query->latest()->paginate($request->input('per_page', 12));
+        if ($request->boolean('best_seller')) {
+            $query
+                ->where('is_best_seller', true)
+                ->orderByRaw('(channel_one_sales + channel_two_sales + virtual_sales + real_sales) desc');
+        } else {
+            $query->latest();
+        }
+
+        $products = $query->paginate($request->input('per_page', 12));
 
         return response()->json($products);
     }

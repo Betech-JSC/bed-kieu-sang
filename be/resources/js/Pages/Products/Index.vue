@@ -99,6 +99,7 @@ const deleteProduct = (id) => {
                                 <th class="py-4 px-4 border-r border-zinc-200/60">Thông tin sản phẩm</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-44">Giá bán</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60">Thông số (Specs)</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60 w-32">Lượt bán</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-36">Trạng thái</th>
                                 <th class="py-4 px-4 w-32 text-center">Thao tác</th>
                             </tr>
@@ -146,6 +147,16 @@ const deleteProduct = (id) => {
                                         <span class="bg-amber-50 text-amber-800 border border-amber-200/60 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-0.5">
                                             ★ {{ product.rating }}
                                         </span>
+                                        <span v-if="product.is_best_seller" class="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-[11px] font-bold">
+                                            Best Seller
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="py-4 px-4 border-r border-zinc-200/60 align-middle">
+                                    <div class="font-bold text-zinc-900">{{ new Intl.NumberFormat('vi-VN').format(product.total_sales || 0) }}</div>
+                                    <div class="text-[11px] text-zinc-500 mt-0.5">
+                                        W {{ product.channel_one_sales || 0 }} · K2 {{ product.channel_two_sales || 0 }} · A {{ product.virtual_sales || 0 }} · R {{ product.real_sales || 0 }}
                                     </div>
                                 </td>
 
@@ -175,7 +186,7 @@ const deleteProduct = (id) => {
                                 </td>
                             </tr>
                             <tr v-if="products.data.length === 0">
-                                <td colspan="6" class="py-8 text-center text-zinc-500">
+                                <td colspan="7" class="py-8 text-center text-zinc-500">
                                     Không tìm thấy sản phẩm nào phù hợp.
                                 </td>
                             </tr>

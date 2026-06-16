@@ -62,6 +62,7 @@ class PublicOrderController extends Controller
             // Create Order Items
             foreach ($itemsData as $itemData) {
                 $order->items()->create($itemData);
+                Product::whereKey($itemData['product_id'])->increment('real_sales', $itemData['quantity']);
             }
 
             return response()->json([
