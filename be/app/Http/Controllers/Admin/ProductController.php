@@ -54,6 +54,11 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'benefits' => 'nullable|array',
             'badge' => 'nullable|string|max:50',
+            'channel_one_sales' => 'nullable|integer|min:0',
+            'channel_two_sales' => 'nullable|integer|min:0',
+            'virtual_sales' => 'nullable|integer|min:0',
+            'real_sales' => 'nullable|integer|min:0',
+            'is_best_seller' => 'nullable',
             'status' => 'required|in:active,inactive',
             'seo_title' => 'nullable|string|max:255',
             'seo_desc' => 'nullable|string',
@@ -74,6 +79,7 @@ class ProductController extends Controller
 
         unset($validated['image']);
         $validated['benefits'] = $validated['benefits'] ?? [];
+        $validated['is_best_seller'] = $request->boolean('is_best_seller');
         $product = Product::create($validated);
 
         ActivityLogger::log('CREATE', 'products', "Created product '{$product->name}'", null, $product->toArray());
@@ -103,6 +109,11 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'benefits' => 'nullable|array',
             'badge' => 'nullable|string|max:50',
+            'channel_one_sales' => 'nullable|integer|min:0',
+            'channel_two_sales' => 'nullable|integer|min:0',
+            'virtual_sales' => 'nullable|integer|min:0',
+            'real_sales' => 'nullable|integer|min:0',
+            'is_best_seller' => 'nullable',
             'status' => 'required|in:active,inactive',
             'seo_title' => 'nullable|string|max:255',
             'seo_desc' => 'nullable|string',
@@ -123,6 +134,7 @@ class ProductController extends Controller
 
         unset($validated['image']);
         $validated['benefits'] = $validated['benefits'] ?? [];
+        $validated['is_best_seller'] = $request->boolean('is_best_seller');
         $oldValue = $product->toArray();
         $product->update($validated);
 
