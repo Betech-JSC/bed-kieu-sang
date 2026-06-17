@@ -10,8 +10,6 @@ use App\Http\Controllers\Api\V1\PublicSettingController;
 use App\Http\Controllers\Api\V1\PublicBannerController;
 use App\Http\Controllers\Api\V1\PublicTestimonialController;
 
-Route::options('/{any}', fn () => response()->noContent())->where('any', '.*');
-
 Route::prefix('v1')->group(function () {
     Route::get('/products', [PublicProductController::class, 'index']);
     Route::get('/products/{slug}', [PublicProductController::class, 'show']);
