@@ -50,23 +50,23 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Products
-    Route::resource('products', ProductController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('products', ProductController::class)->only(['index']);
     Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_products');
 
     // Categories
-    Route::resource('categories', CategoryController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('categories', CategoryController::class)->only(['index']);
     Route::resource('categories', CategoryController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_categories');
 
     // Blogs
-    Route::resource('blogs', BlogPostController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('blogs', BlogPostController::class)->only(['index']);
     Route::resource('blogs', BlogPostController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_blogs');
 
     // Pages
-    Route::resource('pages', PageController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('pages', PageController::class)->only(['index']);
     Route::resource('pages', PageController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_pages');
 
     // Banners
-    Route::resource('banners', BannerController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('banners', BannerController::class)->only(['index']);
     Route::resource('banners', BannerController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_settings');
     
     // Testimonials
@@ -82,7 +82,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('orders', OrderController::class)->only(['update'])->middleware('permission:manage_products');
 
     // SEO Redirects
-    Route::resource('seo-redirects', SeoRedirectController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('seo-redirects', SeoRedirectController::class)->only(['index']);
     Route::resource('seo-redirects', SeoRedirectController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_settings');
     
     // Settings

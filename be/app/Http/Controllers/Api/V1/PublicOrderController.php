@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class PublicOrderController extends Controller
 {
@@ -23,9 +23,18 @@ class PublicOrderController extends Controller
             'notes' => 'nullable|string',
             'payment_method' => 'required|string|max:50',
             'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_id' => 'nullable|integer|exists:products,id',
+            'items.*.product_slug' => 'nullable|string|exists:products,slug',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
+
+        foreach ($validated['items'] as $index => $item) {
+            if (empty($item['product_id']) && empty($item['product_slug'])) {
+                throw ValidationException::withMessages([
+                    "items.$index.product_id" => 'Each order item must include product_id or product_slug.',
+                ]);
+            }
+        }
 
         return DB::transaction(function () use ($validated) {
             $totalAmount = 0;
@@ -33,7 +42,10 @@ class PublicOrderController extends Controller
 
             // Calculate totals and fetch product info
             foreach ($validated['items'] as $item) {
-                $product = Product::findOrFail($item['product_id']);
+                $product = Product::query()
+                    ->when(!empty($item['product_id']), fn ($query) => $query->whereKey($item['product_id']))
+                    ->when(empty($item['product_id']) && !empty($item['product_slug']), fn ($query) => $query->where('slug', $item['product_slug']))
+                    ->firstOrFail();
                 $itemTotal = $product->price * $item['quantity'];
                 $totalAmount += $itemTotal;
 
