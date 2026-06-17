@@ -1,7 +1,27 @@
 import { PRODUCTS } from "@/data/products";
 import { BLOG_POSTS } from "@/data/blog-posts";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1";
+function getApiUrl() {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  if (typeof window === "undefined") {
+    return "http://127.0.0.1:8000/api/v1";
+  }
+
+  const { protocol, hostname } = window.location;
+  const baseHostname = hostname.startsWith("www.") ? hostname.slice(4) : hostname;
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return "http://127.0.0.1:8000/api/v1";
+  }
+
+  if (hostname.startsWith("cms.")) {
+    return `${protocol}//${hostname}/api/v1`;
+  }
+
+  return `${protocol}//cms.${baseHostname}/api/v1`;
+}
 
 function mapProduct(p: any) {
   if (!p) return p;
@@ -27,7 +47,7 @@ function mapBlog(b: any) {
 
 async function fetchJson<T>(path: string, options?: RequestInit): Promise<T | null> {
   try {
-    const res = await fetch(`${API_URL}${path}`, {
+    const res = await fetch(`${getApiUrl()}${path}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -154,13 +174,18 @@ export async function submitOrder(payload: {
   shipping_address: string;
   notes?: string;
   payment_method: string;
-  items: Array<{ product_id: string | number; quantity: number }>;
+  items: Array<{ product_id?: string | number; product_slug?: string; quantity: number }>;
 }) {
   const data = await fetchJson<any>("/orders", {
     method: "POST",
     body: JSON.stringify(payload),
   });
-  return data || { success: true, order_code: "KS-MOCK123", message: "Mock order checkout success" };
+
+  if (!data?.success) {
+    throw new Error("Không thể gửi đơn hàng về CMS. Vui lòng kiểm tra API và database.");
+  }
+
+  return data;
 }
 
 export async function getCategories(type: "product" | "blog" = "product") {

@@ -26,6 +26,23 @@ function generateRandomId() {
   return "KS-" + Math.floor(10000 + Math.random() * 90000);
 }
 
+const STATIC_PRODUCT_SLUGS: Record<string, string> = {
+  p1: "bo-thao-moc-xong-nha",
+  p2: "nu-tram-thao-moc",
+  p3: "nuoc-xit-thao-moc-thanh-loc",
+  p4: "hop-tra-thao-moc-an-yen",
+  n1: "tinh-dau-vo-buoi-hong",
+  n2: "nhang-khoanh-dan-huong",
+  n3: "de-dot-tram-gom-men-ran",
+  n4: "hop-tra-sen-tuyet-co-thu",
+  n5: "bo-thao-moc-oai-huong-kho",
+  s1: "combo-3-bo-xong-nha-cat-tuong",
+  s2: "tinh-dau-cam-ngot-nguyen-chat",
+  s3: "lu-xong-tram-dong-hun-co",
+  s4: "hop-nu-tram-dac-biet-hop-go",
+  s5: "tra-hoa-cuc-vang-tien-vua",
+};
+
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -53,6 +70,7 @@ export default function CartDrawer({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -93,48 +111,48 @@ export default function CartDrawer({
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    setSubmitError("");
 
     const apiItems = cartItems.map(item => {
-      let idNum = 1;
-      if (item.product.id === "p1") idNum = 1;
-      else if (item.product.id === "p2") idNum = 2;
-      else if (item.product.id === "p3") idNum = 3;
-      else if (item.product.id === "p4") idNum = 4;
-      else if (typeof item.product.id === "number") idNum = item.product.id;
-      else {
-        const parsed = parseInt(item.product.id, 10);
-        idNum = isNaN(parsed) ? 1 : parsed;
-      }
+      const parsedId = typeof item.product.id === "number" ? item.product.id : parseInt(item.product.id, 10);
+      const productSlug = item.product.slug || STATIC_PRODUCT_SLUGS[String(item.product.id)];
+
       return {
-        product_id: idNum,
+        product_id: Number.isInteger(parsedId) ? parsedId : undefined,
+        product_slug: productSlug,
         quantity: item.quantity
       };
     });
 
-    const result = await submitOrder({
-      customer_name: formData.name,
-      customer_phone: formData.phone,
-      shipping_address: formData.address,
-      notes: formData.note,
-      payment_method: formData.paymentMethod,
-      items: apiItems
-    });
+    try {
+      const result = await submitOrder({
+        customer_name: formData.name,
+        customer_phone: formData.phone,
+        shipping_address: formData.address,
+        notes: formData.note,
+        payment_method: formData.paymentMethod === "BANK" ? "VietQR" : "COD",
+        items: apiItems
+      });
 
-    onCheckoutComplete({
-      id: result?.order_code || generateRandomId(),
-      ...formData,
-      items: cartItems,
-      total,
-    });
+      onCheckoutComplete({
+        id: result.order_code || generateRandomId(),
+        ...formData,
+        items: cartItems,
+        total,
+      });
 
-    setIsSubmitting(false);
-    setFormData({
-      name: "",
-      phone: "",
-      address: "",
-      note: "",
-      paymentMethod: "COD",
-    });
+      setFormData({
+        name: "",
+        phone: "",
+        address: "",
+        note: "",
+        paymentMethod: "COD",
+      });
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Không thể gửi đơn hàng về CMS.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -402,6 +420,12 @@ export default function CartDrawer({
                     )}
 
                     {/* Form submission */}
+                    {submitError && (
+                      <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+                        {submitError}
+                      </div>
+                    )}
+
                     <button
                       type="submit"
                       disabled={isSubmitting}
