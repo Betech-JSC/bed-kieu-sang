@@ -12,7 +12,6 @@ import { SlidersHorizontal, Search, ShoppingBag } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product } from "@/components/product-card";
-import { PRODUCTS } from "@/data/products";
 import { getProducts, getCategories } from "@/lib/api";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import { useSeo } from "@/hooks/useSeo";
@@ -30,7 +29,9 @@ function ProductsCatalogContent() {
   // Filter & Search states
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("default");
-  const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [productsError, setProductsError] = useState("");
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [categories, setCategories] = useState<string[]>(["Tất cả"]);
 
@@ -43,9 +44,17 @@ function ProductsCatalogContent() {
 
   useEffect(() => {
     async function loadProducts() {
-      const dbProducts = await getProducts();
-      if (dbProducts && dbProducts.length > 0) {
+      setIsLoadingProducts(true);
+      setProductsError("");
+
+      try {
+        const dbProducts = await getProducts();
         setProductsList(dbProducts as unknown as Product[]);
+      } catch (error) {
+        setProductsList([]);
+        setProductsError("Không tải được sản phẩm từ CMS. Vui lòng kiểm tra API.");
+      } finally {
+        setIsLoadingProducts(false);
       }
     }
     loadProducts();
@@ -253,7 +262,17 @@ function ProductsCatalogContent() {
 
             {/* Products Grid Column */}
             <div className="flex-1">
-              {paginatedProducts.length > 0 ? (
+              {isLoadingProducts ? (
+                <div className="rounded-xl border border-border bg-white px-6 py-16 text-center">
+                  <p className="text-sm font-semibold text-primary">Đang tải sản phẩm từ CMS...</p>
+                </div>
+              ) : productsError ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-16 text-center">
+                  <ShoppingBag className="h-12 w-12 text-red-400 mx-auto" />
+                  <h3 className="mt-4 font-serif text-lg font-bold text-red-700">Không thể tải sản phẩm</h3>
+                  <p className="mt-2 text-sm text-red-700">{productsError}</p>
+                </div>
+              ) : paginatedProducts.length > 0 ? (
                 <div className="space-y-12">
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {paginatedProducts.map((product) => (
