@@ -5,9 +5,8 @@ return [
     'allowed_methods' => ['*'],
     'allowed_origins' => [
         env('FRONTEND_URL', 'https://xongnhatayue.vn'),
-        env('FRONTEND_WWW_URL', 'https://www.xongnhatayue.vn'),
+        env('FRONTEND_VERCEL_URL', 'https://bed-kieu-sang.vercel.app'),
         env('CMS_URL', 'https://cms.xongnhatayue.vn'),
-        env('CMS_WWW_URL', 'https://www.cms.xongnhatayue.vn'),
         'http://localhost:3000',
         'http://127.0.0.1:3000',
     ],

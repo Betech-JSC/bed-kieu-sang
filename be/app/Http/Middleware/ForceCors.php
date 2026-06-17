@@ -53,9 +53,8 @@ class ForceCors
             config('app.url'),
             ...config('cors.allowed_origins', []),
             'https://xongnhatayue.vn',
-            'https://www.xongnhatayue.vn',
+            'https://bed-kieu-sang.vercel.app',
             'https://cms.xongnhatayue.vn',
-            'https://www.cms.xongnhatayue.vn',
             'http://localhost:3000',
             'http://127.0.0.1:3000',
         ]);
@@ -65,6 +64,10 @@ class ForceCors
         }
 
         if (preg_match('#^https?://([a-z0-9-]+\.)?xongnhatayue\.vn$#i', $origin)) {
+            return $origin;
+        }
+
+        if (preg_match('#^https://[a-z0-9-]+\.vercel\.app$#i', $origin)) {
             return $origin;
         }
 
