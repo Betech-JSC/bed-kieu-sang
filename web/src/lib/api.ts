@@ -1,9 +1,8 @@
-import { PRODUCTS } from "@/data/products";
 import { BLOG_POSTS } from "@/data/blog-posts";
 
 function getApiUrl() {
   if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
+    return normalizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
   }
 
   if (typeof window === "undefined") {
@@ -21,6 +20,13 @@ function getApiUrl() {
   }
 
   return `${protocol}//cms.${baseHostname}/api/v1`;
+}
+
+function normalizeApiUrl(url: string) {
+  return url
+    .replace("://www.cms.", "://cms.")
+    .replace(/\/+$/, "")
+    .replace(/\/api$/, "/api/v1");
 }
 
 function mapProduct(p: any) {
@@ -67,19 +73,18 @@ async function fetchJson<T>(path: string, options?: RequestInit): Promise<T | nu
   }
 }
 
+async function fetchRequiredJson<T>(path: string, options?: RequestInit): Promise<T> {
+  const data = await fetchJson<T>(path, options);
+  if (!data) {
+    throw new Error(`API request failed for ${path}`);
+  }
+  return data;
+}
+
 export async function getProducts(category?: string) {
   const path = category ? `/products?category=${encodeURIComponent(category)}` : "/products";
-  const data = await fetchJson<{ data: any[] }>(path);
-  
-  if (data && Array.isArray(data.data)) {
-    return data.data.map(mapProduct);
-  }
-  
-  // Fallback to static mock data
-  if (category) {
-    return PRODUCTS.filter(p => p.category.toLowerCase() === category.toLowerCase());
-  }
-  return PRODUCTS;
+  const data = await fetchRequiredJson<{ data: any[] }>(path);
+  return Array.isArray(data.data) ? data.data.map(mapProduct) : [];
 }
 
 export async function getBestSellers() {
@@ -89,9 +94,7 @@ export async function getBestSellers() {
     return data.data.map(mapProduct);
   }
 
-  return PRODUCTS
-    .filter((p: any) => p.is_best_seller || p.badge)
-    .map((p: any, index) => ({ ...p, total_sales: p.total_sales || 1200 - index * 75 }));
+  return [];
 }
 
 export async function getProduct(idOrSlug: string) {
@@ -100,7 +103,7 @@ export async function getProduct(idOrSlug: string) {
     return mapProduct(data);
   }
   
-  return PRODUCTS.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug) || null;
+  return null;
 }
 
 export async function getBlogs(category?: string) {

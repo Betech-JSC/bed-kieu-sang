@@ -25,3 +25,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/contacts', [PublicContactController::class, 'store']);
     Route::post('/orders', [PublicOrderController::class, 'store']);
 });
+
+Route::post('/contacts', [PublicContactController::class, 'store']);
+Route::post('/orders', [PublicOrderController::class, 'store']);

@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Thao Moc Kieu Sang</title>
 // name="description"
 // og:
 
@@ -11,7 +11,6 @@ import { ChevronLeft, ShoppingBag, Plus, Minus, Check, Star, Sprout, ShieldCheck
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product } from "@/components/product-card";
-import { PRODUCTS } from "@/data/products";
 import { getProduct, getProducts } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
@@ -31,33 +30,42 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
   const [quantity, setQuantity] = useState(1);
   const [isAddedSuccessfully, setIsAddedSuccessfully] = useState(false);
 
-  // Find the current product (initially from mock data)
-  const [product, setProduct] = useState<Product | null>(() => PRODUCTS.find((p) => p.id === id) || null);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [productError, setProductError] = useState("");
+  const [isLoadingProduct, setIsLoadingProduct] = useState(true);
   
   useSeo(product?.seo_title || product?.name, product?.seo_desc || product?.description);
   const [activeImage, setActiveImage] = useState(product?.image || "");
-  const [selectedSize, setSelectedSize] = useState("Tiêu chuẩn (Standard)");
+  const [selectedSize, setSelectedSize] = useState("Tieu chuan (Standard)");
 
   // State for related products list
   const [relatedProductsList, setRelatedProductsList] = useState<Product[]>([]);
 
   useEffect(() => {
     async function loadData() {
-      const dbProduct = await getProduct(id);
-      if (dbProduct) {
+      setIsLoadingProduct(true);
+      setProductError("");
+
+      try {
+        const dbProduct = await getProduct(id);
+        if (!dbProduct) {
+          setProduct(null);
+          setProductError("Khong tim thay san pham trong CMS.");
+          return;
+        }
+
         setProduct(dbProduct as unknown as Product);
         setActiveImage(dbProduct.image);
-      }
 
-      const dbProducts = await getProducts();
-      if (dbProducts && dbProducts.length > 0) {
-        const cat = dbProduct ? dbProduct.category : (product?.category || "");
-        const filtered = dbProducts.filter((p: any) => p.category === cat && p.id !== id).slice(0, 4);
+        const dbProducts = await getProducts();
+        const filtered = dbProducts.filter((p: any) => p.category === dbProduct.category && p.id !== dbProduct.id).slice(0, 4);
         setRelatedProductsList(filtered as unknown as Product[]);
-      } else {
-        const cat = product?.category || "";
-        const filtered = PRODUCTS.filter((p) => p.category === cat && p.id !== id).slice(0, 4);
-        setRelatedProductsList(filtered);
+      } catch (error) {
+        setProduct(null);
+        setRelatedProductsList([]);
+        setProductError("Khong tai duoc san pham tu CMS. Vui long kiem tra API.");
+      } finally {
+        setIsLoadingProduct(false);
       }
     }
     loadData();
@@ -148,22 +156,30 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     setIsCartOpen(false);
   };
 
+  if (isLoadingProduct) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
+        <p className="font-serif text-3xl font-bold text-primary">DANG TAI SAN PHAM...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
-        <p className="font-serif text-3xl font-bold text-primary">KHÔNG TÌM THẤY SẢN PHẨM</p>
-        <p className="text-sm text-muted-foreground max-w-sm">Sản phẩm bạn tìm kiếm có thể đã ngưng bán hoặc không tồn tại.</p>
+        <p className="font-serif text-3xl font-bold text-primary">KHONG TIM THAY SAN PHAM</p>
+        <p className="text-sm text-muted-foreground max-w-sm">
+          {productError || "San pham ban tim kiem co the da ngung ban hoac khong ton tai."}
+        </p>
         <Link href="/products" className="bg-[#043616] text-white px-8 py-3 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-[#2d6a3e] transition-all">
-          Quay lại Cửa hàng
+          Quay lai Cua hang
         </Link>
       </div>
     );
   }
 
   // Get related products (same category, excluding current product)
-  const relatedProducts = relatedProductsList.length > 0 
-    ? relatedProductsList 
-    : PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const relatedProducts = relatedProductsList;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -203,7 +219,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-6">
           <Link href="/products" className="inline-flex items-center gap-1.5 text-sm font-serif font-bold text-secondary uppercase hover:text-primary transition-all">
             <ChevronLeft className="h-4 w-4" />
-            <span>Quay lại cửa hàng</span>
+            <span>Quay lai cua hang</span>
           </Link>
         </div>
 
@@ -272,14 +288,14 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                     </div>
                     <span className="text-[#414941] font-semibold">{product.rating} / 5.0</span>
                     <span className="text-muted-foreground/60">|</span>
-                    <span className="text-muted-foreground font-light">100% Đánh giá hài lòng</span>
+                    <span className="text-muted-foreground font-light">100% danh gia hai long</span>
                   </div>
                 </div>
 
                 {/* Price block */}
                 <div className="bg-[#FAF6EE] rounded-2xl p-5 border border-border/30 flex items-center justify-between">
                   <div>
-                    <span className="text-sm text-muted-foreground uppercase tracking-wider block mb-1">Giá bán lẻ</span>
+                    <span className="text-sm text-muted-foreground uppercase tracking-wider block mb-1">Gia ban le</span>
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl font-bold text-primary font-sans leading-none">
                         {formatPrice(product.price)}
@@ -293,14 +309,14 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                   </div>
                   {product.originalPrice && (
                     <span className="text-sm font-bold text-[#043616] bg-[#2d6a3e]/10 border border-[#2d6a3e]/20 px-3 py-1 rounded-full uppercase">
-                      Tiết kiệm {formatPrice(product.originalPrice - product.price)}
+                      Tiet kiem {formatPrice(product.originalPrice - product.price)}
                     </span>
                   )}
                 </div>
 
                 {/* Description */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Mô tả sản phẩm</h3>
+                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Mo ta san pham</h3>
                   <p className="font-sans text-sm text-muted-foreground leading-relaxed font-light text-justify">
                     {product.description}
                   </p>
@@ -308,9 +324,9 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
                 {/* Size Selector Option */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Kích thước / Trọng lượng</h3>
+                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Kich thuoc / Trong luong</h3>
                   <div className="flex gap-3">
-                    {["Tiêu chuẩn (Standard)", "Lớn (Premium)"].map((size) => (
+                    {["Tieu chuan (Standard)", "Lon (Premium)"].map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
@@ -329,7 +345,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                 {/* Benefits / Ingredients */}
                 {product.benefits && product.benefits.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Đặc tính nổi bật</h3>
+                    <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Dac tinh noi bat</h3>
                     <div className="flex flex-wrap gap-2">
                       {product.benefits.map((benefit, index) => (
                         <span key={index} className={`text-sm font-medium px-4 py-1.5 rounded-full ${getBadgeColors(index)}`}>
@@ -368,12 +384,12 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                     {isAddedSuccessfully ? (
                       <>
                         <Check className="h-4 w-4" />
-                        <span>Đã Thêm Vào Giỏ</span>
+                        <span>Da them vao gio</span>
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="h-4 w-4" />
-                        <span>Thêm Vào Giỏ Hàng</span>
+                        <span>Them vao gio hang</span>
                       </>
                     )}
                   </button>
@@ -383,18 +399,18 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                 <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border/40 text-center">
                   <div className="flex flex-col items-center space-y-1.5 p-3 rounded-2xl bg-[#FAF6EE]/40">
                     <Sprout className="h-5 w-5 text-secondary animate-pulse" />
-                    <span className="text-sm font-bold text-primary block uppercase">100% Tự Nhiên</span>
-                    <span className="text-sm text-muted-foreground font-light leading-tight">Không hóa chất</span>
+                    <span className="text-sm font-bold text-primary block uppercase">100% Tu Nhien</span>
+                    <span className="text-sm text-muted-foreground font-light leading-tight">Khong hoa chat</span>
                   </div>
                   <div className="flex flex-col items-center space-y-1.5 p-3 rounded-2xl bg-[#FAF6EE]/40">
                     <Heart className="h-5 w-5 text-secondary" />
-                    <span className="text-sm font-bold text-primary block uppercase">Bản Địa Việt</span>
-                    <span className="text-sm text-muted-foreground font-light leading-tight">Thủ công tỉ mỉ</span>
+                    <span className="text-sm font-bold text-primary block uppercase">Ban Dia Viet</span>
+                    <span className="text-sm text-muted-foreground font-light leading-tight">Thu cong ti mi</span>
                   </div>
                   <div className="flex flex-col items-center space-y-1.5 p-3 rounded-2xl bg-[#FAF6EE]/40">
                     <ShieldCheck className="h-5 w-5 text-secondary" />
-                    <span className="text-sm font-bold text-primary block uppercase">Lành Tính</span>
-                    <span className="text-sm text-muted-foreground font-light leading-tight">Được kiểm định</span>
+                    <span className="text-sm font-bold text-primary block uppercase">Lanh Tinh</span>
+                    <span className="text-sm text-muted-foreground font-light leading-tight">Duoc kiem dinh</span>
                   </div>
                 </div>
               </div>
@@ -407,7 +423,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
           <section className="py-16 bg-[#FAF6EE]/50 border-t border-border/30">
             <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-8">
               <div className="border-b border-border/40 pb-4 text-left">
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary uppercase">SẢN PHẨM CÙNG DANH MỤC</h2>
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary uppercase">SAN PHAM CUNG DANH MUC</h2>
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
