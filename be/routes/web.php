@@ -105,6 +105,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('users', UserController::class)->only(['index'])->middleware('permission:view_users');
     Route::resource('users', UserController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_users');
     Route::resource('roles', RoleController::class)->only(['index'])->middleware('permission:view_roles');
+    Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])
+        ->name('roles.permissions.update')
+        ->middleware('permission:manage_roles');
     Route::resource('roles', RoleController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_roles');
 
     // Activity Logs

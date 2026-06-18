@@ -21,10 +21,9 @@ import ProductCard, { Product } from "@/components/product-card";
 import Link from "next/link";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
-import { BLOG_POSTS } from "@/data/blog-posts";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
-import { NEW_PRODUCTS, SALE_PRODUCTS, SEEDED_PRODUCTS } from "@/data/products";
+
 import { getProducts, getBlogs, getBanners, getTestimonials, getSettings } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
 
@@ -79,10 +78,12 @@ export default function Home() {
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const [seededProducts, setSeededProducts] = useState<Product[]>(SEEDED_PRODUCTS);
-  const [newProducts, setNewProducts] = useState<Product[]>(NEW_PRODUCTS);
-  const [saleProducts, setSaleProducts] = useState<Product[]>(SALE_PRODUCTS);
-  const [blogPosts, setBlogPosts] = useState<any[]>(BLOG_POSTS);
+  const [seededProducts, setSeededProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
+  const [saleProducts, setSaleProducts] = useState<Product[]>([]);
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  const [isHomepageLoading, setIsHomepageLoading] = useState(true);
+  const [homepageLoadError, setHomepageLoadError] = useState(false);
 
   const [banners, setBanners] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>(REVIEWS);
@@ -110,48 +111,42 @@ export default function Home() {
 
   useEffect(() => {
     async function loadData() {
-      const dbProducts = await getProducts();
-      if (dbProducts && dbProducts.length > 0) {
-        const seeded = dbProducts.filter((p: any) => !p.badge);
-        const newArr = dbProducts.filter((p: any) => p.badge === 'NEW');
-        const sale = dbProducts.filter((p: any) => p.badge && p.badge !== 'NEW');
-        
-        if (seeded.length > 0) setSeededProducts(seeded as unknown as Product[]);
-        if (newArr.length > 0) setNewProducts(newArr as unknown as Product[]);
-        if (sale.length > 0) setSaleProducts(sale as unknown as Product[]);
+      const [productsResult, blogsResult, bannersResult, reviewsResult, settingsResult] =
+        await Promise.allSettled([
+          getProducts(),
+          getBlogs(),
+          getBanners(),
+          getTestimonials(),
+          getSettings(),
+        ]);
+
+      if (productsResult.status === "fulfilled") {
+        const products = productsResult.value as Product[];
+        setNewProducts(products.filter((product) => product.badge === "NEW"));
+        setSaleProducts(products.filter((product) => product.badge && product.badge !== "NEW"));
+        setSeededProducts(products.filter((product) => !product.badge));
+      } else {
+        console.error("Failed to load products from API:", productsResult.reason);
       }
 
-      const dbBlogs = await getBlogs();
-      if (dbBlogs && dbBlogs.length > 0) {
-        const mappedBlogs = dbBlogs.map((b: any) => ({
-          ...b,
-          image: b.image_path,
-          date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : "Gần đây"
-        }));
-        setBlogPosts(mappedBlogs);
-      }
+      if (blogsResult.status === "fulfilled") setBlogPosts(blogsResult.value);
+      if (bannersResult.status === "fulfilled" && bannersResult.value.length > 0) setBanners(bannersResult.value);
+      if (reviewsResult.status === "fulfilled" && reviewsResult.value.length > 0) setReviews(reviewsResult.value);
 
-      const dbBanners = await getBanners();
-      if (dbBanners && dbBanners.length > 0) {
-        setBanners(dbBanners);
-      }
-
-      const dbReviews = await getTestimonials();
-      if (dbReviews && dbReviews.length > 0) {
-        setReviews(dbReviews);
-      }
-
-      const dbSettings = await getSettings();
-      if (dbSettings) {
-        setSeoSettings({
-          title: dbSettings.meta_title,
-          desc: dbSettings.meta_desc
-        });
+      if (settingsResult.status === "fulfilled" && settingsResult.value) {
+        const settings = settingsResult.value;
+        setSeoSettings({ title: settings.meta_title, desc: settings.meta_desc });
         setSocialProof({
-          salesCount: Number(dbSettings.social_proof_sales_count || 50000),
-          rating: dbSettings.social_proof_rating || "4.9"
+          salesCount: Number(settings.social_proof_sales_count || 50000),
+          rating: settings.social_proof_rating || "4.9",
         });
       }
+
+      setHomepageLoadError(
+        [productsResult, blogsResult, bannersResult, reviewsResult, settingsResult]
+          .some((result) => result.status === "rejected"),
+      );
+      setIsHomepageLoading(false);
     }
     loadData();
   }, []);
@@ -468,7 +463,16 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {homepageLoadError && !isHomepageLoading && (
+            <p className="mb-8 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="status">
+              Một phần dữ liệu trang chủ chưa tải được. Vui lòng thử tải lại trang.
+            </p>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" aria-busy={isHomepageLoading}>
+            {isHomepageLoading && Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="h-[420px] animate-pulse rounded-2xl bg-muted" />
+            ))}
             {seededProducts.map((product) => (
               <ProductCard
                 key={product.id}
