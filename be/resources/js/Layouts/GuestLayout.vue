@@ -12,7 +12,7 @@ import { Link } from '@inertiajs/vue3';
             <!-- Brand Identity -->
             <div class="text-center space-y-3">
                 <Link href="/" class="inline-flex items-center gap-2">
-                    <span class="text-2xl font-bold font-serif text-[#043616]">Thảo Mộc Kiều Sang</span>
+                    <span class="text-2xl font-bold font-serif text-[#043616]">Xông Nhà Tẩy Uế</span>
                 </Link>
                 <p class="text-xs font-semibold tracking-wider uppercase text-zinc-500">Đăng Nhập Quản Trị Viên</p>
             </div>

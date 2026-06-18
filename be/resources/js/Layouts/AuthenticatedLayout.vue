@@ -45,6 +45,7 @@ const navigationItems = [
     { name: 'Hộp thư liên hệ', routeName: 'admin.contacts.index', activePattern: 'admin.contacts.*', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
     { name: 'SEO Redirects', routeName: 'admin.seo-redirects.index', activePattern: 'admin.seo-redirects.*', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4', permission: 'manage_settings' },
     { name: 'Cấu hình chung', routeName: 'admin.settings.index', activePattern: 'admin.settings.*', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', permission: 'manage_settings' },
+    { name: 'Hướng dẫn sử dụng', routeName: 'admin.guide', activePattern: 'admin.guide', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253' },
     { name: 'Nhân viên & Quyền', routeName: 'admin.users.index', activePattern: 'admin.users.*', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z', permission: 'manage_users' },
     { name: 'Lịch sử hoạt động', routeName: 'admin.activity-logs.index', activePattern: 'admin.activity-logs.*', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', permission: 'view_activity_logs' },
 ];
@@ -76,7 +77,7 @@ const filteredNavigationItems = computed(() => {
                 <!-- Sidebar Header -->
                 <div class="h-16 flex items-center px-6 border-b border-[#FAF6EE]/10 bg-[#021f0c]/30 shrink-0">
                     <Link :href="route('admin.dashboard')" class="flex items-center gap-3">
-                        <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
+                        <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Xông Nhà Tẩy Uế CMS</span>
                     </Link>
                 </div>
 
@@ -134,7 +135,7 @@ const filteredNavigationItems = computed(() => {
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
             <!-- Mobile Header Topbar -->
             <header class="lg:hidden h-16 flex items-center justify-between px-6 bg-[#043616] text-[#FFFDF9] border-b border-[#FAF6EE]/10 shrink-0">
-                <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
+                <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Xông Nhà Tẩy Uế CMS</span>
                 <button
                     @click="showingSidebarMobile = !showingSidebarMobile"
                     class="p-2 text-[#FAF6EE] hover:bg-[#FAF6EE]/10 rounded-lg focus:outline-none"
@@ -161,7 +162,7 @@ const filteredNavigationItems = computed(() => {
             >
                 <div class="flex flex-col flex-1 min-h-0">
                     <div class="h-16 flex items-center justify-between px-6 border-b border-[#FAF6EE]/10 bg-[#021f0c]/30 shrink-0">
-                        <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Kiều Sang CMS</span>
+                        <span class="text-lg font-serif font-bold tracking-wide text-[#E5C44B]">Xông Nhà Tẩy Uế CMS</span>
                         <button
                             @click="showingSidebarMobile = false"
                             class="p-2 text-[#FAF6EE]/70 hover:text-white rounded-lg focus:outline-none"

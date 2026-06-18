@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Tổng quan - Thảo Mộc Kiều Sang CMS" />
+    <Head title="Tổng quan - Xông Nhà Tẩy Uế CMS" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -24,7 +24,7 @@ defineProps({
                 <div class="relative z-10 space-y-2 max-w-xl">
                     <h3 class="text-xl font-serif font-bold tracking-wide">Xin chào, {{ $page.props.auth.user.name }}!</h3>
                     <p class="text-sm text-[#FAF6EE]/80 leading-relaxed font-sans">
-                        Chào mừng bạn trở lại hệ thống quản trị cửa hàng thảo dược. Hôm nay bạn có thể dễ dàng quản lý thông tin sản phẩm, cập nhật tin tức mới, xét duyệt đánh giá khách hàng và xử lý nhanh chóng các đơn đặt hàng.
+                        Chào mừng bạn trở lại hệ thống quản trị Xông Nhà Tẩy Uế. Tại đây bạn có thể quản lý sản phẩm, nội dung website, đánh giá khách hàng và xử lý các đơn đặt hàng.
                     </p>
                 </div>
             </div>
@@ -152,4 +152,3 @@ defineProps({
         </div>
     </AuthenticatedLayout>
 </template>
-

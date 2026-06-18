@@ -63,7 +63,7 @@ defineProps({
                     <!-- Quick reply link -->
                     <div class="flex justify-end pt-4 border-t border-zinc-100">
                         <a 
-                            :href="`mailto:${contact.email}?subject=Re: ${contact.subject || 'Liên hệ Thảo Mộc Kiều Sang'}`"
+                            :href="`mailto:${contact.email}?subject=Re: ${contact.subject || 'Liên hệ Xông Nhà Tẩy Uế'}`"
                             class="bg-[#043616] text-[#FFFDF9] hover:bg-[#112215] px-6 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 hover:shadow-sm"
                         >
                             Phản hồi qua Email
@@ -74,4 +74,3 @@ defineProps({
         </div>
     </AuthenticatedLayout>
 </template>
-
