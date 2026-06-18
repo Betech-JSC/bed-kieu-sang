@@ -259,6 +259,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                       alt={product.name}
                       fill
                       priority
+                      unoptimized={activeImage.startsWith("http")}
                       className="object-cover transition-all duration-300"
                     />
                   </div>
@@ -278,6 +279,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                         src={img}
                         alt={`${product.name} gallery ${idx + 1}`}
                         fill
+                        unoptimized={img.startsWith("http")}
                         className="object-cover"
                       />
                     </button>
