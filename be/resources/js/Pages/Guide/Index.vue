@@ -49,6 +49,17 @@ const sections = {
     ],
     content: [
         {
+            title: 'Hiển thị sản phẩm trên trang chủ',
+            description: 'Thiết lập trường Nhãn (Badge) trong CMS để sản phẩm xuất hiện đúng khu vực trên trang chủ.',
+            steps: [
+                'Mở Sản phẩm, tạo mới hoặc chọn Sửa tại sản phẩm cần hiển thị; bảo đảm Trạng thái đang là Hoạt động.',
+                'Để hiển thị trong “Sản Phẩm Mới – SỰ KHỞI ĐẦU MỚI”, nhập chính xác NEW (viết hoa, không có khoảng trắng) vào trường Nhãn.',
+                'Để hiển thị trong “Ưu Đãi Lành Mạnh – KHUYẾN MÃI ĐẶC BIỆT”, nhập một nhãn khác NEW, ví dụ -15%, SALE hoặc HOT; nên nhập thêm Giá gốc lớn hơn Giá bán.',
+                'Để hiển thị trong “Sản Phẩm Nổi Bật – BỘ SƯU TẬP THẢO MỘC”, để trống hoàn toàn trường Nhãn.',
+                'Lưu sản phẩm rồi tải lại trang chủ để kiểm tra. Nếu nhóm Sản phẩm mới hoặc Khuyến mãi không có sản phẩm phù hợp, toàn bộ khu vực đó sẽ tự động được ẩn.',
+            ],
+        },
+        {
             title: 'Danh mục & Sản phẩm',
             description: 'Quản lý thông tin bán hàng chính hiển thị trên website.',
             items: [
