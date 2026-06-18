@@ -20,7 +20,7 @@ const deleteBanner = (id) => {
         <template #header>
             <div class="flex justify-between items-center w-full">
                 <h2 class="text-lg font-bold uppercase tracking-wider text-emerald-950 font-sans">
-                    DANH SÁCH BANNER / SLIDE TRANG CHỦ
+                    DANH SÁCH BANNER / SLIDE THEO TRANG
                 </h2>
             </div>
         </template>
@@ -48,6 +48,7 @@ const deleteBanner = (id) => {
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-32 text-center">Hình ảnh</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60">Thông tin Banner</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60">Đường dẫn (Link)</th>
+                                <th class="py-4 px-4 border-r border-zinc-200/60">Vị trí</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-28 text-center">Thông số</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-36">Trạng thái</th>
                                 <th class="py-4 px-4 w-32 text-center">Thao tác</th>
@@ -80,6 +81,7 @@ const deleteBanner = (id) => {
                                 <td class="py-4 px-4 border-r border-zinc-200/60 align-middle font-mono text-xs text-zinc-500 max-w-xs truncate">
                                     {{ banner.link_url || '-' }}
                                 </td>
+                                <td class="py-4 px-4 border-r border-zinc-200/60 text-xs"><strong>{{ banner.page_key }}</strong><div class="text-zinc-500">{{ banner.position }}</div></td>
 
                                 <!-- Order Column -->
                                 <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-center w-28 font-medium">
@@ -114,7 +116,7 @@ const deleteBanner = (id) => {
                                 </td>
                             </tr>
                             <tr v-if="banners.data.length === 0">
-                                <td colspan="6" class="py-8 text-center text-zinc-500">
+                                <td colspan="7" class="py-8 text-center text-zinc-500">
                                     Chưa có banner nào được tạo.
                                 </td>
                             </tr>

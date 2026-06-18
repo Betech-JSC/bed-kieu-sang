@@ -7,10 +7,11 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'permissions'])]
+#[Fillable(['name', 'email', 'password', 'role', 'role_id', 'permissions'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -29,5 +30,23 @@ class User extends Authenticatable
             'password' => 'hashed',
             'permissions' => 'array',
         ];
+    }
+
+    public function roleModel(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->role === 'super_admin' || $this->roleModel?->slug === 'super_admin') {
+            return true;
+        }
+
+        if ($this->roleModel?->permissions->contains('key', $permission)) {
+            return true;
+        }
+
+        return in_array($permission, $this->permissions ?? [], true);
     }
 }

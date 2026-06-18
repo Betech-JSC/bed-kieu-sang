@@ -4,7 +4,8 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps({
-    banner: Object
+    banner: Object,
+    media: Array
 });
 
 const isEdit = ref(!!props.banner);
@@ -24,6 +25,8 @@ const form = useForm({
     image_path: props.banner?.image_path || '',
     image: null,
     link_url: props.banner?.link_url || '',
+    page_key: props.banner?.page_key || 'home',
+    position: props.banner?.position || 'hero',
     order_index: props.banner?.order_index || 0,
     status: props.banner?.status || 'active',
 });
@@ -91,6 +94,25 @@ const submit = () => {
                         <div class="flex flex-col space-y-2">
                             <label class="text-sm font-serif font-bold text-emerald-950">Liên kết khi click (Link URL)</label>
                             <input v-model="form.link_url" type="text" placeholder="Ví dụ: /products" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Trang hiển thị *</label>
+                            <select v-model="form.page_key" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white">
+                                <option value="home">Trang chủ</option><option value="products">Danh sách sản phẩm</option><option value="product">Chi tiết sản phẩm</option><option value="blog">Tin tức</option><option value="contact">Liên hệ</option><option value="about">Giới thiệu</option><option value="all">Tất cả trang</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Vị trí *</label>
+                            <select v-model="form.position" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white">
+                                <option value="hero">Hero / Slider chính</option><option value="top">Đầu nội dung</option><option value="content">Giữa nội dung</option><option value="bottom">Cuối nội dung</option>
+                            </select>
+                        </div>
+                        <div v-if="media?.length" class="flex flex-col space-y-2 md:col-span-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Hoặc chọn từ thư viện media</label>
+                            <select v-model="form.image_path" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white">
+                                <option value="">Không chọn</option><option v-for="item in media" :key="item.id" :value="item.url">{{ item.original_name }}</option>
+                            </select>
                         </div>
 
                         <!-- Order Index -->

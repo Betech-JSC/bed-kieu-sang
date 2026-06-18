@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\Media;
 use App\Helpers\ActivityLogger;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
@@ -20,7 +22,7 @@ class BannerController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Banners/Form');
+        return Inertia::render('Banners/Form', ['media' => Media::latest()->limit(100)->get()]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -31,21 +33,15 @@ class BannerController extends Controller
             'image_path' => 'required_without:image|nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'link_url' => 'nullable|string|max:255',
+            'page_key' => 'required|in:home,products,product,blog,contact,about,all',
+            'position' => 'required|in:hero,top,content,bottom',
             'order_index' => 'required|integer',
             'status' => 'required|in:active,inactive',
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $validated['image_path'] = '/images/' . $filename;
-            
-            // Copy to storefront
-            $fePath = base_path('../web/public/images');
-            if (file_exists($fePath)) {
-                copy(public_path('images/' . $filename), $fePath . '/' . $filename);
-            }
+            $path = $request->file('image')->store('banners', 'public');
+            $validated['image_path'] = Storage::disk('public')->url($path);
         }
 
         unset($validated['image']);
@@ -58,7 +54,7 @@ class BannerController extends Controller
 
     public function edit(Banner $banner): Response
     {
-        return Inertia::render('Banners/Form', ['banner' => $banner]);
+        return Inertia::render('Banners/Form', ['banner' => $banner, 'media' => Media::latest()->limit(100)->get()]);
     }
 
     public function update(Request $request, Banner $banner): RedirectResponse
@@ -69,21 +65,15 @@ class BannerController extends Controller
             'image_path' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'link_url' => 'nullable|string|max:255',
+            'page_key' => 'required|in:home,products,product,blog,contact,about,all',
+            'position' => 'required|in:hero,top,content,bottom',
             'order_index' => 'required|integer',
             'status' => 'required|in:active,inactive',
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $validated['image_path'] = '/images/' . $filename;
-            
-            // Copy to storefront
-            $fePath = base_path('../web/public/images');
-            if (file_exists($fePath)) {
-                copy(public_path('images/' . $filename), $fePath . '/' . $filename);
-            }
+            $path = $request->file('image')->store('banners', 'public');
+            $validated['image_path'] = Storage::disk('public')->url($path);
         }
 
         unset($validated['image']);

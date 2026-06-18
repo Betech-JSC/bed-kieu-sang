@@ -131,8 +131,8 @@ export async function getBlog(slug: string) {
   return BLOG_POSTS.find(p => p.slug === slug) || null;
 }
 
-export async function getBanners() {
-  const data = await fetchJson<{ data: any[] }>("/banners");
+export async function getBanners(page = "home", position = "hero") {
+  const data = await fetchJson<{ data: any[] }>(`/banners?page=${encodeURIComponent(page)}&position=${encodeURIComponent(position)}`);
   if (data && Array.isArray(data.data)) {
     return data.data.map(b => ({
       ...b,
@@ -189,6 +189,23 @@ export async function submitOrder(payload: {
   }
 
   return data;
+}
+
+export async function getFaqs() {
+  const data = await fetchRequiredJson<{ data: Array<{ id: number; question: string; answer: string }> }>("/faqs");
+  return data.data || [];
+}
+
+export async function getProductQuestions(productSlug: string) {
+  const data = await fetchJson<{ data: Array<{ id: number; customer_name: string; question: string; answer: string; answered_at: string }> }>(`/products/${encodeURIComponent(productSlug)}/questions`);
+  return data?.data || [];
+}
+
+export async function submitProductQuestion(productSlug: string, payload: { customer_name: string; customer_email?: string; question: string }) {
+  return fetchRequiredJson<{ success: boolean; message: string }>(`/products/${encodeURIComponent(productSlug)}/questions`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function getCategories(type: "product" | "blog" = "product") {

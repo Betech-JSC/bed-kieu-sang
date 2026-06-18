@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.vietqr.io",
       },
+      {
+        protocol: "https",
+        hostname: "cms.xongnhatayue.vn",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
     ],
   },
 };

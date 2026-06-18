@@ -11,6 +11,7 @@ import Image from "next/image";
 import { SlidersHorizontal, Search, ShoppingBag } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
+import PageBanner from "@/components/page-banner";
 import ProductCard, { Product } from "@/components/product-card";
 import { getProducts, getCategories } from "@/lib/api";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
@@ -172,6 +173,7 @@ function ProductsCatalogContent() {
 
       {/* Header */}
       <Header onCartOpen={() => setIsCartOpen(true)} />
+      <PageBanner pageKey="products" />
 
       <main className="pt-20">
         {/* Banner Hero Section */}

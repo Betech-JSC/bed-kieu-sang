@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasPublicImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
+    use HasPublicImageUrl;
+
     protected $fillable = [
         'category_id', 'slug', 'name', 'price', 'original_price', 
         'rating', 'channel_one_sales', 'channel_two_sales', 'virtual_sales',
@@ -51,5 +54,10 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(ProductQuestion::class);
     }
 }

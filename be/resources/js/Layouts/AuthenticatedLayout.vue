@@ -38,7 +38,10 @@ const navigationItems = [
     { name: 'Sản phẩm', routeName: 'admin.products.index', activePattern: 'admin.products.*', icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' },
     { name: 'Danh mục', routeName: 'admin.categories.index', activePattern: 'admin.categories.*', icon: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z' },
     { name: 'Bài viết (Blogs)', routeName: 'admin.blogs.index', activePattern: 'admin.blogs.*', icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' },
-    { name: 'Banner / Slide', routeName: 'admin.banners.index', activePattern: 'admin.banners.*', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', permission: 'manage_settings' },
+    { name: 'Banner / Slide', routeName: 'admin.banners.index', activePattern: 'admin.banners.*', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', permission: 'manage_banners' },
+    { name: 'Hỏi đáp FAQ', routeName: 'admin.faqs.index', activePattern: 'admin.faqs.*', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907C12.278 13.045 12 13.5 12 14m0 4h.01', permission: 'manage_faqs' },
+    { name: 'Hỏi đáp sản phẩm', routeName: 'admin.product-questions.index', activePattern: 'admin.product-questions.*', icon: 'M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z', permission: 'manage_product_questions' },
+    { name: 'Thư viện media', routeName: 'admin.media.index', activePattern: 'admin.media.*', icon: 'M3 7h5l2-2h4l2 2h5v12H3V7zm9 3a3 3 0 100 6 3 3 0 000-6z', permission: 'manage_media' },
     { name: 'Trang tĩnh', routeName: 'admin.pages.index', activePattern: 'admin.pages.*', icon: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z', permission: 'manage_pages' },
     { name: 'Đánh giá (Reviews)', routeName: 'admin.testimonials.index', activePattern: 'admin.testimonials.*', icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z' },
     { name: 'Đơn đặt hàng', routeName: 'admin.orders.index', activePattern: 'admin.orders.*', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
@@ -47,8 +50,26 @@ const navigationItems = [
     { name: 'Cấu hình chung', routeName: 'admin.settings.index', activePattern: 'admin.settings.*', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', permission: 'manage_settings' },
     { name: 'Hướng dẫn sử dụng', routeName: 'admin.guide', activePattern: 'admin.guide', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253' },
     { name: 'Nhân viên & Quyền', routeName: 'admin.users.index', activePattern: 'admin.users.*', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z', permission: 'manage_users' },
+    { name: 'Vai trò & Phân quyền', routeName: 'admin.roles.index', activePattern: 'admin.roles.*', icon: 'M12 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 0v8m-4-4h8', permission: 'manage_roles' },
     { name: 'Lịch sử hoạt động', routeName: 'admin.activity-logs.index', activePattern: 'admin.activity-logs.*', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', permission: 'view_activity_logs' },
 ];
+
+const viewPermissions = {
+    'admin.products.index': 'view_products',
+    'admin.categories.index': 'view_categories',
+    'admin.blogs.index': 'view_blogs',
+    'admin.pages.index': 'view_pages',
+    'admin.banners.index': 'view_banners',
+    'admin.faqs.index': 'view_faqs',
+    'admin.product-questions.index': 'view_product_questions',
+    'admin.media.index': 'view_media',
+    'admin.testimonials.index': 'view_reviews',
+    'admin.orders.index': 'view_orders',
+    'admin.contacts.index': 'view_contacts',
+    'admin.settings.index': 'view_settings',
+    'admin.users.index': 'view_users',
+    'admin.roles.index': 'view_roles',
+};
 
 const filteredNavigationItems = computed(() => {
     const user = page.props.auth.user;
@@ -58,13 +79,16 @@ const filteredNavigationItems = computed(() => {
         return navigationItems;
     }
 
-    const userPermissions = Array.isArray(user.permissions) 
-        ? user.permissions 
+    const rolePermissions = user.role_model?.permissions?.map(permission => permission.key) || [];
+    const legacyPermissions = Array.isArray(user.permissions)
+        ? user.permissions
         : JSON.parse(user.permissions || '[]');
+    const userPermissions = [...new Set([...rolePermissions, ...legacyPermissions])];
 
     return navigationItems.filter(item => {
-        if (!item.permission) return true;
-        return userPermissions.includes(item.permission);
+        const requiredPermission = viewPermissions[item.routeName] || item.permission;
+        if (!requiredPermission) return true;
+        return userPermissions.includes(requiredPermission);
     });
 });
 </script>

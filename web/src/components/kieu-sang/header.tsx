@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { ShoppingBag, Menu, X } from "lucide-react";
 
 interface HeaderProps {
-  onCartOpen: () => void;
+  onCartOpen?: () => void;
 }
 
 export default function Header({ onCartOpen }: HeaderProps) {

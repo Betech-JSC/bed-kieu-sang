@@ -4,17 +4,18 @@
 // og:
 
 "use client";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ShoppingBag, Plus, Minus, Check, Star, Sprout, ShieldCheck, Heart } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product } from "@/components/product-card";
-import { getProduct, getProducts } from "@/lib/api";
+import { getProduct, getProductQuestions, getProducts, submitProductQuestion } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
+import PageBanner from "@/components/page-banner";
 
 interface ProductDetailProps {
   params: Promise<{ id: string }>;
@@ -40,6 +41,9 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
   // State for related products list
   const [relatedProductsList, setRelatedProductsList] = useState<Product[]>([]);
+  const [questions, setQuestions] = useState<Array<{ id: number; customer_name: string; question: string; answer: string }>>([]);
+  const [questionForm, setQuestionForm] = useState({ customer_name: "", customer_email: "", question: "" });
+  const [questionMessage, setQuestionMessage] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -56,6 +60,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
         setProduct(dbProduct as unknown as Product);
         setActiveImage(dbProduct.image);
+        setQuestions(await getProductQuestions(dbProduct.slug));
 
         const dbProducts = await getProducts();
         const filtered = dbProducts.filter((p: any) => p.category === dbProduct.category && p.id !== dbProduct.id).slice(0, 4);
@@ -156,6 +161,18 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     setIsCartOpen(false);
   };
 
+  const handleQuestionSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setQuestionMessage("");
+    try {
+      const result = await submitProductQuestion(product!.slug, questionForm);
+      setQuestionMessage(result.message);
+      setQuestionForm({ customer_name: "", customer_email: "", question: "" });
+    } catch {
+      setQuestionMessage("Không thể gửi câu hỏi. Vui lòng thử lại sau.");
+    }
+  };
+
   if (isLoadingProduct) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
@@ -213,6 +230,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
       {/* Header */}
       <Header onCartOpen={() => setIsCartOpen(true)} />
+      <PageBanner pageKey="product" />
 
       <main className="pt-20">
         {/* Back Link Nav */}
@@ -415,6 +433,29 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="border-t border-border/40 bg-white py-16">
+          <div className="mx-auto grid max-w-7xl gap-10 px-6 md:px-12 lg:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">Tư vấn sản phẩm</p>
+              <h2 className="mt-2 font-serif text-2xl font-bold text-primary">HỎI ĐÁP SẢN PHẨM</h2>
+              <div className="mt-6 divide-y divide-border border-y border-border">
+                {questions.map((item) => <article key={item.id} className="py-5">
+                  <p className="text-sm font-semibold text-primary">{item.customer_name}: {item.question}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">Trả lời: {item.answer}</p>
+                </article>)}
+                {!questions.length && <p className="py-6 text-sm text-muted-foreground">Chưa có câu hỏi được công khai.</p>}
+              </div>
+            </div>
+            <form className="space-y-4 rounded-lg border border-border bg-[#FAF6EE]/40 p-6" onSubmit={handleQuestionSubmit}>
+              <h3 className="font-serif text-lg font-bold text-primary">Gửi câu hỏi cho chúng tôi</h3>
+              <div className="grid gap-4 sm:grid-cols-2"><input required value={questionForm.customer_name} onChange={(e) => setQuestionForm({ ...questionForm, customer_name: e.target.value })} placeholder="Họ tên *" className="rounded-lg border border-border bg-white px-4 py-3 text-sm"/><input type="email" value={questionForm.customer_email} onChange={(e) => setQuestionForm({ ...questionForm, customer_email: e.target.value })} placeholder="Email" className="rounded-lg border border-border bg-white px-4 py-3 text-sm"/></div>
+              <textarea required minLength={10} rows={5} value={questionForm.question} onChange={(e) => setQuestionForm({ ...questionForm, question: e.target.value })} placeholder="Câu hỏi của bạn *" className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm" />
+              {questionMessage && <p className="text-sm text-emerald-800">{questionMessage}</p>}
+              <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">Gửi câu hỏi</button>
+            </form>
           </div>
         </section>
 

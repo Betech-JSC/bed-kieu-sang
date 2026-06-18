@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use App\Helpers\ActivityLogger;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,7 +17,7 @@ class UserController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = User::latest();
+        $query = User::with('roleModel.permissions')->latest();
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -25,44 +26,23 @@ class UserController extends Controller
             });
         }
 
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
+        if ($request->filled('role_id')) {
+            $query->where('role_id', $request->integer('role_id'));
         }
 
         $users = $query->paginate(15)->withQueryString();
 
-        // Standard available permissions in the system
-        $availablePermissions = [
-            'manage_products' => 'Quản lý Sản phẩm',
-            'manage_blogs' => 'Quản lý Bài viết',
-            'manage_categories' => 'Quản lý Danh mục',
-            'manage_pages' => 'Quản lý Trang tĩnh',
-            'manage_settings' => 'Cấu hình hệ thống',
-            'manage_users' => 'Quản lý Nhân viên & Phân quyền',
-            'view_activity_logs' => 'Xem Nhật ký hoạt động',
-        ];
-
         return Inertia::render('Users/Index', [
             'users' => $users,
-            'availablePermissions' => $availablePermissions,
-            'filters' => $request->only(['search', 'role'])
+            'roles' => Role::orderBy('name')->get(['id', 'name', 'slug']),
+            'filters' => $request->only(['search', 'role_id'])
         ]);
     }
 
     public function create(): Response
     {
-        $availablePermissions = [
-            'manage_products' => 'Quản lý Sản phẩm',
-            'manage_blogs' => 'Quản lý Bài viết',
-            'manage_categories' => 'Quản lý Danh mục',
-            'manage_pages' => 'Quản lý Trang tĩnh',
-            'manage_settings' => 'Cấu hình hệ thống',
-            'manage_users' => 'Quản lý Nhân viên & Phân quyền',
-            'view_activity_logs' => 'Xem Nhật ký hoạt động',
-        ];
-
         return Inertia::render('Users/Form', [
-            'availablePermissions' => $availablePermissions
+            'roles' => Role::with('permissions')->orderBy('name')->get(),
         ]);
     }
 
@@ -72,14 +52,11 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|in:super_admin,editor,viewer',
-            'permissions' => 'nullable|array',
+            'role_id' => 'required|exists:roles,id',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['permissions'] = $validated['role'] === 'super_admin' 
-            ? ['manage_products', 'manage_blogs', 'manage_categories', 'manage_pages', 'manage_settings', 'manage_users', 'view_activity_logs']
-            : ($validated['permissions'] ?? []);
+        $this->applyRole($validated);
 
         $user = User::create($validated);
 
@@ -90,19 +67,9 @@ class UserController extends Controller
 
     public function edit(User $user): Response
     {
-        $availablePermissions = [
-            'manage_products' => 'Quản lý Sản phẩm',
-            'manage_blogs' => 'Quản lý Bài viết',
-            'manage_categories' => 'Quản lý Danh mục',
-            'manage_pages' => 'Quản lý Trang tĩnh',
-            'manage_settings' => 'Cấu hình hệ thống',
-            'manage_users' => 'Quản lý Nhân viên & Phân quyền',
-            'view_activity_logs' => 'Xem Nhật ký hoạt động',
-        ];
-
         return Inertia::render('Users/Form', [
-            'user' => $user,
-            'availablePermissions' => $availablePermissions
+            'user' => $user->load('roleModel.permissions'),
+            'roles' => Role::with('permissions')->orderBy('name')->get(),
         ]);
     }
 
@@ -111,8 +78,7 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|in:super_admin,editor,viewer',
-            'permissions' => 'nullable|array',
+            'role_id' => 'required|exists:roles,id',
         ];
 
         if ($request->filled('password')) {
@@ -127,10 +93,7 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        // Super admins automatically get all permissions
-        $validated['permissions'] = $validated['role'] === 'super_admin' 
-            ? ['manage_products', 'manage_blogs', 'manage_categories', 'manage_pages', 'manage_settings', 'manage_users', 'view_activity_logs']
-            : ($validated['permissions'] ?? []);
+        $this->applyRole($validated);
 
         // Prevent self-demotion or disabling of own super admin role to protect systems
         if (auth()->id() === $user->id && $user->role === 'super_admin' && $validated['role'] !== 'super_admin') {
@@ -158,5 +121,12 @@ class UserController extends Controller
         ActivityLogger::log('DELETE', 'users', "Deleted staff account '{$oldValue['name']}'", $oldValue, null);
 
         return redirect()->route('admin.users.index')->with('success', 'Nhân viên đã được xóa thành công.');
+    }
+
+    private function applyRole(array &$validated): void
+    {
+        $role = Role::with('permissions')->findOrFail($validated['role_id']);
+        $validated['role'] = $role->slug;
+        $validated['permissions'] = $role->permissions->pluck('key')->all();
     }
 }

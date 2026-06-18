@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -65,16 +66,8 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $validated['image_path'] = '/images/' . $filename;
-            
-            // Copy to storefront
-            $fePath = base_path('../web/public/images');
-            if (file_exists($fePath)) {
-                copy(public_path('images/' . $filename), $fePath . '/' . $filename);
-            }
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image_path'] = Storage::disk('public')->url($path);
         }
 
         unset($validated['image']);
@@ -120,16 +113,8 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images'), $filename);
-            $validated['image_path'] = '/images/' . $filename;
-            
-            // Copy to storefront
-            $fePath = base_path('../web/public/images');
-            if (file_exists($fePath)) {
-                copy(public_path('images/' . $filename), $fePath . '/' . $filename);
-            }
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image_path'] = Storage::disk('public')->url($path);
         }
 
         unset($validated['image']);

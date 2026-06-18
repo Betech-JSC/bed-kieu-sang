@@ -24,15 +24,7 @@ class CheckPermission
             return redirect()->route('admin.login');
         }
 
-        // Super Admin bypasses all permission checks
-        if ($user->role === 'super_admin') {
-            return $next($request);
-        }
-
-        // Check if user has the specific permission in their JSON permissions array
-        $permissions = is_array($user->permissions) ? $user->permissions : json_decode($user->permissions ?? '[]', true);
-
-        if (!in_array($permission, $permissions)) {
+        if (!$user->hasPermission($permission)) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Bạn không có quyền thực hiện hành động này.'], 403);
             }
