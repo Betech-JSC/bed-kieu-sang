@@ -93,6 +93,9 @@ export default function Footer() {
             <li className="hover:text-primary transition-colors cursor-pointer">
               <Link href="/contact">Liên hệ</Link>
             </li>
+            <li className="hover:text-primary transition-colors cursor-pointer">
+              <Link href="/faq">Câu hỏi thường gặp</Link>
+            </li>
           </ul>
         </div>
 

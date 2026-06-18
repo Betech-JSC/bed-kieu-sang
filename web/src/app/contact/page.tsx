@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Phone, Mail, MapPin, CheckCircle, Send, Instagram, Facebook, Globe2 } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
+import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 import { submitContact } from "@/lib/api";
@@ -89,6 +90,7 @@ export default function ContactPage() {
 
       {/* Header */}
       <Header onCartOpen={() => setIsCartOpen(true)} />
+      <PageBanner pageKey="contact" />
 
       <main className="pt-20">
         {/* Banner Hero Section */}

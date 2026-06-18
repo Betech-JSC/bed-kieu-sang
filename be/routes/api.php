@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\V1\PublicContactController;
 use App\Http\Controllers\Api\V1\PublicSettingController;
 use App\Http\Controllers\Api\V1\PublicBannerController;
 use App\Http\Controllers\Api\V1\PublicTestimonialController;
+use App\Http\Controllers\Api\V1\PublicFaqController;
+use App\Http\Controllers\Api\V1\PublicProductQuestionController;
 
 Route::prefix('v1')->group(function () {
     Route::get('/products', [PublicProductController::class, 'index']);
@@ -19,11 +21,14 @@ Route::prefix('v1')->group(function () {
     Route::get('/settings', [PublicSettingController::class, 'index']);
     Route::get('/banners', [PublicBannerController::class, 'index']);
     Route::get('/testimonials', [PublicTestimonialController::class, 'index']);
+    Route::get('/faqs', [PublicFaqController::class, 'index']);
+    Route::get('/products/{product:slug}/questions', [PublicProductQuestionController::class, 'index']);
     Route::get('/categories', [PublicProductController::class, 'categories']);
     
     // Storefront client form submissions
     Route::post('/contacts', [PublicContactController::class, 'store']);
     Route::post('/orders', [PublicOrderController::class, 'store']);
+    Route::post('/products/{product:slug}/questions', [PublicProductQuestionController::class, 'store'])->middleware('throttle:5,1');
 });
 
 Route::post('/contacts', [PublicContactController::class, 'store']);

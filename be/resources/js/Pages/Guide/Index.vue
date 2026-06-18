@@ -74,11 +74,21 @@ const sections = {
             title: 'Banner, Bài viết & Trang tĩnh',
             description: 'Cập nhật nội dung truyền thông và thông tin dài hạn của website.',
             items: [
-                'Banner / Slide dùng cho hình ảnh nổi bật; kiểm tra ảnh, liên kết đích, thứ tự và trạng thái trước khi lưu.',
+                'Banner / Slide cho phép chọn trang hiển thị, vị trí, liên kết, thứ tự và trạng thái.',
                 'Bài viết hỗ trợ Bản nháp và Xuất bản; có thể đặt ngày xuất bản và cấu hình SEO riêng.',
                 'Trang tĩnh dùng cho nội dung ít thay đổi như giới thiệu, chính sách hoặc nội dung liên hệ.',
                 'Slug phải viết thường, không dấu, dùng dấu gạch ngang và không trùng với nội dung khác.',
                 'Sau khi cập nhật, mở website ở tab riêng để kiểm tra ảnh, nội dung và đường dẫn thực tế.',
+            ],
+        },
+        {
+            title: 'Thư viện media',
+            description: 'Lưu và tái sử dụng hình ảnh trên toàn hệ thống.',
+            items: [
+                'Có thể tải tối đa 10 ảnh mỗi lần, dung lượng tối đa 5 MB mỗi ảnh.',
+                'Nhập mô tả ảnh để hỗ trợ SEO và khả năng tiếp cận.',
+                'Dùng Sao chép URL hoặc chọn trực tiếp ảnh thư viện trong form banner.',
+                'Chỉ xóa ảnh sau khi chắc chắn ảnh không còn được sản phẩm, bài viết hoặc banner sử dụng.',
             ],
         },
     ],
@@ -113,6 +123,16 @@ const sections = {
                 'Không chỉnh sửa ý nghĩa nhận xét của khách; chỉ kiểm duyệt theo tiêu chuẩn nội dung.',
             ],
         },
+        {
+            title: 'FAQ & Hỏi đáp sản phẩm',
+            description: 'Quản lý nội dung hỗ trợ khách hàng trước và sau khi mua.',
+            items: [
+                'FAQ dùng cho câu hỏi chung; đặt trạng thái Hiển thị để xuất hiện tại trang FAQ trên website.',
+                'Câu hỏi sản phẩm do khách gửi luôn ở trạng thái Chờ xử lý.',
+                'Nhập câu trả lời và chọn Duyệt công khai để hiển thị tại trang chi tiết sản phẩm.',
+                'Từ chối hoặc xóa câu hỏi spam, sai chủ đề hay chứa nội dung không phù hợp.',
+            ],
+        },
     ],
     system: [
         {
@@ -136,9 +156,10 @@ const sections = {
             ],
         },
         {
-            title: 'Nhân viên & Lịch sử hoạt động',
+            title: 'Người dùng, Vai trò & Lịch sử hoạt động',
             description: 'Kiểm soát quyền truy cập và truy vết các thay đổi quan trọng trong CMS.',
             items: [
+                'Tạo vai trò, chọn các quyền theo module rồi gán vai trò đó cho từng tài khoản.',
                 'Tạo tài khoản riêng cho từng nhân viên và chỉ cấp các quyền cần cho công việc.',
                 'Thu hồi hoặc khóa quyền khi nhân viên không còn phụ trách hệ thống.',
                 'Dùng Lịch sử hoạt động để kiểm tra ai đã tạo, cập nhật hoặc xóa dữ liệu và vào thời điểm nào.',

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Leaf, Scroll, Users } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
+import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 
@@ -73,6 +74,7 @@ export default function AboutPage() {
 
       {/* Header */}
       <Header onCartOpen={() => setIsCartOpen(true)} />
+      <PageBanner pageKey="about" />
 
       <main className="pt-20">
         {/* Banner Hero Section */}

@@ -92,7 +92,7 @@ const deleteProduct = (id) => {
             <!-- Table System (Bordered) -->
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm text-zinc-700">
+                    <table class="w-full min-w-[1080px] text-left border-collapse text-sm text-zinc-700">
                         <thead>
                             <tr class="bg-zinc-50 border-b border-zinc-200 text-[#043616] font-sans text-xs font-bold uppercase tracking-wider">
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-20 text-center">Hình ảnh</th>
@@ -100,7 +100,7 @@ const deleteProduct = (id) => {
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-44">Giá bán</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60">Thông số (Specs)</th>
                                 <th class="py-4 px-4 border-r border-zinc-200/60 w-32">Lượt bán</th>
-                                <th class="py-4 px-4 border-r border-zinc-200/60 w-36">Trạng thái</th>
+                                <th class="w-40 min-w-40 whitespace-nowrap border-r border-zinc-200/60 px-4 py-4">Trạng thái</th>
                                 <th class="py-4 px-4 w-32 text-center">Thao tác</th>
                             </tr>
                         </thead>
@@ -161,14 +161,14 @@ const deleteProduct = (id) => {
                                 </td>
 
                                 <!-- Status Column -->
-                                <td class="py-4 px-4 border-r border-zinc-200/60 align-middle">
+                                <td class="w-40 min-w-40 whitespace-nowrap border-r border-zinc-200/60 px-4 py-4 align-middle">
                                     <span 
                                         :class="product.status === 'active' 
                                             ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
                                             : 'bg-zinc-50 text-zinc-600 border border-zinc-200'" 
-                                        class="px-2.5 py-1 rounded-full text-xs font-semibold border"
+                                        class="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-semibold leading-none"
                                     >
-                                        {{ product.status === 'active' ? 'Đang kinh doanh' : 'Tạm ngưng' }}
+                                        {{ product.status === 'active' ? 'Đang bán' : 'Tạm ngưng' }}
                                     </span>
                                 </td>
 

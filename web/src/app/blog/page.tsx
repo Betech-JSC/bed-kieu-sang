@@ -13,6 +13,7 @@ import { BLOG_POSTS } from "@/data/blog-posts";
 import { getBlogs } from "@/lib/api";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
+import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 
@@ -100,6 +101,7 @@ export default function BlogArchive() {
 
       {/* Header */}
       <Header onCartOpen={() => setIsCartOpen(true)} />
+      <PageBanner pageKey="blog" />
 
       {/* Main content area */}
       <main className="pt-20">

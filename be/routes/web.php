@@ -15,6 +15,10 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\ProductQuestionController;
+use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -51,47 +55,57 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/guide', fn () => Inertia::render('Guide/Index'))->name('guide');
     
     // Products
-    Route::resource('products', ProductController::class)->only(['index']);
+    Route::resource('products', ProductController::class)->only(['index'])->middleware('permission:view_products');
     Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_products');
 
     // Categories
-    Route::resource('categories', CategoryController::class)->only(['index']);
+    Route::resource('categories', CategoryController::class)->only(['index'])->middleware('permission:view_categories');
     Route::resource('categories', CategoryController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_categories');
 
     // Blogs
-    Route::resource('blogs', BlogPostController::class)->only(['index']);
+    Route::resource('blogs', BlogPostController::class)->only(['index'])->middleware('permission:view_blogs');
     Route::resource('blogs', BlogPostController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_blogs');
 
     // Pages
-    Route::resource('pages', PageController::class)->only(['index']);
+    Route::resource('pages', PageController::class)->only(['index'])->middleware('permission:view_pages');
     Route::resource('pages', PageController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_pages');
 
     // Banners
-    Route::resource('banners', BannerController::class)->only(['index']);
-    Route::resource('banners', BannerController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_settings');
+    Route::resource('banners', BannerController::class)->only(['index'])->middleware('permission:view_banners');
+    Route::resource('banners', BannerController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_banners');
+
+    Route::resource('faqs', FaqController::class)->only(['index'])->middleware('permission:view_faqs');
+    Route::resource('faqs', FaqController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_faqs');
+    Route::resource('product-questions', ProductQuestionController::class)->only(['index'])->middleware('permission:view_product_questions');
+    Route::resource('product-questions', ProductQuestionController::class)->only(['update', 'destroy'])->middleware('permission:manage_product_questions');
+    Route::resource('media', MediaController::class)->only(['index'])->middleware('permission:view_media');
+    Route::resource('media', MediaController::class)->only(['store', 'update', 'destroy'])->middleware('permission:manage_media');
     
     // Testimonials
-    Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
-    Route::patch('testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])->name('testimonials.status')->middleware('permission:manage_products');
+    Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index')->middleware('permission:view_reviews');
+    Route::patch('testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])->name('testimonials.status')->middleware('permission:manage_reviews');
     
     // Contacts
-    Route::resource('contacts', ContactController::class)->only(['index', 'show']);
-    Route::resource('contacts', ContactController::class)->only(['destroy'])->middleware('permission:manage_settings');
+    Route::resource('contacts', ContactController::class)->only(['index', 'show'])->middleware('permission:view_contacts');
+    Route::resource('contacts', ContactController::class)->only(['destroy'])->middleware('permission:manage_contacts');
 
     // Orders
-    Route::resource('orders', OrderController::class)->only(['index', 'show']);
-    Route::resource('orders', OrderController::class)->only(['update'])->middleware('permission:manage_products');
+    Route::resource('orders', OrderController::class)->only(['index', 'show'])->middleware('permission:view_orders');
+    Route::resource('orders', OrderController::class)->only(['update'])->middleware('permission:manage_orders');
 
     // SEO Redirects
     Route::resource('seo-redirects', SeoRedirectController::class)->only(['index']);
     Route::resource('seo-redirects', SeoRedirectController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_settings');
     
     // Settings
-    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:view_settings');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:manage_settings');
 
     // Users
-    Route::resource('users', UserController::class)->middleware('permission:manage_users');
+    Route::resource('users', UserController::class)->only(['index'])->middleware('permission:view_users');
+    Route::resource('users', UserController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_users');
+    Route::resource('roles', RoleController::class)->only(['index'])->middleware('permission:view_roles');
+    Route::resource('roles', RoleController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware('permission:manage_roles');
 
     // Activity Logs
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index')->middleware('permission:view_activity_logs');

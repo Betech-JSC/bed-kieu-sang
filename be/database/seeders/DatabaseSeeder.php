@@ -14,6 +14,7 @@ use App\Models\OrderItem;
 use App\Models\Testimonial;
 use App\Models\Page;
 use App\Models\SeoRedirect;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,33 +28,36 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create Admin Users with Roles
         User::updateOrCreate(
-            ['email' => 'admin@kieusang.vn'],
+            ['email' => 'admin@xongnhatayue.vn'],
             [
-                'name' => 'Kiều Sang Admin',
+                'name' => 'Quản trị Xông Nhà Tẩy Uế',
                 'password' => Hash::make('admin123'),
                 'role' => 'super_admin',
-                'permissions' => ['manage_products', 'manage_blogs', 'manage_categories', 'manage_pages', 'manage_settings', 'manage_users', 'view_activity_logs'],
+                'role_id' => Role::where('slug', 'super_admin')->value('id'),
+                'permissions' => [],
                 'email_verified_at' => now(),
             ]
         );
 
         User::updateOrCreate(
-            ['email' => 'editor@kieusang.vn'],
+            ['email' => 'editor@xongnhatayue.vn'],
             [
-                'name' => 'Kiều Sang Biên Tập',
+                'name' => 'Biên tập Xông Nhà Tẩy Uế',
                 'password' => Hash::make('editor123'),
                 'role' => 'editor',
-                'permissions' => ['manage_products', 'manage_blogs', 'manage_categories'],
+                'role_id' => Role::where('slug', 'editor')->value('id'),
+                'permissions' => [],
                 'email_verified_at' => now(),
             ]
         );
 
         User::updateOrCreate(
-            ['email' => 'viewer@kieusang.vn'],
+            ['email' => 'viewer@xongnhatayue.vn'],
             [
-                'name' => 'Kiều Sang Người Xem',
+                'name' => 'Người xem Xông Nhà Tẩy Uế',
                 'password' => Hash::make('viewer123'),
                 'role' => 'viewer',
+                'role_id' => Role::where('slug', 'viewer')->value('id'),
                 'permissions' => [],
                 'email_verified_at' => now(),
             ]
