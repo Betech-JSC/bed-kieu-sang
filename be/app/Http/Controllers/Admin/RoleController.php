@@ -17,7 +17,10 @@ class RoleController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Roles/Index', ['roles' => Role::withCount('users')->with('permissions')->get()]);
+        return Inertia::render('Roles/Index', [
+            'roles' => Role::withCount('users')->with('permissions')->orderBy('name')->get(),
+            'permissions' => Permission::orderBy('module')->orderBy('name')->get()->groupBy('module'),
+        ]);
     }
 
     public function create(): Response { return $this->formResponse(); }
@@ -43,6 +46,31 @@ class RoleController extends Controller
         if ($role->slug !== 'super_admin') $role->permissions()->sync($validated['permission_ids'] ?? []);
         ActivityLogger::log('UPDATE', 'roles', "Updated role '{$role->name}'");
         return redirect()->route('admin.roles.index')->with('success', 'Đã cập nhật vai trò.');
+    }
+
+    public function updatePermissions(Request $request, Role $role): RedirectResponse
+    {
+        if ($role->slug === 'super_admin') {
+            return back()->with('error', 'Không thể thay đổi quyền của Super Admin.');
+        }
+
+        $validated = $request->validate([
+            'permission_ids' => ['present', 'array'],
+            'permission_ids.*' => ['integer', 'exists:permissions,id'],
+        ]);
+
+        $previousPermissionIds = $role->permissions()->pluck('permissions.id')->all();
+        $role->permissions()->sync($validated['permission_ids']);
+
+        ActivityLogger::log(
+            'UPDATE',
+            'roles',
+            "Updated permissions for role '{$role->name}'",
+            ['permission_ids' => $previousPermissionIds],
+            ['permission_ids' => $validated['permission_ids']],
+        );
+
+        return back()->with('success', "Đã cập nhật quyền cho vai trò {$role->name}.");
     }
 
     public function destroy(Role $role): RedirectResponse

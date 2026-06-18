@@ -81,8 +81,13 @@ async function fetchRequiredJson<T>(path: string, options?: RequestInit): Promis
   return data;
 }
 
-export async function getProducts(category?: string) {
-  const path = category ? `/products?category=${encodeURIComponent(category)}` : "/products";
+export async function getProducts(category?: string, perPage?: number) {
+  const params = new URLSearchParams();
+  if (category) {
+    params.append("category", category);
+  }
+  params.append("per_page", perPage?.toString() || "100");
+  const path = `/products?${params.toString()}`;
   const data = await fetchRequiredJson<{ data: any[] }>(path);
   return Array.isArray(data.data) ? data.data.map(mapProduct) : [];
 }
@@ -114,11 +119,7 @@ export async function getBlogs(category?: string) {
     return data.data.map(mapBlog);
   }
   
-  // Fallback to static mock data
-  if (category) {
-    return BLOG_POSTS.filter(p => p.category.toLowerCase() === category.toLowerCase());
-  }
-  return BLOG_POSTS;
+  return [];
 }
 
 export async function getBlog(slug: string) {
