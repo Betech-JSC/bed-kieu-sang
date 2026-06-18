@@ -163,9 +163,13 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
   const handleQuestionSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    if (!product?.slug) {
+      setQuestionMessage("Không thể gửi câu hỏi vì không tìm thấy mã sản phẩm.");
+      return;
+    }
     setQuestionMessage("");
     try {
-      const result = await submitProductQuestion(product!.slug, questionForm);
+      const result = await submitProductQuestion(product.slug, questionForm);
       setQuestionMessage(result.message);
       setQuestionForm({ customer_name: "", customer_email: "", question: "" });
     } catch {
