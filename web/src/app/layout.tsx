@@ -25,10 +25,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Thảo Mộc Kiều Sang - Thanh lọc không gian, Chăm sóc tâm hồn",
+  title: "Xông Nhà Tẩy Uế - Thanh lọc không gian, Chăm sóc tâm hồn",
   description:
     "Thương hiệu thảo mộc thiên nhiên cao cấp giúp không gian sạch sẽ, thanh tịnh tinh thần và cân bằng năng lượng phong thủy.",
-  metadataBase: new URL("https://thao-moc-kieu-sang.vn/"),
+  metadataBase: new URL("https://www.xongnhatayue.vn/"),
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    url: "https://thao-moc-kieu-sang.vn/",
-    siteName: "Thảo Mộc Kiều Sang",
+    url: "https://www.xongnhatayue.vn/",
+    siteName: "Xông Nhà Tẩy Uế",
     images: ["/images/hero_lifestyle.png"],
   },
 };

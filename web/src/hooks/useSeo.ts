@@ -3,7 +3,7 @@ import { useEffect } from "react";
 export function useSeo(title?: string, description?: string) {
   useEffect(() => {
     if (title) {
-      document.title = `${title} | Thảo Mộc Kiều Sang`;
+      document.title = `${title} | Xông Nhà Tẩy Uế`;
     }
     if (description) {
       const meta = document.querySelector('meta[name="description"]');

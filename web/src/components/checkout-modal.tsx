@@ -31,7 +31,7 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
   const cleanPhone = order.phone.replace(/\s+/g, "");
 
   // Dynamic VietQR code URL
-  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=KIEUSANG%20${cleanPhone}&accountName=DO%20VAN%20VU`;
+  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=XONGNHATAYUE%20${cleanPhone}&accountName=DO%20VAN%20VU`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans">
@@ -57,7 +57,7 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
             Đặt Thảo Mộc Thành Công!
           </h2>
           <p className="text-sm text-muted-foreground max-w-md">
-            Cảm ơn bạn đã lựa chọn <strong>Thảo Mộc Kiều Sang</strong> để thanh lọc không gian sống và nuôi dưỡng tâm hồn.
+            Cảm ơn bạn đã lựa chọn <strong>Xông Nhà Tẩy Uế</strong> để thanh lọc không gian sống và nuôi dưỡng tâm hồn.
           </p>
         </div>
 
@@ -149,9 +149,9 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
                   <p>Bank: <strong>MBBank</strong></p>
                   <p>Chủ TK: <strong>DO VAN VU</strong></p>
                   <p className="flex items-center justify-between mt-1">
-                    <span>Nội dung: <strong>KIEUSANG {cleanPhone}</strong></span>
+                    <span>Nội dung: <strong>XONGNHATAYUE {cleanPhone}</strong></span>
                     <button
-                      onClick={() => handleCopyText(`KIEUSANG ${cleanPhone}`)}
+                      onClick={() => handleCopyText(`XONGNHATAYUE ${cleanPhone}`)}
                       className="p-1 hover:bg-neutral-200 rounded-sm text-primary transition-all ml-1"
                     >
                       {copied ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}

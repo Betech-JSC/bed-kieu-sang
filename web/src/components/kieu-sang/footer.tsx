@@ -19,13 +19,13 @@ export default function Footer() {
           >
             <Image
               src="/images/logo_ks2.png"
-              alt="Kiều Sang Logo"
+              alt="Logo Xông Nhà Tẩy Uế"
               width={36}
               height={36}
               className="h-9 w-9 object-contain transition-transform duration-300 group-hover:scale-105"
             />
             <span className="font-serif text-sm tracking-widest text-primary font-bold uppercase">
-              Kiều Sang
+              Xông Nhà Tẩy Uế
             </span>
           </Link>
           <p className="text-xs leading-relaxed font-light">
@@ -104,7 +104,7 @@ export default function Footer() {
           <p className="text-[11px] italic leading-relaxed text-muted-foreground font-light">
             Địa chỉ: Quận 1, Tp. Hồ Chí Minh <br />
             Hotline: 0779 440 918 (Zalo) <br />
-            Email: lienhe@kieusang.vn
+            Email: lienhe@xongnhatayue.vn
           </p>
           <form 
             onSubmit={(e) => e.preventDefault()}
@@ -127,7 +127,7 @@ export default function Footer() {
       </div>
 
       <div className="py-8 border-t border-border/40 text-center text-[10px] opacity-80">
-        © {currentYear} Thảo Mộc Kiều Sang. Nuôi dưỡng tĩnh lặng qua trí tuệ cổ truyền.
+        © {currentYear} Xông Nhà Tẩy Uế. Nuôi dưỡng tĩnh lặng qua trí tuệ cổ truyền.
       </div>
     </footer>
   );

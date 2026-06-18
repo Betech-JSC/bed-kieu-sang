@@ -1,6 +1,6 @@
-# 🌿 Thảo Mộc Kiều Sang - Website Cửa Hàng Thảo Mộc Thiên Nhiên
+# 🌿 Xông Nhà Tẩy Uế - Website Thảo Mộc Thiên Nhiên
 
-Chào mừng đến với dự án website thương mại điện tử của **Thảo Mộc Kiều Sang** — Thương hiệu thảo mộc thiên nhiên cao cấp giúp thanh lọc không gian sống, chăm sóc sức khỏe tinh thần và khơi thông vượng khí an lành.
+Chào mừng đến với dự án website thương mại điện tử của **Xông Nhà Tẩy Uế** — thương hiệu thảo mộc thiên nhiên giúp thanh lọc không gian sống, chăm sóc sức khỏe tinh thần và khơi thông vượng khí an lành.
 
 Dự án được xây dựng và thiết kế theo ngôn ngữ thiết kế **Organic Zen** hiện đại, chú trọng đến sự tối giản, tinh tế và trải nghiệm người dùng mượt mà trên mọi thiết bị.
 
@@ -68,5 +68,5 @@ Dự án đã tích hợp sẵn [Dockerfile](Dockerfile) để bạn dễ dàng 
 ---
 
 ## 📄 Bản Quyền
-Dự án được phát triển và sở hữu bởi **Thảo Mộc Kiều Sang** và **Betech JSC**.
+Dự án được phát triển và sở hữu bởi **Xông Nhà Tẩy Uế** và **Betech JSC**.
 Lưu hành nội bộ và bảo mật thông tin mã nguồn.
