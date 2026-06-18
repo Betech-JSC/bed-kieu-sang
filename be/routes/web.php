@@ -48,6 +48,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/guide', fn () => Inertia::render('Guide/Index'))->name('guide');
     
     // Products
     Route::resource('products', ProductController::class)->only(['index']);

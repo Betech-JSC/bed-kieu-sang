@@ -61,13 +61,13 @@ export default function Header({ onCartOpen }: HeaderProps) {
         >
           <Image
             src="/images/logo_ks2.png"
-            alt="Kiều Sang Logo"
+            alt="Logo Xông Nhà Tẩy Uế"
             width={44}
             height={44}
             className="h-11 w-11 object-contain transition-transform duration-300 group-hover:scale-105"
           />
           <span className="font-serif text-[16px] md:text-[18px] tracking-widest text-[#043616] font-bold uppercase">
-            Kiều Sang
+            Xông Nhà Tẩy Uế
           </span>
         </Link>
 

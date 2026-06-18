@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Xông Nhà Tẩy Uế</title>
 // name="description"
 // og:
 
@@ -23,8 +23,8 @@ export default function BestSellersPage() {
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
 
   useSeo(
-    "Sản phẩm bán chạy | Thảo Mộc Kiều Sang",
-    "Các sản phẩm thảo mộc được Kiều Sang chọn ghim theo chiến dịch và lượt bán cộng dồn từ nhiều kênh."
+    "Sản phẩm bán chạy | Xông Nhà Tẩy Uế",
+    "Các sản phẩm thảo mộc được Xông Nhà Tẩy Uế chọn ghim theo chiến dịch và lượt bán cộng dồn từ nhiều kênh."
   );
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function BestSellersPage() {
         <section className="relative flex min-h-[300px] items-center overflow-hidden border-b border-border/40 bg-[#FAF6EE]">
           <Image
             src="/images/hero_lifestyle.png"
-            alt="Sản phẩm bán chạy Kiều Sang"
+            alt="Sản phẩm bán chạy Xông Nhà Tẩy Uế"
             fill
             priority
             className="object-cover opacity-30"

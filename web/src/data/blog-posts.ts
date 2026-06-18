@@ -46,7 +46,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "- Sử dụng nước xịt thảo mộc phun sương nhẹ lên gối hoặc ga giường khoảng 10 phút trước khi ngủ.",
       "- Đốt một nụ trầm thảo mộc nhẹ nhàng trong không gian phòng khách hoặc phòng đọc sách để thanh lọc tâm trí trước khi bước vào phòng ngủ.",
       "- Kết hợp với việc thở sâu bằng bụng: hít vào hương thơm an lành của đất trời và thở ra tất cả những lo toan mệt mỏi tích tụ.",
-      "Hãy để Thảo Mộc Kiều Sang đồng hành cùng góc nhỏ an yên của bạn, nơi khói trầm dịu nhẹ xoa dịu mọi vết thương tâm hồn và nuôi dưỡng năng lượng sống mỗi ngày."
+      "Hãy để Xông Nhà Tẩy Uế đồng hành cùng góc nhỏ an yên của bạn, nơi khói trầm dịu nhẹ xoa dịu mọi vết thương tâm hồn và nuôi dưỡng năng lượng sống mỗi ngày."
     ]
   },
   {
@@ -60,7 +60,7 @@ export const BLOG_POSTS: BlogPost[] = [
     content: [
       "Nguyên lý Ngũ hành (Kim - Mộc - Thủy - Hỏa - Thổ) là nền tảng triết học phương Đông giải thích sự vận động của vạn vật trong vũ trụ. Khi áp dụng vào không gian nhà ở, một ngôi nhà có phong thủy tốt là nơi dòng năng lượng của năm yếu tố này đạt được sự tương sinh, hỗ trợ lẫn nhau hài hòa nhất.",
       "Tuy nhiên, cuộc sống đô thị chật hẹp cùng các vật liệu nhân tạo như kim loại cứng nhắc, nhựa tổng hợp làm dòng khí tự nhiên bị chặn đứng, dẫn đến sự thiếu hụt hành Mộc và hành Thổ tự nhiên trong nhà.",
-      "Thảo mộc tự nhiên Kiều Sang đại diện cho hành Mộc (lá cây ngải cứu, vỏ cam khô) và hành Thổ (đất lành nuôi dưỡng các loài thảo mộc, hương trầm mộc mạc âm ỉ). Khi đốt thảo mộc, ngọn lửa hành Hỏa tương sinh kết hợp với dòng khói tỏa mang theo hương thơm thanh mát của hành Thủy tinh khiết, giúp cân bằng và trung hòa các năng lượng Kim cứng nhắc trong các căn hộ hiện đại.",
+      "Thảo mộc tự nhiên Xông Nhà Tẩy Uế đại diện cho hành Mộc (lá cây ngải cứu, vỏ cam khô) và hành Thổ (đất lành nuôi dưỡng các loài thảo mộc, hương trầm mộc mạc âm ỉ). Khi đốt thảo mộc, ngọn lửa hành Hỏa tương sinh kết hợp với dòng khói tỏa mang theo hương thơm thanh mát của hành Thủy tinh khiết, giúp cân bằng và trung hòa các năng lượng Kim cứng nhắc trong các căn hộ hiện đại.",
       "Bí quyết sắp xếp phong thủy thảo mộc trong nhà:",
       "- Khu vực Phía Đông (Hành Mộc - Sức khỏe): Thích hợp đặt các bó thảo mộc hoặc trà hoa cúc vàng để nuôi dưỡng sinh khí, đem lại năng lượng tươi mới cho sức khỏe gia đình.",
       "- Khu vực Phía Nam (Hành Hỏa - Danh tiếng & Năng lượng): Rất thích hợp đốt nụ trầm hương thảo mộc để kích hoạt dòng vượng khí nhiệt huyết, hanh thông vận số sự nghiệp.",
@@ -83,7 +83,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "- Thanh lọc và bù nước: Tăng cường quá trình trao đổi chất tự nhiên, loại bỏ các chất cặn bã trong hệ tiêu hóa.",
       "- Xoa dịu tinh thần: Hương thơm tự nhiên giúp giảm lo âu, mang lại tâm thế bình tĩnh để bắt đầu ngày mới hiệu quả.",
       "- Chống oxy hóa vượt trội: Các dưỡng chất từ hoa cúc sấy khô bảo vệ tế bào khỏi tác hại của các gốc tự do.",
-      "Hãy cùng Thảo Mộc Kiều Sang duy trì thói quen uống trà an yên mỗi ngày để nuôi dưỡng một tâm hồn bình lặng và một cơ thể tràn đầy sinh khí."
+      "Hãy cùng Xông Nhà Tẩy Uế duy trì thói quen uống trà an yên mỗi ngày để nuôi dưỡng một tâm hồn bình lặng và một cơ thể tràn đầy sinh khí."
     ]
   }
 ];

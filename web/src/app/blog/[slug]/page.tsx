@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Xông Nhà Tẩy Uế</title>
 // name="description"
 // og:
 
@@ -278,7 +278,7 @@ export default function BlogPostDetail({ params }: BlogPostDetailProps) {
                 </div>
                 
                 <Link href="/products" className="block text-center text-sm font-serif font-bold text-[#043616] uppercase border-2 border-primary/20 hover:border-[#043616] hover:bg-[#043616] hover:text-white rounded-full py-2.5 transition-all">
-                  Ghé Cửa Hàng Kiều Sang
+                  Ghé Cửa Hàng Xông Nhà Tẩy Uế
                 </Link>
               </div>
 

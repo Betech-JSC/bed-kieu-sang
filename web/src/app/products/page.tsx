@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Xông Nhà Tẩy Uế</title>
 // name="description"
 // og:
 
@@ -39,7 +39,7 @@ function ProductsCatalogContent() {
     selectedCategory === "Tất cả" 
       ? "Sản phẩm Thảo Mộc Tự Nhiên" 
       : `Danh mục ${selectedCategory}`,
-    `Khám phá các sản phẩm thảo mộc tự nhiên cao cấp thuộc danh mục ${selectedCategory} tại Thảo Mộc Kiều Sang.`
+    `Khám phá các sản phẩm thảo mộc tự nhiên cao cấp thuộc danh mục ${selectedCategory} tại Xông Nhà Tẩy Uế.`
   );
 
   useEffect(() => {
@@ -189,7 +189,7 @@ function ProductsCatalogContent() {
           </div>
           
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 text-left space-y-3">
-            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Thảo Mộc Kiều Sang</span>
+            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Xông Nhà Tẩy Uế</span>
             <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">CỬA HÀNG</h1>
           </div>
         </section>

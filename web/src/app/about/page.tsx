@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Xông Nhà Tẩy Uế</title>
 // name="description"
 // og:
 
@@ -105,10 +105,10 @@ export default function AboutPage() {
                 TỪ NHỮNG VÙNG ĐỒI NÚI HOANG SƠ ĐẾN KHÔNG GIAN SỐNG AN YÊN
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-light text-justify">
-                Thảo Mộc Kiều Sang được kiến tạo từ niềm trăn trở trước cuộc sống phố thị ồn ào và khói bụi. Chúng tôi nhận thấy nhu cầu tìm về sự an nhiên, chữa lành tinh thần bằng hương thơm tự nhiên của cỏ cây bản địa đang trở nên thiết yếu hơn bao giờ hết.
+                Xông Nhà Tẩy Uế được kiến tạo từ niềm trăn trở trước cuộc sống phố thị ồn ào và khói bụi. Chúng tôi nhận thấy nhu cầu tìm về sự an nhiên, chữa lành tinh thần bằng hương thơm tự nhiên của cỏ cây bản địa đang trở nên thiết yếu hơn bao giờ hết.
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-light text-justify">
-                Hành trình của Kiều Sang bắt đầu từ việc ngược xuôi qua các vùng núi cao Tây Bắc, Trung Bộ đến vùng đất đỏ Tây Nguyên để tìm kiếm những loại thảo mộc tốt nhất như sả chanh, ngải cứu khô, trầm hương, vỏ quế nguyên chất. Chúng tôi kết hợp các vị thuốc Nam lành tính theo công thức cổ truyền để tạo nên những bó thảo mộc xông nhà tinh sạch.
+                Hành trình của Xông Nhà Tẩy Uế bắt đầu từ việc tìm kiếm những loại thảo mộc tốt tại các vùng núi cao Tây Bắc, Trung Bộ và vùng đất đỏ Tây Nguyên như sả chanh, ngải cứu khô, trầm hương, vỏ quế nguyên chất. Chúng tôi kết hợp các vị thuốc Nam lành tính theo công thức cổ truyền để tạo nên những bó thảo mộc xông nhà tinh sạch.
               </p>
             </div>
 
@@ -131,10 +131,10 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary uppercase">
-                CAM KẾT TỪ KIỀU SANG
+                CAM KẾT TỪ XÔNG NHÀ TẨY UẾ
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground font-light">
-                Kiều Sang luôn đặt sức khỏe người tiêu dùng và sự trong lành của môi trường lên vị trí tối cao.
+                Xông Nhà Tẩy Uế luôn đặt sức khỏe người tiêu dùng và sự trong lành của môi trường lên vị trí tối cao.
               </p>
             </div>
 
@@ -168,7 +168,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="font-serif text-base font-bold text-primary">Phát Triển Bền Vững</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Kiều Sang hợp tác trực tiếp với các hộ nông dân địa phương ở các vùng trồng dược liệu sạch, thu mua với mức giá công bằng để cùng phát triển sinh kế bản địa vững bền.
+                  Xông Nhà Tẩy Uế hợp tác trực tiếp với các hộ nông dân địa phương ở các vùng trồng dược liệu sạch, thu mua với mức giá công bằng để cùng phát triển sinh kế bản địa vững bền.
                 </p>
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function AboutPage() {
           <div className="relative w-full aspect-[21/9] md:aspect-[24/10] overflow-hidden rounded-[32px] border border-border/20 shadow-xs">
             <Image
               src="/images/about_horizontal_banner.png"
-              alt="Không gian tĩnh lặng Kiều Sang"
+              alt="Không gian tĩnh lặng Xông Nhà Tẩy Uế"
               fill
               className="object-cover"
               priority

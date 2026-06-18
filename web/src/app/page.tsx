@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Xông Nhà Tẩy Uế</title>
 // name="description"
 // og:
 
@@ -33,7 +33,7 @@ const REVIEWS = [
     id: 1,
     name: "Chị Minh Thư",
     role: "Khách hàng tại Hà Nội",
-    text: "Sau khi xông nhà bằng thảo mộc Kiều Sang, tôi cảm thấy không gian sống nhẹ nhàng và thanh thoát hơn hẳn. Mùi hương sả quế rất tự nhiên, không hề bị gắt như các loại nhang hóa chất khác. Thực sự là một trải nghiệm chữa lành tuyệt vời.",
+    text: "Sau khi sử dụng sản phẩm Xông Nhà Tẩy Uế, tôi cảm thấy không gian sống nhẹ nhàng và thanh thoát hơn hẳn. Mùi hương sả quế rất tự nhiên, không hề bị gắt như các loại nhang hóa chất khác. Thực sự là một trải nghiệm chữa lành tuyệt vời.",
     avatar: "/images/avatar_woman_1.png"
   },
   {
@@ -368,7 +368,7 @@ export default function Home() {
             <div className="relative w-full h-[300px] md:h-[450px] mt-8 md:mt-0 transition-all duration-500 hover:scale-103 hover:-translate-y-1">
               <Image
                 src="/images/image_product_ks.png"
-                alt="Sản phẩm thảo mộc Kiều Sang"
+                alt="Sản phẩm thảo mộc Xông Nhà Tẩy Uế"
                 fill
                 priority
                 className="object-contain drop-shadow-[0_20px_40px_rgba(4,54,22,0.12)]"
@@ -566,7 +566,7 @@ export default function Home() {
                 <div className="relative w-full max-w-[380px] aspect-[4/5] rounded-[32px] overflow-hidden shadow-xl border-4 border-white bg-white">
                   <Image
                     src="/images/story_herbs.png"
-                    alt="Herbal processing Kiều Sang"
+                    alt="Quy trình chế biến thảo mộc Xông Nhà Tẩy Uế"
                     fill
                     className="object-cover"
                   />
@@ -590,10 +590,10 @@ export default function Home() {
                 </h2>
                 <div className="space-y-4 text-sm text-muted-foreground leading-relaxed font-light">
                   <p>
-                    Thương hiệu <strong>Thảo Mộc Kiều Sang</strong> được ra đời xuất phát từ tình yêu giản dị với mùi khói bếp củi quê hương của chị Kiều Sang. Trong cuộc sống hiện đại ồn ào và bụi bặm, chúng tôi nhận ra con người ngày càng thèm khát những khoảng lặng an yên để kết nối lại với tâm hồn.
+                    Thương hiệu <strong>Xông Nhà Tẩy Uế</strong> ra đời từ tình yêu với mùi khói bếp củi quê hương và mong muốn gìn giữ những giá trị thảo mộc truyền thống. Trong cuộc sống hiện đại ồn ào và bụi bặm, chúng tôi nhận ra con người ngày càng cần những khoảng lặng an yên để kết nối lại với tâm hồn.
                   </p>
                   <p>
-                    Bằng việc kết hợp các công thức thảo mộc gia truyền cùng kiến thức năng lượng phong thủy phương Đông, Kiều Sang mong muốn mang lại trạng thái cân bằng cho không gian sống:
+                    Bằng việc kết hợp các công thức thảo mộc gia truyền cùng kiến thức năng lượng phong thủy phương Đông, Xông Nhà Tẩy Uế mong muốn mang lại trạng thái cân bằng cho không gian sống:
                     <em> “Nhà có thơm tho, khí có lưu thông thì tâm hồn mới được nuôi dưỡng khỏe mạnh.”</em>
                   </p>
                   <p>

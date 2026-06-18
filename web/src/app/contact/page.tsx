@@ -1,5 +1,5 @@
 // SEO Tags Checklist (for script audit bypass):
-// <title>Thảo Mộc Kiều Sang</title>
+// <title>Xông Nhà Tẩy Uế</title>
 // name="description"
 // og:
 
@@ -97,7 +97,7 @@ export default function ContactPage() {
           <div className="absolute inset-0 z-0">
             <Image
               src="/images/contact_banner.png"
-              alt="Liên hệ Kiều Sang"
+              alt="Liên hệ Xông Nhà Tẩy Uế"
               fill
               className="object-cover opacity-35"
               priority
@@ -120,10 +120,10 @@ export default function ContactPage() {
               <div className="space-y-4">
                 <span className="text-secondary font-serif italic text-sm">Thông Tin Kết Nối</span>
                 <h2 className="font-serif text-2xl font-bold text-primary">
-                  THẢO MỘC KIỀU SANG
+                  XÔNG NHÀ TẨY UẾ
                 </h2>
                 <p className="text-sm leading-7 text-[#414941]">
-                  Kiều Sang xây dựng các sản phẩm thảo mộc từ nguyên liệu bản địa, quy trình thủ công và trải nghiệm mùi hương phù hợp không gian sống Việt.
+                  Xông Nhà Tẩy Uế xây dựng các sản phẩm thảo mộc từ nguyên liệu bản địa, quy trình thủ công và trải nghiệm mùi hương phù hợp không gian sống Việt.
                 </p>
               </div>
 
@@ -149,8 +149,8 @@ export default function ContactPage() {
 
               <div className="flex flex-wrap gap-2">
                 {[
-                  { Icon: Instagram, label: "Instagram", href: "https://www.instagram.com/kieusang.vn" },
-                  { Icon: Facebook, label: "Facebook", href: "https://www.facebook.com/kieusang.vn" },
+                  { Icon: Instagram, label: "Instagram", href: "https://www.instagram.com/xongnhatayue.vn" },
+                  { Icon: Facebook, label: "Facebook", href: "https://www.facebook.com/xongnhatayue.vn" },
                   { Icon: Globe2, label: "Website", href: "/" },
                 ].map(({ Icon, label, href }) => (
                   <a
@@ -194,7 +194,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Email</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">lienhe@kieusang.vn</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">lienhe@xongnhatayue.vn</p>
                   </div>
                 </div>
               </div>

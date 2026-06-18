@@ -20,7 +20,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Chào mừng - Thảo Mộc Kiều Sang CMS" />
+    <Head title="Chào mừng - Xông Nhà Tẩy Uế CMS" />
     
     <div class="relative flex min-h-screen flex-col items-center justify-center bg-[#FAF6EE] overflow-hidden">
         <!-- Botanical Decorative Background Elements -->
@@ -37,7 +37,7 @@ defineProps({
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold tracking-wide font-serif text-[#043616]">Thảo Mộc Kiều Sang</h1>
+                    <h1 class="text-3xl font-bold tracking-wide font-serif text-[#043616]">Xông Nhà Tẩy Uế</h1>
                     <p class="text-sm font-semibold tracking-wider uppercase text-zinc-500 mt-1">Hệ Thống Quản Trị CMS</p>
                 </div>
             </div>
@@ -47,7 +47,7 @@ defineProps({
                 <div class="space-y-2">
                     <h2 class="text-lg font-serif font-bold text-emerald-950">Chào mừng bạn trở lại</h2>
                     <p class="text-xs text-zinc-500 leading-relaxed">
-                        Hệ thống quản lý thông tin sản phẩm, bài viết và đơn đặt hàng của cửa hàng thảo mộc tự nhiên Kiều Sang.
+                        Hệ thống quản lý sản phẩm, nội dung website và đơn đặt hàng Xông Nhà Tẩy Uế.
                     </p>
                 </div>
 

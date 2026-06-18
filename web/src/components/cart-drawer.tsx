@@ -200,7 +200,7 @@ export default function CartDrawer({
                   Chưa có sản phẩm thanh lọc nào
                 </p>
                 <p className="text-sm text-muted-foreground max-w-xs">
-                  Hãy bắt đầu chăm sóc không gian sống bằng những bó thảo mộc thơm lành từ Kiều Sang.
+                  Hãy bắt đầu chăm sóc không gian sống bằng những bó thảo mộc thơm lành từ Xông Nhà Tẩy Uế.
                 </p>
                 <button
                   onClick={onClose}
@@ -410,7 +410,7 @@ export default function CartDrawer({
                           <p>Số tài khoản: <strong>0779440918</strong></p>
                           <p>Tên tài khoản: <strong>DO VAN VU</strong></p>
                           <p>
-                            Nội dung CK: <strong>KIEUSANG {formData.phone || "[SĐT của bạn]"}</strong>
+                            Nội dung CK: <strong>XONGNHATAYUE {formData.phone || "[SĐT của bạn]"}</strong>
                           </p>
                         </div>
                         <p className="text-[10px] text-primary italic mt-1">
