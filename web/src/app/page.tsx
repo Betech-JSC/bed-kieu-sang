@@ -484,6 +484,7 @@ export default function Home() {
         </section>
 
         {/* New Products Section (Carousel) */}
+        {newProducts.length > 0 && (
         <section id="new-arrivals" className="py-20 bg-background border-t border-border/40 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="flex justify-between items-end mb-12">
@@ -520,8 +521,10 @@ export default function Home() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Sale Products Section (Carousel) */}
+        {saleProducts.length > 0 && (
         <section id="sale-arrivals" className="py-20 bg-[#FAF6EE] border-t border-border/40 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="flex justify-between items-end mb-12">
@@ -558,6 +561,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Storytelling Section (Asymmetric) */}
         <section id="story" className="py-24 bg-[#FAF6EE] border-t border-border/40 relative overflow-hidden">
