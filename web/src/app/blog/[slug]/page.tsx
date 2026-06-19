@@ -15,7 +15,7 @@ import { useSeo } from "@/hooks/useSeo";
 import { Product } from "@/components/product-card";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
-import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
+import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 
 // Sample products for recommendation
@@ -106,10 +106,10 @@ export default function BlogPostDetail({ params }: BlogPostDetailProps) {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string | number, delta: number) => {
+  const handleUpdateQuantity = (itemKey: string, delta: number) => {
     const newCart = cart
       .map((item) => {
-        if (item.product.id === productId) {
+        if (getCartItemKey(item) === itemKey) {
           const newQty = item.quantity + delta;
           return { ...item, quantity: newQty };
         }
@@ -120,8 +120,8 @@ export default function BlogPostDetail({ params }: BlogPostDetailProps) {
     saveCart(newCart);
   };
 
-  const handleRemoveItem = (productId: string | number) => {
-    const newCart = cart.filter((item) => item.product.id !== productId);
+  const handleRemoveItem = (itemKey: string) => {
+    const newCart = cart.filter((item) => getCartItemKey(item) !== itemKey);
     saveCart(newCart);
   };
 
