@@ -28,10 +28,8 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
     }).format(price);
   };
 
-  const cleanPhone = order.phone.replace(/\s+/g, "");
-
   // Dynamic VietQR code URL
-  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=XONGNHATAYUE%20${cleanPhone}&accountName=DO%20VAN%20VU`;
+  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=${order.id}&accountName=DO%20VAN%20VU`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans">
@@ -149,9 +147,9 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
                   <p>Bank: <strong>MBBank</strong></p>
                   <p>Chủ TK: <strong>DO VAN VU</strong></p>
                   <p className="flex items-center justify-between mt-1">
-                    <span>Nội dung: <strong>XONGNHATAYUE {cleanPhone}</strong></span>
+                    <span>Nội dung: <strong>{order.id}</strong></span>
                     <button
-                      onClick={() => handleCopyText(`XONGNHATAYUE ${cleanPhone}`)}
+                      onClick={() => handleCopyText(order.id)}
                       className="p-1 hover:bg-neutral-200 rounded-sm text-primary transition-all ml-1"
                     >
                       {copied ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
