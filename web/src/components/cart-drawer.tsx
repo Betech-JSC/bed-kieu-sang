@@ -419,7 +419,7 @@ export default function CartDrawer({
                           <p>Số tài khoản: <strong>0779440918</strong></p>
                           <p>Tên tài khoản: <strong>DO VAN VU</strong></p>
                           <p>
-                            Nội dung CK: <strong>XONGNHATAYUE {formData.phone || "[SĐT của bạn]"}</strong>
+                            Nội dung CK: <strong>[Mã đơn hàng của bạn]</strong>
                           </p>
                         </div>
                         <p className="text-[10px] text-primary italic mt-1">
