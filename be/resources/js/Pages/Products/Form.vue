@@ -5,7 +5,11 @@ import { ref } from 'vue';
 
 const props = defineProps({
     product: Object,
-    categories: Array
+    categories: Array,
+    variantConfiguration: {
+        type: Object,
+        default: () => ({ has_variants: true, variants: [] })
+    }
 });
 
 const isEdit = ref(!!props.product);
@@ -38,7 +42,37 @@ const form = useForm({
     status: props.product?.status || 'active',
     seo_title: props.product?.seo_title || '',
     seo_desc: props.product?.seo_desc || '',
+    has_variants: true,
+    variants: (props.variantConfiguration?.variants || []).map((variant) => ({
+        ...variant,
+        image: null,
+    })),
 });
+
+const slugify = (value) => value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+const addVariant = () => {
+    const position = form.variants.length + 1;
+    form.variants.push({
+        name: '',
+        sku: `${slugify(form.slug || form.name || 'san-pham').toUpperCase()}-${position}`,
+        price: form.price || 0,
+        original_price: form.original_price || '',
+        image_path: '',
+        image: null,
+        stock: 0,
+        status: 'active',
+    });
+};
+const removeVariant = (index) => form.variants.splice(index, 1);
+const handleVariantImage = (event, index) => {
+    form.variants[index].image = event.target.files?.[0] || null;
+};
 
 const benefitInput = ref('');
 const addBenefit = () => {
@@ -72,9 +106,9 @@ const submit = () => {
         form.transform((data) => ({
             ...data,
             _method: 'PUT'
-        })).post(route('admin.products.update', props.product.id));
+        })).post(route('admin.products.update', props.product.id), { forceFormData: true });
     } else {
-        form.post(route('admin.products.store'));
+        form.post(route('admin.products.store'), { forceFormData: true });
     }
 };
 </script>
@@ -167,6 +201,67 @@ const submit = () => {
                                 <option value="active">Đang kinh doanh</option>
                                 <option value="inactive">Tạm ngưng / Nháp</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-zinc-100 pt-6 space-y-5">
+                        <div>
+                            <div>
+                                <h3 class="text-md font-serif font-bold text-emerald-950 uppercase tracking-wider">Phân loại sản phẩm</h3>
+                                <p class="text-xs text-zinc-500 mt-1">Phân loại được bật sẵn. Thêm từng lựa chọn như trên Shopee; mỗi phân loại có giá bán, giá gốc/giảm giá, SKU, ảnh và tồn kho riêng.</p>
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl border border-zinc-200 bg-white p-4 space-y-4">
+                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-bold text-emerald-950">Danh sách phân loại</h4>
+                                        <p class="text-xs text-zinc-500 mt-1">Giá giảm được thể hiện bằng “Giá gốc” cao hơn “Giá bán”.</p>
+                                    </div>
+                                    <button type="button" @click="addVariant" class="px-4 py-2 rounded-lg bg-[#043616] text-white text-xs font-bold hover:bg-[#112215]">+ Thêm phân loại</button>
+                                </div>
+
+                                <div v-if="form.variants.length === 0" class="rounded-lg border border-dashed border-zinc-300 p-5 text-center text-xs text-zinc-500">
+                                    Chưa có phân loại. Nhấn “Thêm phân loại” để bắt đầu.
+                                </div>
+
+                                <div v-else class="overflow-x-auto border border-zinc-200 rounded-lg">
+                                    <table class="min-w-[1120px] w-full text-xs">
+                                        <thead class="bg-zinc-50 text-emerald-950 uppercase tracking-wider">
+                                            <tr>
+                                                <th class="p-3 text-left">Phân loại</th>
+                                                <th class="p-3 text-left w-40">SKU</th>
+                                                <th class="p-3 text-left w-32">Giá bán</th>
+                                                <th class="p-3 text-left w-32">Giá gốc</th>
+                                                <th class="p-3 text-left w-24">Tồn kho</th>
+                                                <th class="p-3 text-left w-32">Trạng thái</th>
+                                                <th class="p-3 text-left w-48">Ảnh riêng</th>
+                                                <th class="p-3 text-center w-16"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-zinc-100">
+                                            <tr v-for="(variant, variantIndex) in form.variants" :key="variantIndex" class="align-top">
+                                                <td class="p-2"><input v-model="variant.name" required placeholder="Ví dụ: Hộp 20 gói" class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
+                                                <td class="p-2"><input v-model="variant.sku" required class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
+                                                <td class="p-2"><input v-model="variant.price" type="number" min="0" required class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
+                                                <td class="p-2"><input v-model="variant.original_price" type="number" min="0" class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
+                                                <td class="p-2"><input v-model="variant.stock" type="number" min="0" required class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
+                                                <td class="p-2">
+                                                    <select v-model="variant.status" class="w-full border border-zinc-200 rounded-md px-2 py-2 bg-white">
+                                                        <option value="active">Đang bán</option>
+                                                        <option value="inactive">Tạm ẩn</option>
+                                                    </select>
+                                                </td>
+                                                <td class="p-2">
+                                                    <div v-if="variant.image_path" class="text-[10px] text-emerald-700 mb-1 truncate max-w-40">Đã có ảnh riêng</div>
+                                                    <input type="file" accept="image/*" @change="handleVariantImage($event, variantIndex)" class="w-full text-[10px] file:mr-2 file:rounded file:border-0 file:bg-emerald-50 file:px-2 file:py-1.5 file:text-emerald-800" />
+                                                </td>
+                                                <td class="p-2 text-center"><button type="button" @click="removeVariant(variantIndex)" class="px-2 py-2 text-rose-700 font-bold hover:bg-rose-50 rounded">Xoá</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p class="text-[11px] text-zinc-500">Khi lưu, giá hiển thị ngoài danh sách tự lấy mức thấp nhất trong các phân loại đang bán.</p>
                         </div>
                     </div>
 

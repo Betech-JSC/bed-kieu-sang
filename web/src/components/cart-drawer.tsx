@@ -3,13 +3,17 @@
 import { useState } from "react";
 import Image from "next/image";
 import { X, ShoppingBag, Plus, Minus, Trash2, Award, ArrowRight } from "lucide-react";
-import { Product } from "./product-card";
+import { Product, ProductVariant } from "./product-card";
 import { submitOrder } from "@/lib/api";
 
 export interface CartItem {
   product: Product;
+  variant?: ProductVariant;
   quantity: number;
 }
+
+export const getCartItemKey = (item: CartItem) => `${item.product.id}:${item.variant?.id ?? "base"}`;
+const getItemPrice = (item: CartItem) => item.variant?.price ?? item.product.price;
 
 export interface OrderDetails {
   id: string;
@@ -47,8 +51,8 @@ interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity: (productId: string | number, delta: number) => void;
-  onRemoveItem: (productId: string | number) => void;
+  onUpdateQuantity: (itemKey: string, delta: number) => void;
+  onRemoveItem: (itemKey: string) => void;
   onCheckoutComplete: (orderDetails: OrderDetails) => void;
 }
 
@@ -80,7 +84,7 @@ export default function CartDrawer({
   };
 
   const total = cartItems.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => sum + getItemPrice(item) * item.quantity,
     0
   );
 
@@ -120,6 +124,7 @@ export default function CartDrawer({
       return {
         product_id: Number.isInteger(parsedId) ? parsedId : undefined,
         product_slug: productSlug,
+        variant_id: item.variant?.id,
         quantity: item.quantity
       };
     });
@@ -218,10 +223,10 @@ export default function CartDrawer({
                   </p>
                   <div className="divide-y divide-border/60">
                     {cartItems.map((item) => (
-                      <div key={item.product.id} className="flex py-4 gap-4 items-center">
+                      <div key={getCartItemKey(item)} className="flex py-4 gap-4 items-center">
                         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted p-1">
                           <Image
-                            src={item.product.image}
+                            src={item.variant?.image || item.product.image}
                             alt={item.product.name}
                             fill
                             className="object-contain"
@@ -236,14 +241,17 @@ export default function CartDrawer({
                               ? (item.product.category as any).name
                               : item.product.category}
                           </p>
+                          {item.variant && (
+                            <p className="text-[11px] font-medium text-emerald-700 mt-0.5">{item.variant.label} · {item.variant.sku}</p>
+                          )}
                           <span className="text-sm font-semibold text-primary mt-1 block">
-                            {formatPrice(item.product.price)}
+                            {formatPrice(getItemPrice(item))}
                           </span>
                         </div>
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-2 bg-[#FAF6EE] rounded-full border border-border px-2 py-1">
                           <button
-                            onClick={() => onUpdateQuantity(item.product.id, -1)}
+                            onClick={() => onUpdateQuantity(getCartItemKey(item), -1)}
                             className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75"
                           >
                             <Minus className="h-3 w-3" />
@@ -252,15 +260,16 @@ export default function CartDrawer({
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => onUpdateQuantity(item.product.id, 1)}
-                            className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75"
+                            onClick={() => onUpdateQuantity(getCartItemKey(item), 1)}
+                            disabled={Boolean(item.variant && item.quantity >= item.variant.stock)}
+                            className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75 disabled:opacity-35"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
                         {/* Remove */}
                         <button
-                          onClick={() => onRemoveItem(item.product.id)}
+                          onClick={() => onRemoveItem(getCartItemKey(item))}
                           className="p-2 text-muted-foreground hover:text-destructive hover:bg-red-50 rounded-full transition-all active:scale-90"
                         >
                           <Trash2 className="h-4 w-4" />
