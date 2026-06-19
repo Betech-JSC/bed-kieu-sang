@@ -35,7 +35,7 @@ function mapProduct(p: any) {
     ...p,
     price: Number(p.price || 0),
     category: typeof p.category === "object" && p.category !== null ? p.category.name : p.category,
-    image: p.image_path || p.image,
+    image: p.image_path || p.image || "/images/logo.png",
     originalPrice: p.original_price != null ? Number(p.original_price) : p.originalPrice,
     total_sales: p.total_sales ?? p.totalSales ?? 0,
     is_best_seller: Boolean(p.is_best_seller),
