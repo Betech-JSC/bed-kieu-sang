@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\Media;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,7 @@ class ProductController extends Controller
         return Inertia::render('Products/Form', [
             'categories' => Category::where('type', 'product')->get(),
             'variantConfiguration' => ['has_variants' => false, 'variants' => []],
+            'media' => Media::latest()->get(),
         ]);
     }
 
@@ -65,6 +67,7 @@ class ProductController extends Controller
             'product' => $product,
             'categories' => Category::where('type', 'product')->get(),
             'variantConfiguration' => $this->variantConfiguration($product),
+            'media' => Media::latest()->get(),
         ]);
     }
 

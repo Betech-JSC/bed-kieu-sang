@@ -29,13 +29,30 @@ function normalizeApiUrl(url: string) {
     .replace(/\/api$/, "/api/v1");
 }
 
+function resolveImageUrl(path: string | undefined | null): string {
+  if (!path) return "/images/logo.png";
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  if (path.startsWith("/storage/")) {
+    const apiUrl = getApiUrl();
+    try {
+      const urlObj = new URL(apiUrl);
+      return `${urlObj.protocol}//${urlObj.host}${path}`;
+    } catch (e) {
+      return `http://127.0.0.1:8000${path}`;
+    }
+  }
+  return path;
+}
+
 function mapProduct(p: any) {
   if (!p) return p;
   return {
     ...p,
     price: Number(p.price || 0),
     category: typeof p.category === "object" && p.category !== null ? p.category.name : p.category,
-    image: p.image_path || p.image || "/images/logo.png",
+    image: resolveImageUrl(p.image_path || p.image),
     originalPrice: p.original_price != null ? Number(p.original_price) : p.originalPrice,
     total_sales: p.total_sales ?? p.totalSales ?? 0,
     is_best_seller: Boolean(p.is_best_seller),
@@ -45,7 +62,7 @@ function mapProduct(p: any) {
       price: Number(variant.price || 0),
       original_price: variant.original_price != null ? Number(variant.original_price) : undefined,
       stock: Number(variant.stock || 0),
-      image: variant.image_path || undefined,
+      image: variant.image_path ? resolveImageUrl(variant.image_path) : undefined,
     })) : [],
   };
 }
@@ -55,7 +72,7 @@ function mapBlog(b: any) {
   return {
     ...b,
     category: typeof b.category === "object" && b.category !== null ? b.category.name : b.category,
-    image: b.image_path || b.image,
+    image: resolveImageUrl(b.image_path || b.image),
     date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : b.date || "Gần đây",
   };
 }
@@ -146,7 +163,7 @@ export async function getBanners(page = "home", position = "hero") {
   if (data && Array.isArray(data.data)) {
     return data.data.map(b => ({
       ...b,
-      image: b.image_path || b.image
+      image: resolveImageUrl(b.image_path || b.image)
     }));
   }
   return [];
