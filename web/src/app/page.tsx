@@ -287,11 +287,33 @@ export default function Home() {
 
       {/* Main content area */}
       <main className="pt-20">
-        {/* Hero Section (Full-Width 2:1 Aspect Ratio Background Banner) */}
+        {/* Social Proof Counter */}
+        <section className="border-b border-border/60 bg-white">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-12">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">Được khách hàng tin chọn</p>
+              <h2 className="mt-2 font-serif text-2xl font-bold text-primary md:text-3xl">
+                Hơn {formatCounter(displayedSalesCount)}+ sản phẩm đã được bán ra
+              </h2>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-[#FFFDF9] px-5 py-4">
+              <div className="flex items-center gap-1 text-[#604b12]" aria-label={`${socialProof.rating} trên 5 sao`}>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star key={index} className="h-4 w-4 fill-[#E5C44B] text-[#E5C44B]" />
+                ))}
+              </div>
+              <div className="text-sm font-semibold text-primary">
+                {socialProof.rating}/5 đánh giá từ khách hàng
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Hero Section (Full-Width 2:1 Aspect Ratio Background Banner with Text-Safe Gradient) */}
         <section
           id="hero"
-          className="relative min-h-[550px] md:min-h-0 md:aspect-[2/1] w-full flex items-center overflow-hidden border-b border-border/10 bg-cover bg-center bg-no-repeat transition-all duration-700"
-          style={{ backgroundImage: `url('${banners.length > 0 ? banners[activeBannerIndex].image : "/images/hero_banner.png"}')` }}
+          className="relative min-h-[550px] md:min-h-0 md:aspect-[2/1] w-full flex items-center overflow-hidden border-b border-border/10 bg-cover bg-center bg-no-repeat transition-all duration-700 [--hero-gradient:linear-gradient(to_bottom,rgba(255,253,249,0.95)_0%,rgba(255,253,249,0.7)_100%)] md:[--hero-gradient:linear-gradient(to_right,rgba(255,253,249,0.96)_0%,rgba(255,253,249,0.8)_35%,rgba(255,253,249,0)_100%)]"
+          style={{ backgroundImage: `var(--hero-gradient), url('${banners.length > 0 ? banners[activeBannerIndex].image : "/images/hero_banner.png"}')` }}
         >
           {/* Atmospheric Steam Particles */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -329,7 +351,7 @@ export default function Home() {
               <h1 className="font-serif text-primary leading-tight text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 {banners.length > 0 ? (banners[activeBannerIndex].title || "Thảo Mộc Xông Nhà") : "Thảo Mộc Xông Nhà"}
               </h1>
-              <p className="text-sm md:text-base text-muted-foreground max-w-md leading-relaxed font-light">
+              <p className="text-sm md:text-base text-primary/95 max-w-md leading-relaxed font-medium">
                 {banners.length > 0 ? "Thanh lọc không gian sống với các sản phẩm thảo mộc chữa lành và bình an tinh thần." : "Thanh lọc không gian sống, khơi thông vận khí lành và mang lại sự bình an tuyệt đối cho tâm trí."}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -368,28 +390,6 @@ export default function Home() {
                 priority
                 className="object-contain drop-shadow-[0_20px_40px_rgba(4,54,22,0.12)]"
               />
-            </div>
-          </div>
-        </section>
-
-        {/* Social Proof Counter */}
-        <section className="border-b border-border/60 bg-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-12">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">Được khách hàng tin chọn</p>
-              <h2 className="mt-2 font-serif text-2xl font-bold text-primary md:text-3xl">
-                Hơn {formatCounter(displayedSalesCount)}+ sản phẩm đã được bán ra
-              </h2>
-            </div>
-            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-[#FFFDF9] px-5 py-4">
-              <div className="flex items-center gap-1 text-[#604b12]" aria-label={`${socialProof.rating} trên 5 sao`}>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Star key={index} className="h-4 w-4 fill-[#E5C44B] text-[#E5C44B]" />
-                ))}
-              </div>
-              <div className="text-sm font-semibold text-primary">
-                {socialProof.rating}/5 đánh giá từ khách hàng
-              </div>
             </div>
           </div>
         </section>
