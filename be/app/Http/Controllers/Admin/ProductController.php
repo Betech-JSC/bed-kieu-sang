@@ -98,7 +98,7 @@ class ProductController extends Controller
     {
         $productId = $product?->id;
 
-        return [
+        $rules = [
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:products,slug'.($productId ? ','.$productId : ''),
@@ -120,8 +120,11 @@ class ProductController extends Controller
             'seo_desc' => 'nullable|string',
             'has_variants' => 'nullable|boolean',
             'variants' => 'nullable|array|max:500',
-            'variants.*.name' => 'required|string|max:150',
-            'variants.*.sku' => [
+        ];
+
+        if (request()->boolean('has_variants')) {
+            $rules['variants.*.name'] = 'required|string|max:150';
+            $rules['variants.*.sku'] = [
                 'required', 'string', 'max:100', 'distinct',
                 function (string $attribute, mixed $value, \Closure $fail) use ($productId) {
                     $exists = ProductVariant::where('sku', $value)
@@ -131,14 +134,16 @@ class ProductController extends Controller
                         $fail('SKU này đã được sử dụng cho một sản phẩm khác.');
                     }
                 },
-            ],
-            'variants.*.price' => 'required|numeric|min:0',
-            'variants.*.original_price' => 'nullable|numeric|min:0',
-            'variants.*.image_path' => 'nullable|string',
-            'variants.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'variants.*.stock' => 'required|integer|min:0',
-            'variants.*.status' => 'required|in:active,inactive',
-        ];
+            ];
+            $rules['variants.*.price'] = 'required|numeric|min:0';
+            $rules['variants.*.original_price'] = 'nullable|numeric|min:0';
+            $rules['variants.*.image_path'] = 'nullable|string';
+            $rules['variants.*.image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $rules['variants.*.stock'] = 'required|integer|min:0';
+            $rules['variants.*.status'] = 'required|in:active,inactive';
+        }
+
+        return $rules;
     }
 
     private function validateVariants(array $validated): void
