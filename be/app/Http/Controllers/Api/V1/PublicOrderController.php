@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class PublicOrderController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'nullable|integer|exists:products,id',
             'items.*.product_slug' => 'nullable|string|exists:products,slug',
+            'items.*.variant_id' => 'nullable|integer|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
@@ -47,15 +49,46 @@ class PublicOrderController extends Controller
                     ->when(!empty($item['product_id']), fn ($query) => $query->whereKey($item['product_id']))
                     ->when(empty($item['product_id']) && !empty($item['product_slug']), fn ($query) => $query->where('slug', $item['product_slug']))
                     ->firstOrFail();
-                $itemTotal = $product->price * $item['quantity'];
+                if ($product->status !== 'active') {
+                    throw ValidationException::withMessages(['items' => "Sản phẩm {$product->name} hiện không còn được bán."]);
+                }
+
+                $variant = null;
+                $hasVariants = $product->variants()->exists();
+                if ($hasVariants && empty($item['variant_id'])) {
+                    throw ValidationException::withMessages(['items' => "Vui lòng chọn phân loại cho sản phẩm {$product->name}."]);
+                }
+
+                if (!empty($item['variant_id'])) {
+                    $variant = ProductVariant::query()
+                        ->whereKey($item['variant_id'])
+                        ->lockForUpdate()
+                        ->firstOrFail();
+                    if ($variant->product_id !== $product->id || $variant->status !== 'active') {
+                        throw ValidationException::withMessages(['items' => "Phân loại của {$product->name} không hợp lệ."]);
+                    }
+                    if ($variant->stock < $item['quantity']) {
+                        throw ValidationException::withMessages(['items' => "Phân loại {$variant->name} chỉ còn {$variant->stock} sản phẩm."]);
+                    }
+                }
+
+                $unitPrice = $variant?->price ?? $product->price;
+                $itemTotal = $unitPrice * $item['quantity'];
                 $totalAmount += $itemTotal;
 
                 $itemsData[] = [
                     'product_id' => $product->id,
+                    'product_variant_id' => $variant?->id,
                     'product_name' => $product->name,
-                    'price' => $product->price,
+                    'variant_name' => $variant?->name,
+                    'variant_sku' => $variant?->sku,
+                    'price' => $unitPrice,
                     'quantity' => $item['quantity'],
                 ];
+
+                if ($variant) {
+                    $variant->decrement('stock', $item['quantity']);
+                }
             }
 
             // Create Order

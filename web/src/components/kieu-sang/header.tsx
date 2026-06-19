@@ -48,7 +48,7 @@ export default function Header({ onCartOpen }: HeaderProps) {
     { name: "Sản Phẩm", href: "/products" },
     { name: "Bán Chạy", href: "/best-sellers" },
     { name: "Góc An Yên", href: "/blog" },
-    { name: "Liên Hệ", href: "/contact" },
+    // { name: "Liên Hệ", href: "/contact" },
   ];
 
   return (
@@ -79,11 +79,10 @@ export default function Header({ onCartOpen }: HeaderProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`transition-colors pb-1 hover:text-[#043616] ${
-                  isActive
+                className={`transition-colors pb-1 hover:text-[#043616] ${isActive
                     ? "text-[#043616] font-bold border-b-2 border-[#043616]"
                     : "text-[#414941]"
-                }`}
+                  }`}
               >
                 {link.name}
               </Link>
@@ -132,9 +131,8 @@ export default function Header({ onCartOpen }: HeaderProps) {
               key={link.href}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-left py-2 border-b border-neutral-100 hover:text-primary ${
-                pathname === link.href ? "text-[#043616] font-bold" : "text-[#414941]"
-              }`}
+              className={`text-left py-2 border-b border-neutral-100 hover:text-primary ${pathname === link.href ? "text-[#043616] font-bold" : "text-[#414941]"
+                }`}
             >
               {link.name}
             </Link>

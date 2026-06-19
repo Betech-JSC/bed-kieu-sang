@@ -29,7 +29,7 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
   };
 
   // Dynamic VietQR code URL
-  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=${order.id}&accountName=DO%20VAN%20VU`;
+  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=${encodeURIComponent(order.id)}&accountName=DO%20VAN%20VU`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans">
@@ -96,12 +96,12 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
               </p>
               <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                 {order.items.map((item) => (
-                  <div key={item.product.id} className="flex justify-between items-center text-xs">
+                  <div key={`${item.product.id}:${item.variant?.id ?? "base"}`} className="flex justify-between items-center text-xs">
                     <span className="text-muted-foreground max-w-[150px] truncate">
-                      {item.product.name} <strong className="text-foreground">x{item.quantity}</strong>
+                      {item.product.name}{item.variant ? ` · ${item.variant.label}` : ""} <strong className="text-foreground">x{item.quantity}</strong>
                     </span>
                     <span className="font-semibold text-foreground">
-                      {formatPrice(item.product.price * item.quantity)}
+                      {formatPrice((item.variant?.price ?? item.product.price) * item.quantity)}
                     </span>
                   </div>
                 ))}
