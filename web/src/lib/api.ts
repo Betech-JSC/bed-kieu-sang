@@ -33,11 +33,20 @@ function mapProduct(p: any) {
   if (!p) return p;
   return {
     ...p,
+    price: Number(p.price || 0),
     category: typeof p.category === "object" && p.category !== null ? p.category.name : p.category,
     image: p.image_path || p.image,
-    originalPrice: p.original_price !== undefined ? p.original_price : p.originalPrice,
+    originalPrice: p.original_price != null ? Number(p.original_price) : p.originalPrice,
     total_sales: p.total_sales ?? p.totalSales ?? 0,
     is_best_seller: Boolean(p.is_best_seller),
+    has_variants: Boolean(p.has_variants),
+    variants: Array.isArray(p.variants) ? p.variants.map((variant: any) => ({
+      ...variant,
+      price: Number(variant.price || 0),
+      original_price: variant.original_price != null ? Number(variant.original_price) : undefined,
+      stock: Number(variant.stock || 0),
+      image: variant.image_path || undefined,
+    })) : [],
   };
 }
 
@@ -178,7 +187,7 @@ export async function submitOrder(payload: {
   shipping_address: string;
   notes?: string;
   payment_method: string;
-  items: Array<{ product_id?: string | number; product_slug?: string; quantity: number }>;
+  items: Array<{ product_id?: string | number; product_slug?: string; variant_id?: number; quantity: number }>;
 }) {
   const data = await fetchJson<any>("/orders", {
     method: "POST",

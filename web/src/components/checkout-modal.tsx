@@ -98,12 +98,12 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
               </p>
               <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                 {order.items.map((item) => (
-                  <div key={item.product.id} className="flex justify-between items-center text-xs">
+                  <div key={`${item.product.id}:${item.variant?.id ?? "base"}`} className="flex justify-between items-center text-xs">
                     <span className="text-muted-foreground max-w-[150px] truncate">
-                      {item.product.name} <strong className="text-foreground">x{item.quantity}</strong>
+                      {item.product.name}{item.variant ? ` · ${item.variant.label}` : ""} <strong className="text-foreground">x{item.quantity}</strong>
                     </span>
                     <span className="font-semibold text-foreground">
-                      {formatPrice(item.product.price * item.quantity)}
+                      {formatPrice((item.variant?.price ?? item.product.price) * item.quantity)}
                     </span>
                   </div>
                 ))}

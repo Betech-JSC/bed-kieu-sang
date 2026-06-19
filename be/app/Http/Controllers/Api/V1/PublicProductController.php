@@ -11,7 +11,7 @@ class PublicProductController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Product::with('category')->where('status', 'active');
+        $query = Product::with('category')->withCount('variants')->where('status', 'active');
 
         if ($request->has('category')) {
             $query->whereHas('category', function ($q) use ($request) {
@@ -28,18 +28,43 @@ class PublicProductController extends Controller
         }
 
         $products = $query->paginate($request->input('per_page', 12));
+        $products->getCollection()->transform(function (Product $product) {
+            $product->setAttribute('has_variants', $product->variants_count > 0);
+
+            return $product;
+        });
 
         return response()->json($products);
     }
 
     public function show(string $slug): JsonResponse
     {
-        $product = Product::with('category')
+        $product = Product::with([
+            'category',
+            'variants' => fn ($query) => $query->where('status', 'active'),
+        ])
+            ->withCount('variants')
             ->where('slug', $slug)
             ->where('status', 'active')
             ->firstOrFail();
 
-        return response()->json($product);
+        $payload = $product->toArray();
+        $payload['has_variants'] = $product->variants_count > 0;
+        $payload['variants'] = $product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'name' => $variant->name,
+                'sku' => $variant->sku,
+                'label' => $variant->name,
+                'price' => $variant->price,
+                'original_price' => $variant->original_price,
+                'image_path' => $variant->image_path,
+                'stock' => $variant->stock,
+                'status' => $variant->status,
+            ];
+        })->values();
+
+        return response()->json($payload);
     }
 
     public function categories(Request $request): JsonResponse

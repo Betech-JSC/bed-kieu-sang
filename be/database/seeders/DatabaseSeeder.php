@@ -530,7 +530,10 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 7. Create Extra Blog Posts
+        // 7. Create product variants for storefront testing
+        $this->call(ProductVariantSeeder::class);
+
+        // 8. Create Extra Blog Posts
         BlogPost::updateOrCreate(
             ['slug' => 'huong-dan-thien-dinh-voi-tram'],
             [
@@ -588,7 +591,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 8. Create Banners
+        // 9. Create Banners
         Banner::updateOrCreate(
             ['image_path' => '/images/hero_lifestyle.png'],
             [
@@ -633,7 +636,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 9. Create Testimonials
+        // 10. Create Testimonials
         Testimonial::create([
             'customer_name' => 'Nguyễn Thị Minh An',
             'customer_avatar' => null,
