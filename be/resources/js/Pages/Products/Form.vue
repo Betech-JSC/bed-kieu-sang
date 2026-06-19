@@ -80,7 +80,7 @@ const form = useForm({
     status: props.product?.status || 'active',
     seo_title: props.product?.seo_title || '',
     seo_desc: props.product?.seo_desc || '',
-    has_variants: true,
+    has_variants: props.variantConfiguration?.has_variants ?? false,
     variants: (props.variantConfiguration?.variants || []).map((variant) => ({
         ...variant,
         image: null,
@@ -288,14 +288,18 @@ const submit = () => {
                     </div>
 
                     <div class="border-t border-zinc-100 pt-6 space-y-5">
-                        <div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                                 <h3 class="text-md font-serif font-bold text-emerald-950 uppercase tracking-wider">Phân loại sản phẩm</h3>
-                                <p class="text-xs text-zinc-500 mt-1">Phân loại được bật sẵn. Thêm từng lựa chọn như trên Shopee; mỗi phân loại có giá bán, giá gốc/giảm giá, SKU, ảnh và tồn kho riêng.</p>
+                                <p class="text-xs text-zinc-500 mt-1">Chọn xem sản phẩm này có nhiều biến thể/phân loại khác nhau hay không.</p>
+                            </div>
+                            <div class="flex items-center space-x-2.5 bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5">
+                                <input type="checkbox" id="has_variants" v-model="form.has_variants" class="rounded text-[#043616] focus:ring-[#043616] w-4.5 h-4.5 cursor-pointer" />
+                                <label for="has_variants" class="text-xs font-bold text-emerald-950 cursor-pointer select-none">Sản phẩm có phân loại</label>
                             </div>
                         </div>
 
-                        <div class="rounded-xl border border-zinc-200 bg-white p-4 space-y-4">
+                        <div v-if="form.has_variants" class="rounded-xl border border-zinc-200 bg-white p-4 space-y-4">
                                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
                                         <h4 class="text-sm font-bold text-emerald-950">Danh sách phân loại</h4>
