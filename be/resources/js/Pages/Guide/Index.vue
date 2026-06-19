@@ -71,6 +71,20 @@ const sections = {
             ],
         },
         {
+            title: 'Tạo phân loại / biến thể sản phẩm',
+            description: 'Tạo các lựa chọn bán hàng như Gói tiêu chuẩn, Gói lớn, Combo hoặc dung tích khác nhau; mỗi phân loại có giá và hình ảnh riêng.',
+            steps: [
+                'Mở Sản phẩm, chọn Thêm sản phẩm hoặc Sửa sản phẩm đã có. Khu vực Phân loại sản phẩm luôn được bật sẵn trong biểu mẫu.',
+                'Nhấn “Thêm phân loại”. Nhập tên dễ hiểu với khách hàng, ví dụ Gói tiêu chuẩn, Chai 250 ml hoặc Hộp 20 túi lọc.',
+                'Nhập SKU riêng và không trùng với phân loại khác. Nên dùng mã ngắn, viết hoa, ví dụ NXTM-250ML hoặc HTAY-HOP-20.',
+                'Nhập Giá bán. Nếu đang giảm giá, nhập thêm Giá gốc lớn hơn Giá bán; website sẽ tự hiển thị giá gạch ngang và số tiền tiết kiệm.',
+                'Nhập Tồn kho và chọn trạng thái Đang bán. Phân loại hết hàng có thể để tồn kho bằng 0; chọn Tạm ẩn nếu chưa muốn khách nhìn thấy.',
+                'Tải Ảnh riêng cho phân loại. Ảnh này được thêm vào thư viện ảnh trang sản phẩm và tự động hiển thị khi khách chọn đúng phân loại.',
+                'Lặp lại thao tác Thêm phân loại cho các lựa chọn còn lại, sau đó nhấn Lưu sản phẩm. Giá ngoài danh sách sản phẩm tự lấy mức thấp nhất trong các phân loại đang bán.',
+                'Mở trang chi tiết sản phẩm ngoài website, chọn lần lượt từng phân loại và kiểm tra ảnh, giá bán, giá gốc cùng trạng thái tồn kho trước khi bắt đầu nhận đơn.',
+            ],
+        },
+        {
             title: 'Lượt bán đa kênh & Sản phẩm bán chạy',
             description: 'Kiểm soát số lượt bán hiển thị và danh sách sản phẩm cần ưu tiên.',
             items: [

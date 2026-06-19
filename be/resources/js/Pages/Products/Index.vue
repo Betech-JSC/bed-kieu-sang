@@ -113,7 +113,8 @@ const deleteProduct = (id) => {
                                 <!-- Image Column (Fixed 80px width, centered, square object-cover) -->
                                 <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-center w-20">
                                     <div class="w-12 h-12 rounded-lg overflow-hidden border border-zinc-200/80 mx-auto bg-zinc-50 flex items-center justify-center">
-                                        <img :src="product.image_path" alt="Ảnh" class="w-full h-full object-cover" />
+                                        <img v-if="product.image_path" :src="product.image_path" alt="Ảnh" class="w-full h-full object-cover" />
+                                        <span v-else class="px-1 text-[9px] leading-3 text-zinc-400">Chưa có ảnh</span>
                                     </div>
                                 </td>
 
