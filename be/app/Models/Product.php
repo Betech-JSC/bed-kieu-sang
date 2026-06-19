@@ -60,4 +60,14 @@ class Product extends Model
     {
         return $this->hasMany(ProductQuestion::class);
     }
+
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class)->orderBy('position');
+    }
+
+    public function activeVariants(): HasMany
+    {
+        return $this->variants()->where('status', 'active');
+    }
 }
