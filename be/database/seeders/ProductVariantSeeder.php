@@ -23,6 +23,11 @@ class ProductVariantSeeder extends Seeder
                 continue;
             }
 
+            if (isset($definition['has_variants']) && !$definition['has_variants']) {
+                $product->variants()->delete();
+                continue;
+            }
+
             $skus = collect($variantNames)->keys()->map(
                 fn (int $variantIndex) => sprintf('TUE-%02d-%02d', $productIndex + 1, $variantIndex + 1)
             );
