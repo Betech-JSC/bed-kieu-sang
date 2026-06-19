@@ -198,6 +198,7 @@ export async function submitContact(payload: {
 }
 
 export async function submitOrder(payload: {
+  order_code?: string;
   customer_name: string;
   customer_email?: string;
   customer_phone: string;

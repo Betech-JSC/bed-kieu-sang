@@ -72,6 +72,7 @@ export default function CartDrawer({
     paymentMethod: "COD" as "COD" | "BANK",
   });
 
+  const [orderCode, setOrderCode] = useState(() => generateRandomId());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -131,6 +132,7 @@ export default function CartDrawer({
 
     try {
       const result = await submitOrder({
+        order_code: orderCode,
         customer_name: formData.name,
         customer_phone: formData.phone,
         shipping_address: formData.address,
@@ -140,7 +142,7 @@ export default function CartDrawer({
       });
 
       onCheckoutComplete({
-        id: result.order_code || generateRandomId(),
+        id: result.order_code || orderCode,
         ...formData,
         items: cartItems,
         total,
@@ -153,6 +155,7 @@ export default function CartDrawer({
         note: "",
         paymentMethod: "COD",
       });
+      setOrderCode(generateRandomId());
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Không thể gửi đơn hàng về CMS.");
     } finally {
@@ -419,7 +422,7 @@ export default function CartDrawer({
                           <p>Số tài khoản: <strong>0779440918</strong></p>
                           <p>Tên tài khoản: <strong>DO VAN VU</strong></p>
                           <p>
-                            Nội dung CK: <strong>[Mã đơn hàng của bạn]</strong>
+                            Nội dung CK: <strong>{orderCode}</strong>
                           </p>
                         </div>
                         <p className="text-[10px] text-primary italic mt-1">

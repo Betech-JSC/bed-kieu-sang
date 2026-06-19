@@ -17,6 +17,7 @@ class PublicOrderController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'order_code' => 'nullable|string|max:50',
             'customer_name' => 'required|string|max:100',
             'customer_email' => 'nullable|email|max:100',
             'customer_phone' => 'required|string|max:20',
@@ -91,8 +92,16 @@ class PublicOrderController extends Controller
             }
 
             // Create Order
+            $orderCode = $validated['order_code'] ?? null;
+            if (empty($orderCode) || Order::where('order_code', $orderCode)->exists()) {
+                $orderCode = 'KS-' . strtoupper(Str::random(8));
+                while (Order::where('order_code', $orderCode)->exists()) {
+                    $orderCode = 'KS-' . strtoupper(Str::random(8));
+                }
+            }
+
             $order = Order::create([
-                'order_code' => 'KS-' . strtoupper(Str::random(8)),
+                'order_code' => $orderCode,
                 'customer_name' => $validated['customer_name'],
                 'customer_email' => $validated['customer_email'] ?? null,
                 'customer_phone' => $validated['customer_phone'],
