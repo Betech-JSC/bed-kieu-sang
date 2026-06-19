@@ -9,8 +9,6 @@ use App\Models\BlogPost;
 use App\Models\Setting;
 use App\Models\Banner;
 use App\Models\Contact;
-use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Testimonial;
 use App\Models\Page;
 use App\Models\SeoRedirect;
@@ -64,230 +62,16 @@ class DatabaseSeeder extends Seeder
         );
 
         // 2. Create Categories
-        $catSmudge = Category::updateOrCreate(['slug' => 'thanh-loc-khong-gian'], ['name' => 'Thanh Lọc Không Gian', 'type' => 'product']);
-        $catRelax = Category::updateOrCreate(['slug' => 'thu-gian-tinh-than'], ['name' => 'Thư Giãn Tinh Thần', 'type' => 'product']);
-        $catTea = Category::updateOrCreate(['slug' => 'tra-an-yen'], ['name' => 'Trà An Yên', 'type' => 'product']);
+        Category::updateOrCreate(['slug' => 'tay-ue-xong-nha'], ['name' => 'Tẩy Uế Xông Nhà', 'type' => 'product']);
 
         $catFengShui = Category::updateOrCreate(['slug' => 'phong-thuy'], ['name' => 'Phong Thủy', 'type' => 'blog']);
         $catWellness = Category::updateOrCreate(['slug' => 'wellness'], ['name' => 'Wellness', 'type' => 'blog']);
 
-        // 3. Create Seeded Products (From web/src/data/products.ts)
-        Product::updateOrCreate(
-            ['slug' => 'bo-thao-moc-xong-nha'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Bó Thảo Mộc Xông Nhà',
-                'price' => 120000,
-                'rating' => 4.8,
-                'description' => 'Sự kết hợp hoàn hảo giữa lá ngải cứu khô, sả chanh thơm mát và vỏ quế cay nồng. Thích hợp xông nhà tẩy trần, mang lại không khí thanh sạch và xua tan khí xấu.',
-                'image_path' => '/images/smudge_stick.png',
-                'benefits' => ['Organic', 'Thủ Công', 'Thanh Lọc Khí'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'nu-tram-thao-moc'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Nụ Trầm Thảo Mộc',
-                'price' => 180000,
-                'rating' => 4.9,
-                'description' => 'Được làm từ bột trầm hương nguyên chất kết hợp các vị thuốc Bắc thảo mộc. Hương thơm dịu nhẹ, ngọt ngào, giúp tĩnh tâm khi thiền định, đọc sách hoặc làm việc.',
-                'image_path' => '/images/incense_cones.png',
-                'benefits' => ['Tĩnh Tâm', 'Trầm Hương', 'Thư Giãn'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'nuoc-xit-thao-moc-thanh-loc'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Nước Xịt Thảo Mộc Thanh Lọc',
-                'price' => 220000,
-                'rating' => 4.7,
-                'description' => 'Tinh dầu bưởi bung, vỏ cam ngọt và ngải cứu dạng phun sương. Chỉ cần 2-3 xịt giúp khử mùi ẩm mốc tức thì, tiếp thêm năng lượng tích cực cho căn phòng.',
-                'image_path' => '/images/aura_mist.png',
-                'benefits' => ['Khử Mùi', 'Kháng Khuẩn', 'Hương Vỏ Cam'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'hop-tra-thao-moc-an-yen'],
-            [
-                'category_id' => $catTea->id,
-                'name' => 'Hộp Trà Thảo Mộc An Yên',
-                'price' => 150000,
-                'rating' => 4.9,
-                'description' => 'Trà thảo mộc kết hợp hoa cúc chi ấm áp, kỳ tử đỏ và tâm sen an thần. Hỗ trợ giấc ngủ sâu, thư giãn hệ thần kinh sau những giờ làm việc mệt mỏi.',
-                'image_path' => '/images/herbal_tea.png',
-                'benefits' => ['Ngủ Ngon', 'Thải Độc', 'Hoa Cúc Chi'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        // New products
-        Product::updateOrCreate(
-            ['slug' => 'tinh-dau-vo-buoi-hong'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Tinh Dầu Vỏ Bưởi Hồng',
-                'price' => 190000,
-                'rating' => 5.0,
-                'description' => 'Tinh dầu bưởi hồng nguyên chất, hương thơm ngọt ngào tiếp thêm năng lượng và giải tỏa mệt mỏi.',
-                'image_path' => '/images/aura_mist.png',
-                'benefits' => ['Nguyên Chất', 'Bưởi Hồng', 'Hương Thơm'],
-                'badge' => 'NEW',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'nhang-khoanh-dan-huong'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Nhang Khoanh Đàn Hương',
-                'price' => 320000,
-                'rating' => 4.9,
-                'description' => 'Nhang khoanh làm từ bột gỗ đàn hương lâu năm, thích hợp cho thời gian tĩnh tâm kéo dài.',
-                'image_path' => '/images/incense_cones.png',
-                'benefits' => ['Đàn Hương', 'Tĩnh Tâm', 'Cháy 4 Giờ'],
-                'badge' => 'NEW',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'de-dot-tram-gom-men-ran'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Đế Đốt Trầm Gốm Men Rạn',
-                'price' => 250000,
-                'rating' => 4.8,
-                'description' => 'Khay đốt trầm bằng gốm thủ công tráng men rạn sang trọng, phong cách cổ điển Á Đông.',
-                'image_path' => '/images/smudge_stick.png',
-                'benefits' => ['Gốm Thủ Công', 'Mỹ Thuật', 'Á Đông'],
-                'badge' => 'NEW',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'hop-tra-sen-tuyet-co-thu'],
-            [
-                'category_id' => $catTea->id,
-                'name' => 'Hộp Trà Sen Tuyết Cổ Thụ',
-                'price' => 280000,
-                'rating' => 4.9,
-                'description' => 'Trà tuyết shan cổ thụ ướp hương hoa sen Hồ Tây thanh khiết, thơm dịu nhẹ vị ngọt hậu sâu.',
-                'image_path' => '/images/herbal_tea.png',
-                'benefits' => ['Trà Cổ Thụ', 'Sen Tây Hồ', 'Thanh Lọc'],
-                'badge' => 'NEW',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'bo-thao-moc-oai-huong-kho'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Bó Thảo Mộc Oải Hương Khô',
-                'price' => 150000,
-                'rating' => 4.7,
-                'description' => 'Bó hoa oải hương khô tự nhiên nhập khẩu Pháp kết hợp lá xô thơm thanh khiết.',
-                'image_path' => '/images/smudge_stick.png',
-                'benefits' => ['Lavender', 'Thư Giãn', 'Bình An'],
-                'badge' => 'NEW',
-                'status' => 'active'
-            ]
-        );
-
-        // Sale products
-        Product::updateOrCreate(
-            ['slug' => 'combo-3-bo-xong-nha-cat-tuong'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Combo 3 Bó Xông Nhà Cát Tường',
-                'price' => 300000,
-                'original_price' => 360000,
-                'rating' => 4.9,
-                'description' => 'Bộ ba bó thảo mộc ngải cứu sả quế xông nhà tẩy uế tiết kiệm cho cả gia đình.',
-                'image_path' => '/images/smudge_stick.png',
-                'benefits' => ['Tiết Kiệm', 'Combo 3 Bó', 'Thanh Lọc'],
-                'badge' => '-16%',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'tinh-dau-cam-ngot-nguyen-chat'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Tinh Dầu Cam Ngọt Nguyên Chất',
-                'price' => 135000,
-                'original_price' => 160000,
-                'rating' => 4.8,
-                'description' => 'Tinh dầu cam ngọt ép lạnh giúp thanh lọc không khí, xua tan căng thẳng mệt mỏi.',
-                'image_path' => '/images/aura_mist.png',
-                'benefits' => ['Cam Ngọt', 'Thư Giãn', 'Hương Thơm'],
-                'badge' => '-15%',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'lu-xong-tram-dong-hun-co'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Lư Xông Trầm Đồng Hun Cổ',
-                'price' => 390000,
-                'original_price' => 480000,
-                'rating' => 5.0,
-                'description' => 'Lư đốt trầm hương bằng chất liệu đồng đúc thủ công tinh xảo phong cách cổ điển.',
-                'image_path' => '/images/incense_cones.png',
-                'benefits' => ['Đồng Nguyên Chất', 'Thủ Công', 'Đẹp Mắt'],
-                'badge' => '-18%',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'hop-nu-tram-dac-biet-hop-go'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Hộp Nụ Trầm Đặc Biệt (Hộp Gỗ)',
-                'price' => 340000,
-                'original_price' => 400000,
-                'rating' => 4.9,
-                'description' => '40 nụ trầm hương thượng hạng đựng trong hộp gỗ gụ lót nhung sang trọng, thích hợp làm quà tặng.',
-                'image_path' => '/images/incense_cones.png',
-                'benefits' => ['Thượng Hạng', 'Hộp Quà Tặng', 'Trầm Hương'],
-                'badge' => '-15%',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'tra-hoa-cuc-vang-tien-vua'],
-            [
-                'category_id' => $catTea->id,
-                'name' => 'Trà Hoa Cúc Vàng Tiến Vua',
-                'price' => 125000,
-                'original_price' => 150000,
-                'rating' => 4.8,
-                'description' => 'Trà hoa cúc chi sấy khô tự nhiên vùng Nghĩa Trai hái tay thủ công, giải nhiệt tiêu uế.',
-                'image_path' => '/images/herbal_tea.png',
-                'benefits' => ['Cúc Chi', 'Hái Tay', 'Organic'],
-                'badge' => '-17%',
-                'status' => 'active'
-            ]
-        );
+        // 3. Create the current product catalog and its variants
+        $this->call([
+            ProductCatalogSeeder::class,
+            ProductVariantSeeder::class,
+        ]);
 
         // 4. Create Blog Posts (From web/src/data/blog-posts.ts)
         BlogPost::updateOrCreate(
@@ -394,143 +178,7 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'meta_desc'], ['value' => 'Thương hiệu thảo mộc thiên nhiên, thanh tẩy không gian, liệu pháp mùi hương hữu cơ an lành cho sức khỏe.', 'type' => 'text', 'group' => 'seo']);
         Setting::updateOrCreate(['key' => 'meta_keywords'], ['value' => 'thao moc, kieu sang, white sage, organic, tra hoa cuc, xong nha', 'type' => 'text', 'group' => 'seo']);
 
-        // 6. Create Extra Products for pagination testing
-        Product::updateOrCreate(
-            ['slug' => 'la-xo-thom-trang-tay-rua'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Lá Xô Thơm Trắng Tẩy Rửa',
-                'price' => 160000,
-                'rating' => 4.9,
-                'description' => 'Lá xô thơm trắng White Sage nhập khẩu trực tiếp từ California, Mỹ. Dùng xông nhà thanh tẩy đá phong thủy, bài trừ khí xấu.',
-                'image_path' => '/images/smudge_stick.png',
-                'benefits' => ['California', 'Thanh Tẩy Đá', 'Xô Thơm'],
-                'badge' => 'BEST',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'nhang-tram-khong-tam'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Nhang Trầm Không Tăm',
-                'price' => 290000,
-                'rating' => 4.8,
-                'description' => 'Nhang trầm hương không tăm cao cấp, mùi thơm ngọt thanh sạch. Đựng trong hộp gỗ tre tinh xảo.',
-                'image_path' => '/images/incense_cones.png',
-                'benefits' => ['Không Tăm', 'Cao Cấp', 'Khay Tre'],
-                'badge' => 'HOT',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'go-trac-xanh-thanh-tay'],
-            [
-                'category_id' => $catSmudge->id,
-                'name' => 'Gỗ Trắc Xanh Thanh Tẩy',
-                'price' => 110000,
-                'rating' => 4.6,
-                'description' => 'Thanh gỗ trắc xanh Palo Santo tự nhiên từ Nam Mỹ. Mùi thơm ấm nồng đặc trưng giúp thanh tẩy không gian.',
-                'image_path' => '/images/smudge_stick.png',
-                'benefits' => ['Palo Santo', 'Nam Mỹ', 'Thơm Ấm'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'tinh-dau-bac-ha-nguyen-chat'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Tinh Dầu Bạc Hà Nguyên Chất',
-                'price' => 140000,
-                'rating' => 4.7,
-                'description' => 'Tinh dầu bạc hà nguyên chất chưng cất hơi nước, mang lại cảm giác mát lạnh sảng khoái và tăng độ tập trung.',
-                'image_path' => '/images/aura_mist.png',
-                'benefits' => ['Bạc Hà', 'Mát Lạnh', 'Tập Trung'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'tinh-dau-oai-huong-phap'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Tinh Dầu Oải Hương Pháp',
-                'price' => 210000,
-                'rating' => 4.9,
-                'description' => 'Tinh dầu oải hương True Lavender nhập khẩu Pháp, mùi thơm hoa cỏ dịu ngọt giúp ngủ ngon và sâu giấc.',
-                'image_path' => '/images/aura_mist.png',
-                'benefits' => ['Pháp', 'Lavender', 'Thư Giãn'],
-                'badge' => 'POPULAR',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'sap-thom-thao-moc-treo-phong'],
-            [
-                'category_id' => $catRelax->id,
-                'name' => 'Sáp Thơm Thảo Mộc Treo Phòng',
-                'price' => 95000,
-                'rating' => 4.5,
-                'description' => 'Sáp đậu nành tự nhiên kết hợp hoa khô và tinh dầu nguyên chất, dùng treo tủ quần áo hoặc phòng nhỏ.',
-                'image_path' => '/images/incense_cones.png',
-                'benefits' => ['Sáp Đậu Nành', 'Hoa Khô', 'Treo Tủ'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'hop-tra-duong-nhan-quy-phi'],
-            [
-                'category_id' => $catTea->id,
-                'name' => 'Hộp Trà Dưỡng Nhan Quý Phi',
-                'price' => 170000,
-                'rating' => 4.9,
-                'description' => 'Sự kết hợp của táo đỏ, kỷ tử, long nhãn, nụ hồng tây tạng và đông trùng hạ thảo giúp bổ khí huyết đẹp da.',
-                'image_path' => '/images/herbal_tea.png',
-                'benefits' => ['Táo Đỏ Kỷ Tử', 'Đẹp Da', 'Bổ Huyết'],
-                'badge' => 'LADY',
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'tra-sam-dua-tinh-khiet'],
-            [
-                'category_id' => $catTea->id,
-                'name' => 'Trà Sâm Dứa Tinh Khiết',
-                'price' => 85000,
-                'rating' => 4.6,
-                'description' => 'Trà sâm dứa đặc sản thơm hương lá dứa tự nhiên, giải khát thanh lọc gan hiệu quả.',
-                'image_path' => '/images/herbal_tea.png',
-                'benefits' => ['Hương Lá Dứa', 'Giải Khát', 'Mát Gan'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        Product::updateOrCreate(
-            ['slug' => 'tra-hoa-nhai-tay-bac'],
-            [
-                'category_id' => $catTea->id,
-                'name' => 'Trà Hoa Nhài Tây Bắc',
-                'price' => 130000,
-                'rating' => 4.8,
-                'description' => 'Nụ hoa nhài Tây Bắc sấy mộc tự nhiên, hương nhài thanh tao ngọt hậu dễ chịu.',
-                'image_path' => '/images/herbal_tea.png',
-                'benefits' => ['Nụ Hoa Nhài', 'Tây Bắc', 'Thanh Tao'],
-                'badge' => null,
-                'status' => 'active'
-            ]
-        );
-
-        // 7. Create Extra Blog Posts
+        // 8. Create Extra Blog Posts
         BlogPost::updateOrCreate(
             ['slug' => 'huong-dan-thien-dinh-voi-tram'],
             [
@@ -588,7 +236,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 8. Create Banners
+        // 9. Create Banners
         Banner::updateOrCreate(
             ['image_path' => '/images/hero_lifestyle.png'],
             [
@@ -603,9 +251,9 @@ class DatabaseSeeder extends Seeder
         Banner::updateOrCreate(
             ['image_path' => '/images/herbal_tea.png'],
             [
-                'title' => 'Trà Thảo Mộc An Yên',
-                'subtitle' => 'Duy trì thói quen lành mạnh mỗi ngày',
-                'link_url' => '/products?category=tra-an-yen',
+                'title' => 'Tẩy Uế Thảo Mộc',
+                'subtitle' => 'Thanh lọc không gian với thảo mộc tự nhiên',
+                'link_url' => '/products?category=tay-ue-xong-nha',
                 'order_index' => 2,
                 'status' => 'active'
             ]
@@ -616,7 +264,7 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Thanh Lọc Không Gian Sống',
                 'subtitle' => 'Xua tan chướng khí đón tài lộc cát tường',
-                'link_url' => '/products?category=thanh-loc-khong-gian',
+                'link_url' => '/products?category=tay-ue-xong-nha',
                 'order_index' => 3,
                 'status' => 'active'
             ]
@@ -625,15 +273,15 @@ class DatabaseSeeder extends Seeder
         Banner::updateOrCreate(
             ['image_path' => '/images/aura_mist.png'],
             [
-                'title' => 'Khuyến Mãi Đặc Biệt Mùa Hè',
-                'subtitle' => 'Ưu đãi lên tới 20% cho tất cả các loại tinh dầu',
-                'link_url' => '/products?category=thu-gian-tinh-than',
+                'title' => 'Bộ Sản Phẩm Tẩy Uế',
+                'subtitle' => 'Nhiều lựa chọn túi 100gram cho từng nhu cầu',
+                'link_url' => '/products?category=tay-ue-xong-nha',
                 'order_index' => 4,
                 'status' => 'inactive'
             ]
         );
 
-        // 9. Create Testimonials
+        // 10. Create Testimonials
         Testimonial::create([
             'customer_name' => 'Nguyễn Thị Minh An',
             'customer_avatar' => null,
@@ -818,219 +466,10 @@ class DatabaseSeeder extends Seeder
             'status' => 'unread'
         ]);
 
-        // 12. Create Orders and Order Items
-        $p1 = Product::where('slug', 'bo-thao-moc-xong-nha')->first();
-        $p2 = Product::where('slug', 'nuoc-xit-thao-moc-thanh-loc')->first();
-        $p3 = Product::where('slug', 'nu-tram-thao-moc')->first();
-        $p4 = Product::where('slug', 'tra-hoa-cuc-vang-tien-vua')->first();
-        $p5 = Product::where('slug', 'combo-3-bo-xong-nha-cat-tuong')->first();
-        $p6 = Product::where('slug', 'tinh-dau-vo-buoi-hong')->first();
-        $p7 = Product::where('slug', 'de-dot-tram-gom-men-ran')->first();
-        $p8 = Product::where('slug', 'hop-tra-sen-tuyet-co-thu')->first();
-        $p9 = Product::where('slug', 'nhang-khoanh-dan-huong')->first();
-        $p10 = Product::where('slug', 'tinh-dau-cam-ngot-nguyen-chat')->first();
-        $p11 = Product::where('slug', 'bo-thao-moc-oai-huong-kho')->first();
-        $p12 = Product::where('slug', 'hop-nu-tram-dac-biet-hop-go')->first();
-        $p13 = Product::where('slug', 'hop-tra-thao-moc-an-yen')->first();
-
-        // Order 1
-        $o1 = Order::create([
-            'order_code' => 'ORD-KS-001',
-            'customer_name' => 'Nguyễn Thị Mai',
-            'customer_email' => 'mai.nguyen@example.com',
-            'customer_phone' => '0901234567',
-            'shipping_address' => '123 Đường Láng, Đống Đa, Hà Nội',
-            'notes' => 'Giao giờ hành chính, gọi trước 15 phút.',
-            'total_amount' => 340000.00,
-            'payment_method' => 'VietQR',
-            'payment_status' => 'paid',
-            'status' => 'completed'
-        ]);
-        if ($p1 && $p2) {
-            OrderItem::create(['order_id' => $o1->id, 'product_id' => $p1->id, 'product_name' => $p1->name, 'price' => $p1->price, 'quantity' => 1]);
-            OrderItem::create(['order_id' => $o1->id, 'product_id' => $p2->id, 'product_name' => $p2->name, 'price' => $p2->price, 'quantity' => 1]);
-        }
-
-        // Order 2
-        $o2 = Order::create([
-            'order_code' => 'ORD-KS-002',
-            'customer_name' => 'Trần Anh Tuấn',
-            'customer_email' => 'tuan.tran@example.com',
-            'customer_phone' => '0987654321',
-            'shipping_address' => 'Phòng 502 Chung cư Sunrise, Quận 7, TP HCM',
-            'notes' => 'Cho kiểm hàng trước khi trả tiền.',
-            'total_amount' => 360000.00,
-            'payment_method' => 'COD',
-            'payment_status' => 'pending',
-            'status' => 'pending'
-        ]);
-        if ($p3) {
-            OrderItem::create(['order_id' => $o2->id, 'product_id' => $p3->id, 'product_name' => $p3->name, 'price' => $p3->price, 'quantity' => 2]);
-        }
-
-        // Order 3
-        $o3 = Order::create([
-            'order_code' => 'ORD-KS-003',
-            'customer_name' => 'Lê Thu Hà',
-            'customer_email' => 'ha.le@example.com',
-            'customer_phone' => '0912345678',
-            'shipping_address' => '45 Hải Phòng, Quận Hải Châu, Đà Nẵng',
-            'notes' => null,
-            'total_amount' => 425000.00,
-            'payment_method' => 'VietQR',
-            'payment_status' => 'paid',
-            'status' => 'processing'
-        ]);
-        if ($p4 && $p5) {
-            OrderItem::create(['order_id' => $o3->id, 'product_id' => $p4->id, 'product_name' => $p4->name, 'price' => $p4->price, 'quantity' => 1]);
-            OrderItem::create(['order_id' => $o3->id, 'product_id' => $p5->id, 'product_name' => $p5->name, 'price' => $p5->price, 'quantity' => 1]);
-        }
-
-        // Order 4
-        $o4 = Order::create([
-            'order_code' => 'ORD-KS-004',
-            'customer_name' => 'Phạm Văn Hùng',
-            'customer_email' => 'hung.pham@example.com',
-            'customer_phone' => '0934567890',
-            'shipping_address' => 'Kiệt 34 Nguyễn Huệ, TP Huế',
-            'notes' => 'Giao gấp trong tuần.',
-            'total_amount' => 190000.00,
-            'payment_method' => 'COD',
-            'payment_status' => 'pending',
-            'status' => 'cancelled'
-        ]);
-        if ($p6) {
-            OrderItem::create(['order_id' => $o4->id, 'product_id' => $p6->id, 'product_name' => $p6->name, 'price' => $p6->price, 'quantity' => 1]);
-        }
-
-        // Order 5
-        $o5 = Order::create([
-            'order_code' => 'ORD-KS-005',
-            'customer_name' => 'Vũ Minh Triết',
-            'customer_email' => 'triet.vu@example.com',
-            'customer_phone' => '0976543210',
-            'shipping_address' => '88 Lê Lợi, TP Vũng Tàu',
-            'notes' => 'Giao chiều thứ 7 hoặc chủ nhật.',
-            'total_amount' => 500000.00,
-            'payment_method' => 'VietQR',
-            'payment_status' => 'paid',
-            'status' => 'completed'
-        ]);
-        if ($p7) {
-            OrderItem::create(['order_id' => $o5->id, 'product_id' => $p7->id, 'product_name' => $p7->name, 'price' => $p7->price, 'quantity' => 2]);
-        }
-
-        // Order 6
-        $o6 = Order::create([
-            'order_code' => 'ORD-KS-006',
-            'customer_name' => 'Nguyễn Hoàng Nam',
-            'customer_email' => 'nam.nguyen@example.com',
-            'customer_phone' => '0905123456',
-            'shipping_address' => '15 Lê Duẩn, TP Buôn Ma Thuột, Đắk Lắk',
-            'notes' => null,
-            'total_amount' => 280000.00,
-            'payment_method' => 'COD',
-            'payment_status' => 'pending',
-            'status' => 'pending'
-        ]);
-        if ($p8) {
-            OrderItem::create(['order_id' => $o6->id, 'product_id' => $p8->id, 'product_name' => $p8->name, 'price' => $p8->price, 'quantity' => 1]);
-        }
-
-        // Order 7
-        $o7 = Order::create([
-            'order_code' => 'ORD-KS-007',
-            'customer_name' => 'Hoàng Thu Thảo',
-            'customer_email' => 'thao.hoang@example.com',
-            'customer_phone' => '0989123456',
-            'shipping_address' => 'Ngõ 205 Tây Sơn, Đống Đa, Hà Nội',
-            'notes' => 'Không gọi giờ trưa từ 12h - 13h30.',
-            'total_amount' => 455000.00,
-            'payment_method' => 'VietQR',
-            'payment_status' => 'paid',
-            'status' => 'completed'
-        ]);
-        if ($p9 && $p10) {
-            OrderItem::create(['order_id' => $o7->id, 'product_id' => $p9->id, 'product_name' => $p9->name, 'price' => $p9->price, 'quantity' => 1]);
-            OrderItem::create(['order_id' => $o7->id, 'product_id' => $p10->id, 'product_name' => $p10->name, 'price' => $p10->price, 'quantity' => 1]);
-        }
-
-        // Order 8
-        $o8 = Order::create([
-            'order_code' => 'ORD-KS-008',
-            'customer_name' => 'Đặng Minh Quân',
-            'customer_email' => 'quan.dang@example.com',
-            'customer_phone' => '0944123456',
-            'shipping_address' => 'Đại học Cần Thơ, Xuân Khánh, Cần Thơ',
-            'notes' => 'Giao ở cổng khoa Công nghệ thông tin.',
-            'total_amount' => 300000.00,
-            'payment_method' => 'COD',
-            'payment_status' => 'pending',
-            'status' => 'processing'
-        ]);
-        if ($p5) {
-            OrderItem::create(['order_id' => $o8->id, 'product_id' => $p5->id, 'product_name' => $p5->name, 'price' => $p5->price, 'quantity' => 1]);
-        }
-
-        // Order 9
-        $o9 = Order::create([
-            'order_code' => 'ORD-KS-009',
-            'customer_name' => 'Bùi Tuyết Mai',
-            'customer_email' => 'mai.bui@example.com',
-            'customer_phone' => '0966123456',
-            'shipping_address' => '24 Trần Hưng Đạo, Hạ Long, Quảng Ninh',
-            'notes' => null,
-            'total_amount' => 400000.00,
-            'payment_method' => 'VietQR',
-            'payment_status' => 'failed',
-            'status' => 'cancelled'
-        ]);
-        if ($p11 && $p7) {
-            OrderItem::create(['order_id' => $o9->id, 'product_id' => $p11->id, 'product_name' => $p11->name, 'price' => $p11->price, 'quantity' => 1]);
-            OrderItem::create(['order_id' => $o9->id, 'product_id' => $p7->id, 'product_name' => $p7->name, 'price' => $p7->price, 'quantity' => 1]);
-        }
-
-        // Order 10
-        $o10 = Order::create([
-            'order_code' => 'ORD-KS-010',
-            'customer_name' => 'Ngô Quốc Khánh',
-            'customer_email' => 'khanh.ngo@example.com',
-            'customer_phone' => '0977123456',
-            'shipping_address' => '102 Lê Hồng Phong, TP Vinh, Nghệ An',
-            'notes' => 'Vui lòng gói bọc chống sốc kỹ.',
-            'total_amount' => 490000.00,
-            'payment_method' => 'VietQR',
-            'payment_status' => 'paid',
-            'status' => 'completed'
-        ]);
-        if ($p12 && $p13) {
-            OrderItem::create(['order_id' => $o10->id, 'product_id' => $p12->id, 'product_name' => $p12->name, 'price' => $p12->price, 'quantity' => 1]);
-            OrderItem::create(['order_id' => $o10->id, 'product_id' => $p13->id, 'product_name' => $p13->name, 'price' => $p13->price, 'quantity' => 1]);
-        }
-
-        Product::where('slug', 'bo-thao-moc-xong-nha')->update([
-            'channel_one_sales' => 860,
-            'channel_two_sales' => 1240,
-            'virtual_sales' => 3200,
-            'is_best_seller' => true,
-        ]);
-        Product::where('slug', 'nuoc-xit-thao-moc-thanh-loc')->update([
-            'channel_one_sales' => 740,
-            'channel_two_sales' => 960,
-            'virtual_sales' => 2450,
-            'is_best_seller' => true,
-        ]);
-        Product::where('slug', 'combo-3-bo-xong-nha-cat-tuong')->update([
-            'channel_one_sales' => 520,
-            'channel_two_sales' => 1180,
-            'virtual_sales' => 1800,
-            'is_best_seller' => true,
-        ]);
-
         // 13. Create SEO Redirects
         SeoRedirect::updateOrCreate(
             ['old_url' => '/san-pham/bo-xong-nha-cu'],
-            ['new_url' => '/products/bo-thao-moc-xong-nha', 'http_code' => 301, 'status' => 'active']
+            ['new_url' => '/products/tay-ue-xong-nha-hon-20-loai-thao-moc-100gram', 'http_code' => 301, 'status' => 'active']
         );
 
         SeoRedirect::updateOrCreate(
@@ -1040,12 +479,12 @@ class DatabaseSeeder extends Seeder
 
         SeoRedirect::updateOrCreate(
             ['old_url' => '/tra-thao-moc'],
-            ['new_url' => '/products?category=tra-an-yen', 'http_code' => 301, 'status' => 'active']
+            ['new_url' => '/products?category=tay-ue-xong-nha', 'http_code' => 301, 'status' => 'active']
         );
 
         SeoRedirect::updateOrCreate(
             ['old_url' => '/tinh-dau'],
-            ['new_url' => '/products?category=thu-gian-tinh-than', 'http_code' => 302, 'status' => 'active']
+            ['new_url' => '/products?category=tay-ue-xong-nha', 'http_code' => 302, 'status' => 'active']
         );
 
         SeoRedirect::updateOrCreate(

@@ -2,7 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { Layers3, ShoppingBag } from "lucide-react";
+
+export interface ProductVariant {
+  id: number;
+  name: string;
+  sku: string;
+  label: string;
+  price: number;
+  original_price?: number;
+  image_path?: string;
+  image?: string;
+  stock: number;
+  status: "active" | "inactive";
+}
 
 export interface Product {
   id: string | number;
@@ -20,6 +33,8 @@ export interface Product {
   is_best_seller?: boolean;
   seo_title?: string;
   seo_desc?: string;
+  has_variants?: boolean;
+  variants?: ProductVariant[];
 }
 
 interface ProductCardProps {
@@ -72,9 +87,9 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       </Link>
 
       {/* Price & Add to Cart */}
-      <div className="flex items-center justify-between p-4 pt-3 border-t border-border/40">
+      <div className=" max-sm:space-y-3 lg:flex items-center justify-between p-4 pt-3 border-t border-border/40">
         <div className="flex flex-col">
-          <span className="text-[9px] text-muted-foreground uppercase tracking-widest">Giá bán</span>
+          <span className="text-[9px] text-muted-foreground uppercase tracking-widest">{product.has_variants ? "Giá từ" : "Giá bán"}</span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
             <span className="text-sm font-bold text-primary font-sans leading-none">
               {formatPrice(product.price)}
@@ -92,13 +107,17 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           )}
         </div>
 
-        <button
-          onClick={() => onAddToCart(product)}
-          className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-white font-bold text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
-        >
-          <ShoppingBag className="h-3 w-3" />
-          <span>Thêm</span>
-        </button>
+        {product.has_variants ? (
+          <Link href={`/products/${product.slug || product.id}`} className="max-sm:w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-white font-bold text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.03] active:scale-[0.98]">
+            <Layers3 className="h-3 w-3" />
+            <span>Chọn loại</span>
+          </Link>
+        ) : (
+          <button onClick={() => onAddToCart(product)} className="max-sm:w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-white font-bold text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.03] active:scale-[0.98] cursor-pointer">
+            <ShoppingBag className="h-3 w-3" />
+            <span>Thêm</span>
+          </button>
+        )}
       </div>
     </div>
   );

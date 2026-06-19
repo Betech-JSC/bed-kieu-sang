@@ -12,7 +12,7 @@ import { Leaf, Scroll, Users } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import PageBanner from "@/components/page-banner";
-import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
+import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 
 export default function AboutPage() {
@@ -41,10 +41,10 @@ export default function AboutPage() {
     window.dispatchEvent(new Event("kieu-sang-cart-update"));
   };
 
-  const handleUpdateQuantity = (productId: string | number, delta: number) => {
+  const handleUpdateQuantity = (itemKey: string, delta: number) => {
     const newCart = cart
       .map((item) => {
-        if (item.product.id === productId) {
+        if (getCartItemKey(item) === itemKey) {
           const newQty = item.quantity + delta;
           return { ...item, quantity: newQty };
         }
@@ -55,8 +55,8 @@ export default function AboutPage() {
     saveCart(newCart);
   };
 
-  const handleRemoveItem = (productId: string | number) => {
-    const newCart = cart.filter((item) => item.product.id !== productId);
+  const handleRemoveItem = (itemKey: string) => {
+    const newCart = cart.filter((item) => getCartItemKey(item) !== itemKey);
     saveCart(newCart);
   };
 

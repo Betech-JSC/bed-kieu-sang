@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#FAF6EE] border-t border-border/80 text-muted-foreground w-full">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-6 md:px-12 py-20 max-w-7xl mx-auto">
-        
+
         {/* Column 1: Brand details & socials */}
         <div className="space-y-6">
           <Link
@@ -90,9 +90,9 @@ export default function Footer() {
             <li className="hover:text-primary transition-colors cursor-pointer">
               <Link href="/blog">Góc an yên (Blog)</Link>
             </li>
-            <li className="hover:text-primary transition-colors cursor-pointer">
+            {/* <li className="hover:text-primary transition-colors cursor-pointer">
               <Link href="/contact">Liên hệ</Link>
-            </li>
+            </li> */}
             <li className="hover:text-primary transition-colors cursor-pointer">
               <Link href="/faq">Câu hỏi thường gặp</Link>
             </li>
@@ -109,7 +109,7 @@ export default function Footer() {
             Hotline: 0779 440 918 (Zalo) <br />
             Email: lienhe@xongnhatayue.vn
           </p>
-          <form 
+          <form
             onSubmit={(e) => e.preventDefault()}
             className="flex border-b-2 border-primary/20 py-2 focus-within:border-primary transition-all"
           >
@@ -119,7 +119,7 @@ export default function Footer() {
               type="email"
               required
             />
-            <button 
+            <button
               type="submit"
               className="text-primary hover:translate-x-1 transition-transform cursor-pointer"
             >
