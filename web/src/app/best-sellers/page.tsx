@@ -11,7 +11,7 @@ import { Award, ShoppingBag } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product } from "@/components/product-card";
-import CartDrawer, { CartItem, OrderDetails } from "@/components/cart-drawer";
+import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 import { getBestSellers } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
@@ -67,16 +67,16 @@ export default function BestSellersPage() {
     setIsCartOpen(true);
   };
 
-  const handleUpdateQuantity = (productId: string | number, delta: number) => {
+  const handleUpdateQuantity = (itemKey: string, delta: number) => {
     saveCart(
       cart
-        .map((item) => (item.product.id === productId ? { ...item, quantity: item.quantity + delta } : item))
+        .map((item) => (getCartItemKey(item) === itemKey ? { ...item, quantity: item.quantity + delta } : item))
         .filter((item) => item.quantity > 0)
     );
   };
 
-  const handleRemoveItem = (productId: string | number) => {
-    saveCart(cart.filter((item) => item.product.id !== productId));
+  const handleRemoveItem = (itemKey: string) => {
+    saveCart(cart.filter((item) => getCartItemKey(item) !== itemKey));
   };
 
   const handleCheckoutComplete = (order: OrderDetails) => {

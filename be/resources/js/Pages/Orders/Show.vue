@@ -91,7 +91,12 @@ const submit = () => {
                                                     <div class="w-10 h-10 rounded-lg overflow-hidden border border-zinc-200 shrink-0 bg-zinc-50 flex items-center justify-center">
                                                         <img :src="item.product?.image_path || '/images/smudge_stick.png'" alt="Ảnh sản phẩm" class="w-full h-full object-cover" />
                                                     </div>
-                                                    <span class="font-bold text-zinc-900">{{ item.product?.name || 'Sản phẩm đã bị xoá' }}</span>
+                                                    <div>
+                                                        <span class="font-bold text-zinc-900 block">{{ item.product_name || item.product?.name || 'Sản phẩm đã bị xoá' }}</span>
+                                                        <span v-if="item.variant_name" class="text-[11px] text-emerald-700 block mt-0.5">
+                                                            {{ item.variant_name }}<span v-if="item.variant_sku"> · SKU {{ item.variant_sku }}</span>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td class="py-3 px-4 border-r border-zinc-200/60 text-right align-middle text-zinc-650 font-sans font-semibold">
