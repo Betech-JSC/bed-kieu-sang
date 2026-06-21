@@ -174,7 +174,7 @@ export default function ContactPage() {
                 ))}
               </div>
 
-              <div className="space-y-4">
+              <div className={`space-y-4 transition-opacity duration-300 ${settings ? "opacity-100" : "opacity-0"}`}>
                 {/* Detail Card 1: Address */}
                 <div className="flex gap-4 items-start p-6 border border-border rounded-xl bg-white shadow-xs">
                   <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
@@ -182,7 +182,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Địa chỉ</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_address || "Quận 1, TP. Hồ Chí Minh"}</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_address || ""}</p>
                   </div>
                 </div>
 
@@ -193,7 +193,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Điện thoại</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_hotline || "0779 440 918"}</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_hotline || ""}</p>
                   </div>
                 </div>
 
@@ -204,7 +204,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Email</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_email || "lienhe@xongnhatayue.vn"}</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_email || ""}</p>
                   </div>
                 </div>
               </div>

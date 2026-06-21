@@ -92,7 +92,7 @@ export default function Home() {
   const [socialProof, setSocialProof] = useState({ salesCount: 50000, rating: "4.9" });
   const [displayedSalesCount, setDisplayedSalesCount] = useState(0);
 
-  useSeo(seoSettings.title, seoSettings.desc, seoSettings.keywords);
+  useSeo(seoSettings.title, seoSettings.desc, seoSettings.keywords, true);
 
   const newProductsScrollRef = useRef<HTMLDivElement>(null);
   const saleProductsScrollRef = useRef<HTMLDivElement>(null);

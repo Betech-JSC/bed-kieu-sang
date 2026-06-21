@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
-export function useSeo(title?: string, description?: string, keywords?: string) {
+export function useSeo(title?: string, description?: string, keywords?: string, exact?: boolean) {
   useEffect(() => {
     if (title) {
-      document.title = `${title} | Xông Nhà Tẩy Uế`;
+      document.title = exact ? title : `${title} | Xông Nhà Tẩy Uế`;
     }
     if (description) {
       const meta = document.querySelector('meta[name="description"]');

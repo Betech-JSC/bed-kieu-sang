@@ -113,10 +113,10 @@ export default function Footer() {
           <h4 className="text-xs font-semibold text-primary uppercase border-b border-primary/10 pb-2">
             Liên hệ & Đăng ký
           </h4>
-          <p className="text-[11px] italic leading-relaxed text-muted-foreground font-light">
-            Địa chỉ: {settings?.store_address || "Quận 1, Tp. Hồ Chí Minh"} <br />
-            Hotline: {settings?.store_hotline || "0779 440 918 (Zalo)"} <br />
-            Email: {settings?.store_email || "lienhe@xongnhatayue.vn"}
+          <p className={`text-[11px] italic leading-relaxed text-muted-foreground font-light transition-opacity duration-300 ${settings ? "opacity-100" : "opacity-0"}`}>
+            Địa chỉ: {settings?.store_address || ""} <br />
+            Hotline: {settings?.store_hotline || ""} <br />
+            Email: {settings?.store_email || ""}
           </p>
           <form
             onSubmit={(e) => e.preventDefault()}
