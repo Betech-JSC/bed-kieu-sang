@@ -69,7 +69,7 @@ export default function CartDrawer({
     phone: "",
     address: "",
     note: "",
-    paymentMethod: "COD" as "COD" | "BANK",
+    paymentMethod: "BANK" as "COD" | "BANK",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -151,7 +151,7 @@ export default function CartDrawer({
         phone: "",
         address: "",
         note: "",
-        paymentMethod: "COD",
+        paymentMethod: "BANK",
       });
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Không thể gửi đơn hàng về CMS.");
@@ -370,40 +370,8 @@ export default function CartDrawer({
                       <label className="block text-xs font-medium text-foreground">
                         Phương thức thanh toán *
                       </label>
-                      <div className="grid grid-cols-2 gap-3">
-                        <label
-                          className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all duration-300 ${
-                            formData.paymentMethod === "COD"
-                              ? "border-primary bg-primary/4 font-semibold text-primary"
-                              : "border-border bg-white text-muted-foreground hover:border-neutral-300"
-                          }`}
-                        >
-                          <span className="text-xs">Nhận hàng thanh toán (COD)</span>
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            checked={formData.paymentMethod === "COD"}
-                            onChange={() => setFormData({ ...formData, paymentMethod: "COD" })}
-                            className="sr-only"
-                          />
-                        </label>
-
-                        <label
-                          className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all duration-300 ${
-                            formData.paymentMethod === "BANK"
-                              ? "border-primary bg-primary/4 font-semibold text-primary"
-                              : "border-border bg-white text-muted-foreground hover:border-neutral-300"
-                          }`}
-                        >
-                          <span className="text-xs">Chuyển khoản Ngân hàng</span>
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            checked={formData.paymentMethod === "BANK"}
-                            onChange={() => setFormData({ ...formData, paymentMethod: "BANK" })}
-                            className="sr-only"
-                          />
-                        </label>
+                      <div className="flex items-center justify-between p-3.5 rounded-xl border border-primary bg-primary/4 font-semibold text-primary">
+                        <span className="text-xs">Chuyển khoản Ngân hàng (VietQR)</span>
                       </div>
                     </div>
 
