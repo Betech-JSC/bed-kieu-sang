@@ -9,7 +9,7 @@ class ProductVariantSeeder extends Seeder
 {
     public function run(): void
     {
-        ProductVariant::truncate();
+        ProductVariant::query()->delete();
     }
 }
 
