@@ -22,10 +22,6 @@ class ProductCatalogSeeder extends Seeder
             ['name' => 'Tẩy uế VIP xông nhà tẩy uế thu hút tiền tài tài lộc cho gia', 'slug' => 'tay-ue-vip-xong-nha-tay-ue-thu-hut-tien-tai-tai-loc-cho-gia'],
             ['name' => 'Tẩy uế xông nhà gừng thanh lọc cơ thể 100gram', 'slug' => 'tay-ue-xong-nha-gung-thanh-loc-co-the-100gram'],
             ['name' => '[Mẫu mới] Tẩy uế xông nhà hơn 20 loại thảo mộc 100gram', 'slug' => 'mau-moi-tay-ue-xong-nha-hon-20-loai-thao-moc-100gram', 'badge' => 'MẪU MỚI'],
-            ['name' => 'Lót bạc +11sp', 'slug' => 'lot-bac-11sp', 'has_variants' => false],
-            ['name' => 'tặng nến +11 sp', 'slug' => 'tang-nen-11sp', 'has_variants' => false],
-            ['name' => 'lót bạc + than +11sp', 'slug' => 'lot-bac-than-11sp', 'has_variants' => false],
-            ['name' => 'tặng than +11 sp', 'slug' => 'tang-than-11sp', 'has_variants' => false],
         ];
     }
 
@@ -36,26 +32,67 @@ class ProductCatalogSeeder extends Seeder
             ['name' => 'Tẩy Uế Xông Nhà', 'type' => 'product']
         );
 
-        foreach (self::products() as $definition) {
-            $isAccessory = isset($definition['has_variants']) && !$definition['has_variants'];
-            $imagePath = $isAccessory ? '/images/smudge_stick.png' : '/images/' . $definition['slug'] . '.png';
+        $variantsInfo = [
+            [
+                'suffix' => '',
+                'name_addon' => '',
+                'desc' => 'Sản phẩm thảo mộc tẩy uế dùng để thanh lọc không gian và tạo cảm giác dễ chịu cho ngôi nhà.',
+                'benefits' => ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram']
+            ],
+            [
+                'suffix' => '-lot-bac',
+                'name_addon' => ' + Lót bạc',
+                'desc' => 'Lót bạc chống cháy, sạch sẽ tiện lợi khi xông thảo mộc.',
+                'benefits' => ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram', 'Lót bạc chống cháy']
+            ],
+            [
+                'suffix' => '-tang-nen',
+                'name_addon' => ' + Tặng nến',
+                'desc' => 'Tặng nến cao cấp giúp đốt thảo mộc xông nhà dễ dàng.',
+                'benefits' => ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram', 'Tặng nến cao cấp']
+            ],
+            [
+                'suffix' => '-lot-bac-than',
+                'name_addon' => ' + Lót bạc + Than',
+                'desc' => 'Bộ lót bạc chống cháy và than xông nhà chuyên dụng.',
+                'benefits' => ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram', 'Lót bạc + than']
+            ],
+            [
+                'suffix' => '-tang-than',
+                'name_addon' => ' + Tặng than',
+                'desc' => 'Tặng than xông nhà chất lượng cao, giữ khói đượm lâu.',
+                'benefits' => ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram', 'Tặng than chuyên dụng']
+            ],
+        ];
 
-            Product::updateOrCreate(
-                ['slug' => $definition['slug']],
-                [
-                    'category_id' => $category->id,
-                    'name' => $definition['name'],
-                    'price' => 100000,
-                    'original_price' => null,
-                    'rating' => 5,
-                    'description' => $isAccessory ? 'Phụ kiện hỗ trợ xông nhà thanh lọc không gian.' : 'Sản phẩm thảo mộc tẩy uế dùng để thanh lọc không gian và tạo cảm giác dễ chịu cho ngôi nhà.',
-                    'image_path' => $imagePath,
-                    'benefits' => $isAccessory ? ['Phụ kiện xông nhà', 'Thanh lọc không gian'] : ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram'],
-                    'badge' => $definition['badge'] ?? null,
-                    'status' => 'active',
-                    'is_best_seller' => false,
-                ]
-            );
+        foreach (self::products() as $definition) {
+            $baseSlug = $definition['slug'];
+            $baseName = $definition['name'];
+            $badge = $definition['badge'] ?? null;
+
+            foreach ($variantsInfo as $v) {
+                $slug = $baseSlug . $v['suffix'];
+                $name = $baseName . $v['name_addon'];
+                $imagePath = '/images/' . $baseSlug . '.png';
+
+                Product::updateOrCreate(
+                    ['slug' => $slug],
+                    [
+                        'category_id' => $category->id,
+                        'name' => $name,
+                        'price' => 100000,
+                        'original_price' => null,
+                        'rating' => 5,
+                        'description' => $v['desc'],
+                        'image_path' => $imagePath,
+                        'benefits' => $v['benefits'],
+                        'badge' => $badge,
+                        'status' => 'active',
+                        'is_best_seller' => false,
+                    ]
+                );
+            }
         }
     }
 }
+

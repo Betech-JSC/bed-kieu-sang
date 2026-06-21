@@ -112,7 +112,7 @@ class DatabaseSeeder extends Seeder
                     '- Sử dụng nước xịt thảo mộc phun sương nhẹ lên gối hoặc ga giường khoảng 10 phút trước khi ngủ.',
                     '- Đốt một nụ trầm thảo mộc nhẹ nhàng trong không gian phòng khách hoặc phòng đọc sách để thanh lọc tâm trí trước khi bước vào phòng ngủ.',
                     '- Kết hợp với việc thở sâu bằng bụng: hít vào hương thơm an lành của đất trời và thở ra tất cả những lo toan mệt mỏi tích tụ.',
-                    'Hãy để Thảo Mộc Kiều Sang đồng hành cùng góc nhỏ an yên của bạn, nơi khói trầm dịu nhẹ xoa dịu mọi vết thương tâm hồn và nuôi dưỡng năng lượng sống mỗi ngày.'
+                    'Hãy để Xông nhà tẩy uế đồng hành cùng góc nhỏ an yên của bạn, nơi khói trầm dịu nhẹ xoa dịu mọi vết thương tâm hồn và nuôi dưỡng năng lượng sống mỗi ngày.'
                 ],
                 'image_path' => '/images/aura_mist.png',
                 'read_time' => '4 phút đọc',
@@ -157,7 +157,7 @@ class DatabaseSeeder extends Seeder
                     '- Thanh lọc và bù nước: Tăng cường quá trình trao đổi chất tự nhiên, loại bỏ các chất cặn bã trong hệ tiêu hóa.',
                     '- Xoa dịu tinh thần: Hương thơm tự nhiên giúp giảm lo âu, mang lại tâm thế bình tĩnh để bắt đầu ngày mới hiệu quả.',
                     '- Chống oxy hóa vượt trội: Các dưỡng chất từ hoa cúc sấy khô bảo vệ tế bào khỏi tác hại của các gốc tự do.',
-                    'Hãy cùng Thảo Mộc Kiều Sang duy trì thói quen uống trà an yên mỗi ngày để nuôi dưỡng một tâm hồn bình lặng và một cơ thể tràn đầy sinh khí.'
+                    'Hãy cùng Xông nhà tẩy uế duy trì thói quen uống trà an yên mỗi ngày để nuôi dưỡng một tâm hồn bình lặng và một cơ thể tràn đầy sinh khí.'
                 ],
                 'image_path' => '/images/herbal_tea.png',
                 'read_time' => '5 phút đọc',
@@ -174,7 +174,7 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'social_proof_rating'], ['value' => '4.9', 'type' => 'text', 'group' => 'homepage']);
         
         // Global SEO Settings (Vietnamese only)
-        Setting::updateOrCreate(['key' => 'meta_title'], ['value' => 'Thảo Mộc Kiều Sang - Sống Xanh, An Yên', 'type' => 'text', 'group' => 'seo']);
+        Setting::updateOrCreate(['key' => 'meta_title'], ['value' => 'Xông nhà tẩy uế - Sống Xanh, An Yên', 'type' => 'text', 'group' => 'seo']);
         Setting::updateOrCreate(['key' => 'meta_desc'], ['value' => 'Thương hiệu thảo mộc thiên nhiên, thanh tẩy không gian, liệu pháp mùi hương hữu cơ an lành cho sức khỏe.', 'type' => 'text', 'group' => 'seo']);
         Setting::updateOrCreate(['key' => 'meta_keywords'], ['value' => 'thao moc, kieu sang, white sage, organic, tra hoa cuc, xong nha', 'type' => 'text', 'group' => 'seo']);
 
@@ -240,7 +240,7 @@ class DatabaseSeeder extends Seeder
         Banner::updateOrCreate(
             ['image_path' => '/images/hero_lifestyle.png'],
             [
-                'title' => 'Chào mừng tới Thảo Mộc Kiều Sang',
+                'title' => 'Chào mừng tới Xông nhà tẩy uế',
                 'subtitle' => 'Liệu pháp hương thơm xanh cho tâm hồn an yên',
                 'link_url' => '/products',
                 'order_index' => 1,
@@ -340,13 +340,13 @@ class DatabaseSeeder extends Seeder
         Page::updateOrCreate(
             ['slug' => 'gioi-thieu'],
             [
-                'title' => 'Giới thiệu về Thảo Mộc Kiều Sang',
-                'content' => '<p>Thảo Mộc Kiều Sang tự hào là thương hiệu Việt Nam mang đến các liệu pháp mùi hương thuần tự nhiên giúp chữa lành tâm hồn và thanh tẩy không gian sống.</p><p>Sản phẩm của chúng tôi được hái tay thủ công, phơi sấy mộc và bảo tồn nguyên vẹn hương thơm mộc mạc tinh túy từ đất mẹ.</p>',
+                'title' => 'Giới thiệu về Xông nhà tẩy uế',
+                'content' => '<p>Xông nhà tẩy uế tự hào là thương hiệu Việt Nam mang đến các liệu pháp mùi hương thuần tự nhiên giúp chữa lành tâm hồn và thanh tẩy không gian sống.</p><p>Sản phẩm của chúng tôi được hái tay thủ công, phơi sấy mộc và bảo tồn nguyên vẹn hương thơm mộc mạc tinh túy từ đất mẹ.</p>',
                 'meta_title' => 'Giới thiệu Kiều Sang | Thảo mộc tự nhiên',
-                'meta_description' => 'Khám phá câu chuyện thương hiệu Thảo Mộc Kiều Sang và sứ mệnh đem liệu pháp hương thơm chữa lành tâm hồn Việt.',
+                'meta_description' => 'Khám phá câu chuyện thương hiệu Xông nhà tẩy uế và sứ mệnh đem liệu pháp hương thơm chữa lành tâm hồn Việt.',
                 'meta_keywords' => 'gioi thieu kieu sang, thao moc tu nhien, chua lanh',
                 'seo_title' => 'Giới thiệu Kiều Sang | Thảo mộc tự nhiên',
-                'seo_desc' => 'Khám phá câu chuyện thương hiệu Thảo Mộc Kiều Sang và sứ mệnh đem liệu pháp hương thơm chữa lành tâm hồn Việt.',
+                'seo_desc' => 'Khám phá câu chuyện thương hiệu Xông nhà tẩy uế và sứ mệnh đem liệu pháp hương thơm chữa lành tâm hồn Việt.',
                 'status' => 'published'
             ]
         );
@@ -356,11 +356,11 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Chính sách bảo mật thông tin',
                 'content' => '<p>Chúng tôi cam kết bảo mật tuyệt đối các thông tin cá nhân của quý khách mua sắm tại cửa hàng. Thông tin chỉ sử dụng cho mục đích vận đơn và CSKH.</p>',
-                'meta_title' => 'Chính sách bảo mật | Thảo Mộc Kiều Sang',
-                'meta_description' => 'Chính sách bảo mật thông tin khách hàng mua sắm tại website Thảo Mộc Kiều Sang.',
+                'meta_title' => 'Chính sách bảo mật | Xông nhà tẩy uế',
+                'meta_description' => 'Chính sách bảo mật thông tin khách hàng mua sắm tại website Xông nhà tẩy uế.',
                 'meta_keywords' => 'chinh sach bao mat, kieu sang',
-                'seo_title' => 'Chính sách bảo mật | Thảo Mộc Kiều Sang',
-                'seo_desc' => 'Chính sách bảo mật thông tin khách hàng mua sắm tại website Thảo Mộc Kiều Sang.',
+                'seo_title' => 'Chính sách bảo mật | Xông nhà tẩy uế',
+                'seo_desc' => 'Chính sách bảo mật thông tin khách hàng mua sắm tại website Xông nhà tẩy uế.',
                 'status' => 'published'
             ]
         );
@@ -370,10 +370,10 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Chính sách giao hàng & đổi trả',
                 'content' => '<p>Đồng giá giao hàng toàn quốc 30.000đ. Đơn hàng từ 500.000đ trở lên được miễn phí vận chuyển. Khách hàng được đồng kiểm hàng trước khi thanh toán.</p>',
-                'meta_title' => 'Giao hàng và đổi trả | Thảo Mộc Kiều Sang',
+                'meta_title' => 'Giao hàng và đổi trả | Xông nhà tẩy uế',
                 'meta_description' => 'Chính sách giao nhận, cước phí vận chuyển và chế độ bảo hành đổi trả hàng lỗi do vận chuyển.',
                 'meta_keywords' => 'giao hang, doi tra kieu sang',
-                'seo_title' => 'Giao hàng và đổi trả | Thảo Mộc Kiều Sang',
+                'seo_title' => 'Giao hàng và đổi trả | Xông nhà tẩy uế',
                 'seo_desc' => 'Chính sách giao nhận, cước phí vận chuyển và chế độ bảo hành đổi trả hàng lỗi do vận chuyển.',
                 'status' => 'published'
             ]

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Mail } from "lucide-react";
 
 const notoSerif = Noto_Serif({
   subsets: ["latin", "vietnamese"],
@@ -67,6 +68,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <a
+            href="mailto:xongnhatayuekieusang@gmail.com"
+            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#043616] text-[#FFFDF9] shadow-xl border border-[#E5C44B]/40 hover:bg-[#112215] hover:scale-110 active:scale-95 transition-all duration-300 group hover:shadow-[0_0_20px_rgba(229,196,75,0.5)] animate-bounce"
+            title="Gửi Email"
+            style={{ animationDuration: "3s" }}
+          >
+            <Mail className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+          </a>
         </ThemeProvider>
       </body>
     </html>

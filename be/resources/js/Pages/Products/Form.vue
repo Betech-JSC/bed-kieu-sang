@@ -80,11 +80,8 @@ const form = useForm({
     status: props.product?.status || 'active',
     seo_title: props.product?.seo_title || '',
     seo_desc: props.product?.seo_desc || '',
-    has_variants: props.variantConfiguration?.has_variants ?? false,
-    variants: (props.variantConfiguration?.variants || []).map((variant) => ({
-        ...variant,
-        image: null,
-    })),
+    has_variants: false,
+    variants: [],
 });
 
 const slugify = (value) => value
@@ -287,85 +284,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="border-t border-zinc-100 pt-6 space-y-5">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div>
-                                <h3 class="text-md font-serif font-bold text-emerald-950 uppercase tracking-wider">Phân loại sản phẩm</h3>
-                                <p class="text-xs text-zinc-500 mt-1">Chọn xem sản phẩm này có nhiều biến thể/phân loại khác nhau hay không.</p>
-                            </div>
-                            <div class="flex items-center space-x-2.5 bg-zinc-50 border border-zinc-200 rounded-lg px-4 py-2.5">
-                                <input type="checkbox" id="has_variants" v-model="form.has_variants" class="rounded text-[#043616] focus:ring-[#043616] w-4.5 h-4.5 cursor-pointer" />
-                                <label for="has_variants" class="text-xs font-bold text-emerald-950 cursor-pointer select-none">Sản phẩm có phân loại</label>
-                            </div>
-                        </div>
 
-                        <div v-if="form.has_variants" class="rounded-xl border border-zinc-200 bg-white p-4 space-y-4">
-                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                    <div>
-                                        <h4 class="text-sm font-bold text-emerald-950">Danh sách phân loại</h4>
-                                        <p class="text-xs text-zinc-500 mt-1">Giá giảm được thể hiện bằng “Giá gốc” cao hơn “Giá bán”.</p>
-                                    </div>
-                                    <button type="button" @click="addVariant" class="px-4 py-2 rounded-lg bg-[#043616] text-white text-xs font-bold hover:bg-[#112215]">+ Thêm phân loại</button>
-                                </div>
-
-                                <div v-if="form.variants.length === 0" class="rounded-lg border border-dashed border-zinc-300 p-5 text-center text-xs text-zinc-500">
-                                    Chưa có phân loại. Nhấn “Thêm phân loại” để bắt đầu.
-                                </div>
-
-                                <div v-else class="overflow-x-auto border border-zinc-200 rounded-lg">
-                                    <table class="min-w-[1120px] w-full text-xs">
-                                        <thead class="bg-zinc-50 text-emerald-950 uppercase tracking-wider">
-                                            <tr>
-                                                <th class="p-3 text-left">Phân loại</th>
-                                                <th class="p-3 text-left w-40">SKU</th>
-                                                <th class="p-3 text-left w-32">Giá bán</th>
-                                                <th class="p-3 text-left w-32">Giá gốc</th>
-                                                <th class="p-3 text-left w-24">Tồn kho</th>
-                                                <th class="p-3 text-left w-32">Trạng thái</th>
-                                                <th class="p-3 text-left w-60">Ảnh riêng</th>
-                                                <th class="p-3 text-center w-16"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-zinc-100">
-                                            <tr v-for="(variant, variantIndex) in form.variants" :key="variantIndex" class="align-top">
-                                                <td class="p-2"><input v-model="variant.name" required placeholder="Ví dụ: Hộp 20 gói" class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
-                                                <td class="p-2"><input v-model="variant.sku" required class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
-                                                <td class="p-2"><input v-model="variant.price" type="number" min="0" required class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
-                                                <td class="p-2"><input v-model="variant.original_price" type="number" min="0" class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
-                                                <td class="p-2"><input v-model="variant.stock" type="number" min="0" required class="w-full border border-zinc-200 rounded-md px-2 py-2" /></td>
-                                                <td class="p-2">
-                                                    <select v-model="variant.status" class="w-full border border-zinc-200 rounded-md px-2 py-2 bg-white">
-                                                        <option value="active">Đang bán</option>
-                                                        <option value="inactive">Tạm ẩn</option>
-                                                    </select>
-                                                </td>
-                                                <td class="p-2">
-                                                    <div class="flex items-center gap-2">
-                                                        <div v-if="variant.image_path || variant.image" class="w-10 h-10 rounded border border-zinc-200 overflow-hidden shrink-0 bg-zinc-50 flex items-center justify-center">
-                                                            <img :src="variant.image ? getObjectURL(variant.image) : variant.image_path" class="w-full h-full object-cover" />
-                                                        </div>
-                                                        <div class="flex flex-col gap-1 flex-1 min-w-0">
-                                                            <input type="file" accept="image/*" @change="handleVariantImage($event, variantIndex)" class="w-full text-[10px] file:mr-1 file:rounded file:border-0 file:bg-emerald-50 file:px-1.5 file:py-1 file:text-emerald-800 hover:file:bg-emerald-100 cursor-pointer" />
-                                                            <div class="flex items-center gap-1.5 text-[9px] font-bold mt-0.5">
-                                                                <button type="button" @click="openMediaModal(variantIndex)" class="text-emerald-700 hover:text-emerald-950 underline">
-                                                                    Chọn từ Media
-                                                                </button>
-                                                                <span v-if="variant.image_path || variant.image" class="text-zinc-300">|</span>
-                                                                <button v-if="variant.image_path || variant.image" type="button" @click="clearVariantImage(variantIndex)" class="text-rose-600 hover:text-rose-800">
-                                                                    Xóa
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="p-2 text-center"><button type="button" @click="removeVariant(variantIndex)" class="px-2 py-2 text-rose-700 font-bold hover:bg-rose-50 rounded">Xoá</button></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <p class="text-[11px] text-zinc-500">Khi lưu, giá hiển thị ngoài danh sách tự lấy mức thấp nhất trong các phân loại đang bán.</p>
-                        </div>
-                    </div>
 
                     <div class="border-t border-zinc-100 pt-6 space-y-4">
                         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
