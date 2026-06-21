@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useSeo(title?: string, description?: string) {
+export function useSeo(title?: string, description?: string, keywords?: string) {
   useEffect(() => {
     if (title) {
       document.title = `${title} | Xông Nhà Tẩy Uế`;
@@ -16,5 +16,16 @@ export function useSeo(title?: string, description?: string) {
         document.head.appendChild(newMeta);
       }
     }
-  }, [title, description]);
+    if (keywords) {
+      const meta = document.querySelector('meta[name="keywords"]');
+      if (meta) {
+        meta.setAttribute("content", keywords);
+      } else {
+        const newMeta = document.createElement("meta");
+        newMeta.name = "keywords";
+        newMeta.content = keywords;
+        document.head.appendChild(newMeta);
+      }
+    }
+  }, [title, description, keywords]);
 }
