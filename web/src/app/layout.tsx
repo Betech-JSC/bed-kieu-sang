@@ -26,9 +26,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Xông Nhà Tẩy Uế - Thanh lọc không gian, Chăm sóc tâm hồn",
+  title: "Thảo Mộc Tẩy Uế-Thu Hút Tiền Tài Tài Lộc-Khai Thông-Nhập Trạch",
   description:
-    "Thương hiệu thảo mộc thiên nhiên cao cấp giúp không gian sạch sẽ, thanh tịnh tinh thần và cân bằng năng lượng phong thủy.",
+    "Thương hiệu thảo mộc 100% thiên nhiên, thanh tẩy không gian nhà cửa nhập trạch nhà mới, xua đuổi tà ma,chiêu tài chiêu lộc",
+  keywords: "tayuexongnha,xongnhatayue,nhaptrach,nhamoi,chieutaichieuloc,thuhutvanmay, tamtai, thaitue",
   metadataBase: new URL("https://www.xongnhatayue.vn/"),
   icons: {
     icon: [

@@ -13,12 +13,20 @@ import Footer from "@/components/kieu-sang/footer";
 import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
-import { submitContact } from "@/lib/api";
+import { submitContact, getSettings } from "@/lib/api";
 
 export default function ContactPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
+  const [settings, setSettings] = useState<Record<string, string> | null>(null);
+
+  // Load settings on mount
+  useEffect(() => {
+    getSettings().then((data) => {
+      if (data) setSettings(data);
+    });
+  }, []);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -174,7 +182,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Địa chỉ</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">Quận 1, TP. Hồ Chí Minh</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_address || "Quận 1, TP. Hồ Chí Minh"}</p>
                   </div>
                 </div>
 
@@ -185,7 +193,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Điện thoại</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">0779 440 918</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_hotline || "0779 440 918"}</p>
                   </div>
                 </div>
 
@@ -196,7 +204,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-serif text-sm font-bold text-primary">Email</h4>
-                    <p className="text-xs text-muted-foreground font-light mt-1">lienhe@xongnhatayue.vn</p>
+                    <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_email || "lienhe@xongnhatayue.vn"}</p>
                   </div>
                 </div>
               </div>

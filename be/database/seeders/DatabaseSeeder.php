@@ -174,9 +174,9 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'social_proof_rating'], ['value' => '4.9', 'type' => 'text', 'group' => 'homepage']);
         
         // Global SEO Settings (Vietnamese only)
-        Setting::updateOrCreate(['key' => 'meta_title'], ['value' => 'Xông nhà tẩy uế - Sống Xanh, An Yên', 'type' => 'text', 'group' => 'seo']);
-        Setting::updateOrCreate(['key' => 'meta_desc'], ['value' => 'Thương hiệu thảo mộc thiên nhiên, thanh tẩy không gian, liệu pháp mùi hương hữu cơ an lành cho sức khỏe.', 'type' => 'text', 'group' => 'seo']);
-        Setting::updateOrCreate(['key' => 'meta_keywords'], ['value' => 'thao moc, kieu sang, white sage, organic, tra hoa cuc, xong nha', 'type' => 'text', 'group' => 'seo']);
+        Setting::updateOrCreate(['key' => 'meta_title'], ['value' => 'Thảo Mộc Tẩy Uế-Thu Hút Tiền Tài Tài Lộc-Khai Thông-Nhập Trạch', 'type' => 'text', 'group' => 'seo']);
+        Setting::updateOrCreate(['key' => 'meta_desc'], ['value' => 'Thương hiệu thảo mộc 100% thiên nhiên, thanh tẩy không gian nhà cửa nhập trạch nhà mới, xua đuổi tà ma,chiêu tài chiêu lộc', 'type' => 'text', 'group' => 'seo']);
+        Setting::updateOrCreate(['key' => 'meta_keywords'], ['value' => 'tayuexongnha,xongnhatayue,nhaptrach,nhamoi,chieutaichieuloc,thuhutvanmay, tamtai, thaitue', 'type' => 'text', 'group' => 'seo']);
 
         // 8. Create Extra Blog Posts
         BlogPost::updateOrCreate(

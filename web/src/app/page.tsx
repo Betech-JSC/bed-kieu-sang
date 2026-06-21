@@ -88,11 +88,11 @@ export default function Home() {
   const [banners, setBanners] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>(REVIEWS);
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
-  const [seoSettings, setSeoSettings] = useState<{ title?: string; desc?: string }>({});
+  const [seoSettings, setSeoSettings] = useState<{ title?: string; desc?: string; keywords?: string }>({});
   const [socialProof, setSocialProof] = useState({ salesCount: 50000, rating: "4.9" });
   const [displayedSalesCount, setDisplayedSalesCount] = useState(0);
 
-  useSeo(seoSettings.title, seoSettings.desc);
+  useSeo(seoSettings.title, seoSettings.desc, seoSettings.keywords);
 
   const newProductsScrollRef = useRef<HTMLDivElement>(null);
   const saleProductsScrollRef = useRef<HTMLDivElement>(null);
@@ -135,7 +135,7 @@ export default function Home() {
 
       if (settingsResult.status === "fulfilled" && settingsResult.value) {
         const settings = settingsResult.value;
-        setSeoSettings({ title: settings.meta_title, desc: settings.meta_desc });
+        setSeoSettings({ title: settings.meta_title, desc: settings.meta_desc, keywords: settings.meta_keywords });
         setSocialProof({
           salesCount: Number(settings.social_proof_sales_count || 50000),
           rating: settings.social_proof_rating || "4.9",
