@@ -66,6 +66,7 @@ class AiChatController extends Controller
 
         // 3. Check Gemini API key
         $apiKey = config('services.gemini.key');
+        $model = config('services.gemini.model', 'gemini-2.5-flash');
         if (empty($apiKey)) {
             $errorText = 'Gemini API key is not configured. Please add GEMINI_API_KEY to your .env file.';
             $modelMessage = AiChatMessage::create([
@@ -94,7 +95,7 @@ class AiChatController extends Controller
 
         try {
             // 5. Call Gemini API
-            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key={$apiKey}";
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
             
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
