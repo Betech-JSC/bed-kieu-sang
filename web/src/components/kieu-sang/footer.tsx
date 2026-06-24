@@ -115,7 +115,7 @@ export default function Footer() {
           </h4>
           <p className={`text-[11px] italic leading-relaxed text-muted-foreground font-light transition-opacity duration-300 ${settings ? "opacity-100" : "opacity-0"}`}>
             Địa chỉ: {settings?.store_address || ""} <br />
-            Hotline: {settings?.store_hotline || ""} <br />
+            {/* Hotline: {settings?.store_hotline || ""} <br /> */}
             Email: {settings?.store_email || ""}
           </p>
           <form
