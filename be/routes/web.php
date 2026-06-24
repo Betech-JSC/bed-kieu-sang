@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ProductQuestionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\AiChatController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -84,6 +85,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Testimonials
     Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index')->middleware('permission:view_reviews');
     Route::patch('testimonials/{testimonial}/status', [TestimonialController::class, 'updateStatus'])->name('testimonials.status')->middleware('permission:manage_reviews');
+    Route::post('testimonials', [TestimonialController::class, 'store'])->name('testimonials.store')->middleware('permission:manage_reviews');
+    Route::post('testimonials/{testimonial}', [TestimonialController::class, 'update'])->name('testimonials.update')->middleware('permission:manage_reviews');
+    Route::delete('testimonials/{testimonial}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy')->middleware('permission:manage_reviews');
     
     // Contacts
     Route::resource('contacts', ContactController::class)->only(['index', 'show'])->middleware('permission:view_contacts');
@@ -112,6 +116,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Activity Logs
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index')->middleware('permission:view_activity_logs');
+
+    // AI Chat Box
+    Route::get('ai-chats', [AiChatController::class, 'index'])->name('ai-chats.index');
+    Route::post('ai-chats', [AiChatController::class, 'store'])->name('ai-chats.store');
 });
 
 Route::middleware('auth')->group(function () {
