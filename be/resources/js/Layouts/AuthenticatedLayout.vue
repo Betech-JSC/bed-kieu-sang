@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import AiChatBox from '@/Components/AiChatBox.vue';
 
 const showingSidebarMobile = ref(false);
 const page = usePage();
@@ -284,5 +285,6 @@ const filteredNavigationItems = computed(() => {
                 <slot />
             </main>
         </div>
+        <AiChatBox />
     </div>
 </template>

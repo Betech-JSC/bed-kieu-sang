@@ -67,7 +67,35 @@ class DatabaseSeeder extends Seeder
         $catFengShui = Category::updateOrCreate(['slug' => 'phong-thuy'], ['name' => 'Phong Thủy', 'type' => 'blog']);
         $catWellness = Category::updateOrCreate(['slug' => 'wellness'], ['name' => 'Wellness', 'type' => 'blog']);
 
-        // 3. Create the current product catalog and its variants
+        // 3. Seed Media Library from public/media storage first
+        $mediaPath = storage_path('app/public/media');
+        if (\Illuminate\Support\Facades\File::exists($mediaPath)) {
+            $files = \Illuminate\Support\Facades\File::files($mediaPath);
+            $adminUserId = User::where('role', 'super_admin')->value('id') ?? 1;
+            foreach ($files as $file) {
+                $filename = $file->getFilename();
+                if ($filename === '.gitignore' || $filename === '.DS_Store') {
+                    continue;
+                }
+                $relativePath = 'media/' . $filename;
+                $mimeType = \Illuminate\Support\Facades\File::mimeType($file->getPathname()) ?: 'image/jpeg';
+                $size = $file->getSize();
+
+                \App\Models\Media::updateOrCreate(
+                    ['path' => $relativePath],
+                    [
+                        'disk' => 'public',
+                        'original_name' => $filename,
+                        'mime_type' => $mimeType,
+                        'size' => $size,
+                        'alt_text' => ucwords(str_replace(['-', '_', '.'], ' ', pathinfo($filename, PATHINFO_FILENAME))),
+                        'uploaded_by' => $adminUserId,
+                    ]
+                );
+            }
+        }
+
+        // 4. Create the current product catalog and its variants
         $this->call([
             ProductCatalogSeeder::class,
             ProductVariantSeeder::class,
@@ -282,9 +310,11 @@ class DatabaseSeeder extends Seeder
         );
 
         // 10. Create Testimonials
+        Testimonial::query()->delete();
+
         Testimonial::create([
             'customer_name' => 'Nguyễn Thị Minh An',
-            'customer_avatar' => null,
+            'customer_avatar' => '/images/avatar_woman_1.png',
             'rating' => 5,
             'comment' => 'Bó thảo mộc xông nhà mùi thơm tự nhiên ấm áp vô cùng. Mình xông xong thấy phòng thông thoáng hẳn.',
             'is_featured' => true,
@@ -293,7 +323,7 @@ class DatabaseSeeder extends Seeder
 
         Testimonial::create([
             'customer_name' => 'Trần Quang Huy',
-            'customer_avatar' => null,
+            'customer_avatar' => '/images/avatar_man_1.png',
             'rating' => 5,
             'comment' => 'Nụ trầm thảo mộc ngọt thanh dịu nhẹ. Đốt lúc đọc sách hoặc làm việc rất tĩnh tâm.',
             'is_featured' => true,
@@ -302,7 +332,7 @@ class DatabaseSeeder extends Seeder
 
         Testimonial::create([
             'customer_name' => 'Lê Thanh Bình',
-            'customer_avatar' => null,
+            'customer_avatar' => '/images/avatar_man_2.png',
             'rating' => 4,
             'comment' => 'Trà cúc chi thơm, ngủ ngon giấc hơn. Giao hàng ở Hà Nội nhanh chóng.',
             'is_featured' => false,
@@ -311,7 +341,7 @@ class DatabaseSeeder extends Seeder
 
         Testimonial::create([
             'customer_name' => 'Phạm Kim Chi',
-            'customer_avatar' => null,
+            'customer_avatar' => '/images/avatar_woman_2.png',
             'rating' => 5,
             'comment' => 'Nước xịt phòng ngải cứu cam ngọt cực kỳ thích, khử sạch mùi ẩm mốc phòng điều hòa.',
             'is_featured' => true,
@@ -319,21 +349,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Testimonial::create([
-            'customer_name' => 'Vũ Hải Long',
-            'customer_avatar' => null,
+            'customer_name' => 'Vũ Hải Yến',
+            'customer_avatar' => '/images/avatar_woman_3.png',
             'rating' => 3,
             'comment' => 'Sản phẩm tốt nhưng bao gói hộp quà hơi móp nhẹ do bên vận chuyển.',
             'is_featured' => false,
             'status' => 'approved'
-        ]);
-
-        Testimonial::create([
-            'customer_name' => 'Đặng Thu Trang',
-            'customer_avatar' => null,
-            'rating' => 5,
-            'comment' => 'Gỗ trắc xanh palo santo thơm ngọt tự nhiên, rất thích cách phục vụ nhiệt tình của shop.',
-            'is_featured' => false,
-            'status' => 'pending'
         ]);
 
         // 10. Create Pages

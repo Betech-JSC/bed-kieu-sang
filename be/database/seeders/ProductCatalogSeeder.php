@@ -24,7 +24,6 @@ class ProductCatalogSeeder extends Seeder
             ['name' => '[Mẫu mới] Tẩy uế xông nhà hơn 20 loại thảo mộc 100gram', 'slug' => 'mau-moi-tay-ue-xong-nha-hon-20-loai-thao-moc-100gram', 'badge' => 'MẪU MỚI'],
         ];
     }
-
     public function run(): void
     {
         $category = Category::updateOrCreate(
@@ -54,7 +53,7 @@ class ProductCatalogSeeder extends Seeder
             [
                 'suffix' => '-lot-bac-than',
                 'name_addon' => ' + Lót bạc + Than',
-                'desc' => 'Bộ lót bạc chống cháy và than xông nhà chuyên dụng.',
+                'desc' => 'Bộ lót bạc chống cháy and than xông nhà chuyên dụng.',
                 'benefits' => ['Thảo mộc tự nhiên', 'Thanh lọc không gian', 'Túi 100gram', 'Lót bạc + than']
             ],
             [
@@ -65,15 +64,51 @@ class ProductCatalogSeeder extends Seeder
             ],
         ];
 
-        foreach (self::products() as $definition) {
+        // Fetch all media and sort them by the trailing number in original_name (1 to 22)
+        $mediaList = \App\Models\Media::all()->sortBy(function ($media) {
+            preg_match('/(\d+)\.(jpg|jpeg|png)$/i', $media->original_name, $matches);
+            return isset($matches[1]) ? (int)$matches[1] : 999;
+        })->values();
+
+        $products = self::products();
+        foreach ($products as $index => $definition) {
             $baseSlug = $definition['slug'];
             $baseName = $definition['name'];
             $badge = $definition['badge'] ?? null;
 
+            // Update alt_text for the media files
+            if ($mediaList->isNotEmpty()) {
+                if ($mediaList->has($index)) {
+                    $mediaList[$index]->update([
+                        'alt_text' => $baseName
+                    ]);
+                }
+                if ($mediaList->has($index + 11)) {
+                    $mediaList[$index + 11]->update([
+                        'alt_text' => $baseName . ' (Kèm phụ kiện)'
+                    ]);
+                }
+            }
+
             foreach ($variantsInfo as $v) {
                 $slug = $baseSlug . $v['suffix'];
                 $name = $baseName . $v['name_addon'];
-                $imagePath = '/images/' . $baseSlug . '.png';
+
+                // Assign image from media library
+                $imagePath = '/images/' . $baseSlug . '.png'; // Fallback
+                if ($mediaList->isNotEmpty()) {
+                    if ($v['suffix'] === '') {
+                        // Base product
+                        if ($mediaList->has($index)) {
+                            $imagePath = '/storage/' . $mediaList[$index]->path;
+                        }
+                    } else {
+                        // Accessory variant product
+                        if ($mediaList->has($index + 11)) {
+                            $imagePath = '/storage/' . $mediaList[$index + 11]->path;
+                        }
+                    }
+                }
 
                 Product::updateOrCreate(
                     ['slug' => $slug],
@@ -95,4 +130,3 @@ class ProductCatalogSeeder extends Seeder
         }
     }
 }
-
