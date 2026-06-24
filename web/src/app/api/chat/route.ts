@@ -11,9 +11,9 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-
+    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
