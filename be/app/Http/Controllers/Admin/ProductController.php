@@ -184,6 +184,12 @@ class ProductController extends Controller
         $data['benefits'] = $data['benefits'] ?? [];
         $data['is_best_seller'] = $request->boolean('is_best_seller');
 
+        // Prevent null values for NOT NULL integer sales columns
+        $data['channel_one_sales'] = (int) ($validated['channel_one_sales'] ?? 0);
+        $data['channel_two_sales'] = (int) ($validated['channel_two_sales'] ?? 0);
+        $data['virtual_sales'] = (int) ($validated['virtual_sales'] ?? 0);
+        $data['real_sales'] = (int) ($validated['real_sales'] ?? 0);
+
         return $data;
     }
 

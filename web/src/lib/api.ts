@@ -198,7 +198,6 @@ export async function submitContact(payload: {
 }
 
 export async function submitOrder(payload: {
-  order_code?: string;
   customer_name: string;
   customer_email?: string;
   customer_phone: string;
@@ -260,4 +259,15 @@ export async function getCategories(type: "product" | "blog" = "product") {
 export async function getSettings() {
   const data = await fetchJson<Record<string, string>>("/settings");
   return data || null;
+}
+
+export async function getOrder(orderCode: string) {
+  return fetchJson<any>(`/orders/${encodeURIComponent(orderCode)}`);
+}
+
+export async function mockPaymentSuccess(orderCode: string) {
+  return fetchJson<any>("/pay2s/mock-success", {
+    method: "POST",
+    body: JSON.stringify({ order_code: orderCode }),
+  });
 }

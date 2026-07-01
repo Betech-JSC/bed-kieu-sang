@@ -97,10 +97,28 @@ class AiChatController extends Controller
             // 5. Call Gemini API
             $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
             
+            $systemInstruction = "Bạn là Trợ lý AI của thương hiệu \"Xông Nhà Tẩy Uế\" (Sophpower). Hãy tư vấn và hỗ trợ khách hàng dựa trên các thông tin sản phẩm sau:\n\n"
+                . "1. Phân loại sản phẩm và công dụng:\n"
+                . "- Nhập trạch, chuyển nhà: nên khuyên chọn loại \"22 loại thảo mộc\".\n"
+                . "- Công việc không ổn định, khó khăn làm ăn: nên khuyên chọn \"loại gai\".\n"
+                . "- Làm thơm căn phòng: chọn \"Trầm\", hoặc \"gói VIP\", và \"Gừng\".\n"
+                . "- Tốt cho sức khỏe: Chọn \"Ngải cứu\" và \"Gừng\".\n\n"
+                . "2. Cách sử dụng (tùy theo loại nhà):\n"
+                . "- Nhà phố: đốt lấy khói (bằng than hoặc lửa).\n"
+                . "- Nhà chung cư: Nấu nước hoặc xông bằng hơi.\n\n"
+                . "3. Quy tắc giao tiếp:\n"
+                . "- Luôn trả lời bằng tiếng Việt lịch sự, chu đáo, ấm áp và chuyên nghiệp.\n"
+                . "- Khi khách hàng cần hỗ trợ tư vấn sâu hơn hoặc có thắc mắc khác, hãy luôn khuyên hoặc mời khách hàng để lại thông tin liên hệ (số điện thoại/email) để được nhân viên liên hệ tư vấn chuyên sâu.";
+
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($url, [
                 'contents' => $contents,
+                'systemInstruction' => [
+                    'parts' => [
+                        ['text' => $systemInstruction]
+                    ]
+                ]
             ]);
 
             if ($response->successful()) {

@@ -24,6 +24,8 @@ export interface OrderDetails {
   paymentMethod: "COD" | "BANK";
   items: CartItem[];
   total: number;
+  paymentStatus?: "pending" | "paid" | "failed";
+  expireAt?: string;
 }
 
 function generateRandomId() {
@@ -32,19 +34,10 @@ function generateRandomId() {
 
 const STATIC_PRODUCT_SLUGS: Record<string, string> = {
   p1: "bo-thao-moc-xong-nha",
-  p2: "nu-tram-thao-moc",
-  p3: "nuoc-xit-thao-moc-thanh-loc",
-  p4: "hop-tra-thao-moc-an-yen",
-  n1: "tinh-dau-vo-buoi-hong",
-  n2: "nhang-khoanh-dan-huong",
-  n3: "de-dot-tram-gom-men-ran",
-  n4: "hop-tra-sen-tuyet-co-thu",
-  n5: "bo-thao-moc-oai-huong-kho",
-  s1: "combo-3-bo-xong-nha-cat-tuong",
-  s2: "tinh-dau-cam-ngot-nguyen-chat",
-  s3: "lu-xong-tram-dong-hun-co",
-  s4: "hop-nu-tram-dac-biet-hop-go",
-  s5: "tra-hoa-cuc-vang-tien-vua",
+  p2: "nu-tram-huong-tu-nhien",
+  p3: "tra-thao-moc-an-than",
+  p4: "tinh-dau-que-nguyen-chat",
+  p5: "tinh-dau-sa-chanh-nguyen-chat",
 };
 
 interface CartDrawerProps {
@@ -72,40 +65,27 @@ export default function CartDrawer({
     paymentMethod: "BANK" as "COD" | "BANK",
   });
 
-  const [orderCode, setOrderCode] = useState(() => generateRandomId());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const total = cartItems.reduce((sum, item) => sum + getItemPrice(item) * item.quantity, 0);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
   };
-
-  const total = cartItems.reduce(
-    (sum, item) => sum + getItemPrice(item) * item.quantity,
-    0
-  );
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Vui lòng nhập họ và tên";
-    }
-
-    const phoneRegex = /^(03|05|07|08|09|01[2|6|8|9])\d{8}$/;
+    if (!formData.name.trim()) newErrors.name = "Vui lòng nhập tên người nhận";
     if (!formData.phone.trim()) {
       newErrors.phone = "Vui lòng nhập số điện thoại";
-    } else if (!phoneRegex.test(formData.phone.replace(/\s+/g, ""))) {
-      newErrors.phone = "Số điện thoại không đúng định dạng Việt Nam";
+    } else if (!/^(0|84)\d{9}$/.test(formData.phone.replace(/\s+/g, ""))) {
+      newErrors.phone = "Số điện thoại không hợp lệ (phải có 10 chữ số)";
     }
-
-    if (!formData.address.trim()) {
-      newErrors.address = "Vui lòng nhập địa chỉ giao hàng";
-    }
+    if (!formData.address.trim()) newErrors.address = "Vui lòng nhập địa chỉ giao hàng";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -113,10 +93,10 @@ export default function CartDrawer({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm() || isSubmitting) return;
 
     setIsSubmitting(true);
-    setSubmitError("");
+    setSubmitError(null);
 
     const apiItems = cartItems.map(item => {
       const parsedId = typeof item.product.id === "number" ? item.product.id : parseInt(item.product.id, 10);
@@ -132,7 +112,6 @@ export default function CartDrawer({
 
     try {
       const result = await submitOrder({
-        order_code: orderCode,
         customer_name: formData.name,
         customer_phone: formData.phone,
         shipping_address: formData.address,
@@ -141,8 +120,32 @@ export default function CartDrawer({
         items: apiItems
       });
 
+      const orderCode = result.order_code || generateRandomId();
+
+      if (formData.paymentMethod === "BANK" && result.pay_url) {
+        // Clear local cart
+        onCheckoutComplete({
+          id: orderCode,
+          ...formData,
+          items: cartItems,
+          total,
+          paymentStatus: "pending",
+          expireAt: result.expire_at,
+        });
+
+        setFormData({
+          name: "",
+          phone: "",
+          address: "",
+          note: "",
+          paymentMethod: "BANK",
+        });
+
+        return;
+      }
+
       onCheckoutComplete({
-        id: result.order_code || orderCode,
+        id: orderCode,
         ...formData,
         items: cartItems,
         total,
@@ -155,7 +158,6 @@ export default function CartDrawer({
         note: "",
         paymentMethod: "BANK",
       });
-      setOrderCode(generateRandomId());
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Không thể gửi đơn hàng về CMS.");
     } finally {
@@ -163,52 +165,35 @@ export default function CartDrawer({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 z-50 overflow-hidden font-sans">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-[#112215]/40 backdrop-blur-xs transition-opacity duration-300"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-[#112215]/40 backdrop-blur-xs transition-opacity" onClick={onClose} />
 
       <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">
-        {/* Drawer Panel */}
-        <div className="w-screen max-w-lg transform bg-card shadow-2xl transition-all duration-300 flex flex-col h-full border-l border-border rounded-l-[32px] overflow-hidden">
-          {/* Header */}
-          <div className="px-6 py-6 border-b border-border bg-[#FAF6EE] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/8 text-primary">
-                <ShoppingBag className="h-5 w-5" />
+        <div className="w-screen max-w-md transform transition-all duration-300 ease-in-out">
+          <div className="flex h-full flex-col bg-card border-l border-border shadow-2xl p-6 overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border/60 pb-4 mb-6">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="h-5 w-5 text-primary" />
+                <h2 className="font-serif text-lg font-bold text-foreground">Giỏ Hàng Của Bạn</h2>
               </div>
-              <h2 className="font-serif text-xl font-semibold text-foreground">Giỏ Hàng An Yên</h2>
+              <button
+                onClick={onClose}
+                className="p-1 rounded-full text-muted-foreground hover:bg-neutral-100 hover:text-foreground transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="rounded-full p-2 text-muted-foreground hover:bg-neutral-100 hover:text-foreground transition-all active:scale-95"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
 
-          {/* Cart Contents */}
-          <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
             {cartItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                <div className="relative w-36 h-36 opacity-70">
-                  <Image
-                    src="/images/logo.png"
-                    alt="Empty Cart Logo"
-                    fill
-                    className="object-contain grayscale contrast-75"
-                  />
+              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
+                <div className="h-16 w-16 bg-[#FAF6EE] rounded-full flex items-center justify-center border border-border">
+                  <ShoppingBag className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <p className="font-serif text-lg text-foreground font-semibold mt-4">
-                  Chưa có sản phẩm thanh lọc nào
-                </p>
-                <p className="text-sm text-muted-foreground max-w-xs">
-                  Hãy bắt đầu chăm sóc không gian sống bằng những bó thảo mộc thơm lành từ Xông Nhà Tẩy Uế.
+                <p className="text-sm font-medium text-muted-foreground">
+                  Chưa có sản phẩm nào trong giỏ hàng.
                 </p>
                 <button
                   onClick={onClose}
@@ -228,12 +213,22 @@ export default function CartDrawer({
                     {cartItems.map((item) => (
                       <div key={getCartItemKey(item)} className="flex py-4 gap-4 items-center">
                         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted p-1">
-                          <Image
-                            src={item.variant?.image || item.product.image}
-                            alt={item.product.name}
-                            fill
-                            className="object-contain"
-                          />
+                          {(() => {
+                            const imageUrl = (item.variant?.image && item.variant.image !== "false")
+                              ? item.variant.image
+                              : (item.product.image && item.product.image !== "false")
+                              ? item.product.image
+                              : "/images/logo.png";
+                            return (
+                              <Image
+                                src={imageUrl}
+                                alt={item.product.name}
+                                fill
+                                unoptimized={imageUrl.startsWith("http")}
+                                className="object-contain"
+                              />
+                            );
+                          })()}
                         </div>
                         <div className="flex-1">
                           <h4 className="font-serif text-sm font-bold text-foreground">
@@ -390,7 +385,7 @@ export default function CartDrawer({
                           <p>Số tài khoản: <strong>0779440918</strong></p>
                           <p>Tên tài khoản: <strong>DO VAN VU</strong></p>
                           <p>
-                            Nội dung CK: <strong>{orderCode}</strong>
+                            Nội dung CK: <strong>[Mã đơn hàng của bạn]</strong>
                           </p>
                         </div>
                         <p className="text-[10px] text-primary italic mt-1">
