@@ -260,3 +260,14 @@ export async function getSettings() {
   const data = await fetchJson<Record<string, string>>("/settings");
   return data || null;
 }
+
+export async function getOrder(orderCode: string) {
+  return fetchJson<any>(`/orders/${encodeURIComponent(orderCode)}`);
+}
+
+export async function mockPaymentSuccess(orderCode: string) {
+  return fetchJson<any>("/pay2s/mock-success", {
+    method: "POST",
+    body: JSON.stringify({ order_code: orderCode }),
+  });
+}
