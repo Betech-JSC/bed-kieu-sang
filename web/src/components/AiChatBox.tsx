@@ -104,6 +104,17 @@ export default function AiChatBox() {
     }, 600);
   };
 
+  const SUGGESTIONS = [
+    { text: "🏠 Chọn loại xông nhà phù hợp", prompt: "Tôi muốn chuyển nhà/nhập trạch hoặc đang gặp khó khăn trong làm ăn, tôi nên chọn loại Tẩy uế xông nhà nào và cách dùng ra sao?" },
+    { text: "🌿 Thơm phòng & Sức khỏe", prompt: "Tôi muốn xông nhà thơm phòng hoặc tốt cho sức khỏe thì chọn loại nào phù hợp và dùng ra sao?" },
+    { text: "🔥 Cách xông nhà chung cư", prompt: "Nhà chung cư thì nên xông tẩy uế bằng phương pháp nào là tốt nhất?" },
+    { text: "📞 Nhận tư vấn sâu hơn", prompt: "Tôi cần tư vấn chi tiết hơn, vui lòng hướng dẫn cách để lại thông tin liên hệ." }
+  ];
+
+  const handleSuggestionClick = (promptText: string) => {
+    setNewMessage(promptText);
+  };
+
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || isLoading) return;
@@ -257,6 +268,20 @@ export default function AiChatBox() {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Suggestions Bar */}
+          <div className="px-3 py-2 border-t border-zinc-100 bg-white flex gap-1.5 overflow-x-auto shrink-0 select-none no-scrollbar">
+            {SUGGESTIONS.map((sug) => (
+              <button
+                key={sug.text}
+                type="button"
+                onClick={() => handleSuggestionClick(sug.prompt)}
+                className="shrink-0 text-[10px] font-bold text-zinc-700 bg-zinc-100 hover:bg-[#FAF6EE] hover:text-[#043616] px-2.5 py-1.5 rounded-lg border border-zinc-200 transition-colors"
+              >
+                {sug.text}
+              </button>
+            ))}
           </div>
 
           {/* Input Bar */}

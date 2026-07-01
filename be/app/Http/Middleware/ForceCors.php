@@ -57,6 +57,7 @@ class ForceCors
             'https://cms.xongnhatayue.vn',
             'http://localhost:3000',
             'http://127.0.0.1:3000',
+            'https://sandbox.pay2s.vn',
         ]);
 
         if (in_array($origin, $allowedOrigins, true)) {

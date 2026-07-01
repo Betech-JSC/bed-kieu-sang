@@ -152,6 +152,17 @@ const formatMessage = (text) => {
     // Line breaks
     return escaped.replace(/\n/g, '<br>');
 };
+
+const suggestions = [
+    { text: '🏠 Tư vấn Nhập trạch', prompt: 'Tư vấn giúp mình: Nhập trạch, chuyển nhà thì nên chọn loại Tẩy uế xông nhà nào và cách dùng ra sao?' },
+    { text: '💼 Làm ăn khó khăn', prompt: 'Công việc của mình không ổn định, làm ăn khó khăn thì nên dùng loại Tẩy uế xông nhà nào phù hợp?' },
+    { text: '🌸 Thơm phòng & Sức khỏe', prompt: 'Mình muốn xông nhà thơm phòng hoặc tốt cho sức khỏe thì chọn loại nào, dùng ra sao?' },
+    { text: '🔥 Cách dùng chung cư', prompt: 'Nhà chung cư thì nên xông tẩy uế bằng cách nào là tốt nhất?' }
+];
+
+const useSuggestion = (promptText) => {
+    newMessage.value = promptText;
+};
 </script>
 
 <template>
@@ -240,6 +251,19 @@ const formatMessage = (text) => {
                         <span class="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style="animation-delay: 300ms"></span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Suggestions Bar -->
+            <div class="px-3 py-2.5 border-t border-zinc-150 bg-white flex gap-1.5 overflow-x-auto shrink-0 select-none no-scrollbar">
+                <button
+                    v-for="sug in suggestions"
+                    :key="sug.text"
+                    type="button"
+                    @click="useSuggestion(sug.prompt)"
+                    class="shrink-0 text-[10px] font-bold text-zinc-700 bg-zinc-100 hover:bg-[#FAF6EE] hover:text-[#043616] px-2.5 py-1.5 rounded-lg border border-zinc-200 transition-colors"
+                >
+                    {{ sug.text }}
+                </button>
             </div>
 
             <!-- Input Bar -->
