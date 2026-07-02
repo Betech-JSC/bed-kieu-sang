@@ -27,8 +27,8 @@ class MediaController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'files' => ['required', 'array', 'max:10'],
-            'files.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:5120'],
+            'files' => ['required', 'array', 'max:20'],
+            'files.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:20480'],
         ]);
         foreach ($validated['files'] as $file) {
             $path = $file->store('media/'.now()->format('Y/m'), 'public');
