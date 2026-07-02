@@ -45,7 +45,7 @@ class TestimonialController extends Controller
             'comment' => 'required|string|max:1000',
             'is_featured' => 'boolean',
             'status' => 'required|in:pending,approved,rejected',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'customer_avatar' => 'nullable|string',
         ]);
 
@@ -73,7 +73,7 @@ class TestimonialController extends Controller
             'comment' => 'required|string|max:1000',
             'is_featured' => 'boolean',
             'status' => 'required|in:pending,approved,rejected',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'customer_avatar' => 'nullable|string',
         ]);
 
