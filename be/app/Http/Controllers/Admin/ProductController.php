@@ -106,7 +106,7 @@ class ProductController extends Controller
             'original_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
             'image_path' => ($product ? 'nullable' : 'required_without:image|nullable').'|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'benefits' => 'nullable|array',
             'benefits.*' => 'string|max:255',
             'badge' => 'nullable|string|max:50',
@@ -138,7 +138,7 @@ class ProductController extends Controller
             $rules['variants.*.price'] = 'required|numeric|min:0';
             $rules['variants.*.original_price'] = 'nullable|numeric|min:0';
             $rules['variants.*.image_path'] = 'nullable|string';
-            $rules['variants.*.image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $rules['variants.*.image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480';
             $rules['variants.*.stock'] = 'required|integer|min:0';
             $rules['variants.*.status'] = 'required|in:active,inactive';
         }
