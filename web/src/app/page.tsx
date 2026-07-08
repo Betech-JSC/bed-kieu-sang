@@ -313,7 +313,7 @@ export default function Home() {
         <section
           id="hero"
           className="relative min-h-[550px] md:min-h-0 md:aspect-[2/1] w-full flex items-center overflow-hidden border-b border-border/10 bg-cover bg-center bg-no-repeat transition-all duration-700 [--hero-gradient:linear-gradient(to_bottom,rgba(255,253,249,0.95)_0%,rgba(255,253,249,0.7)_100%)] md:[--hero-gradient:linear-gradient(to_right,rgba(255,253,249,0.96)_0%,rgba(255,253,249,0.8)_35%,rgba(255,253,249,0)_100%)]"
-          style={{ backgroundImage: `var(--hero-gradient), url('${banners.length > 0 ? banners[activeBannerIndex].image : "/images/hero_banner.png"}')` }}
+          style={{ backgroundImage: `var(--hero-gradient), url('${banners.length > 0 ? banners[activeBannerIndex].image : "/images/banner_homepage.jpg"}')` }}
         >
           {/* Atmospheric Steam Particles */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -341,7 +341,7 @@ export default function Home() {
               </button>
             </>
           )}
- 
+
           <div className="relative z-10 px-6 md:px-12 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
             {/* Hero Left Info */}
             <div className="space-y-6 text-left">
@@ -380,9 +380,9 @@ export default function Home() {
                 </button>
               </div>
             </div>
- 
+
             {/* Hero Right Visual (Single Product Image - Transparent Background) */}
-            <div className="relative w-full h-[300px] md:h-[450px] mt-8 md:mt-0 transition-all duration-500 hover:scale-103 hover:-translate-y-1">
+            {/* <div className="relative w-full h-[300px] md:h-[450px] mt-8 md:mt-0 transition-all duration-500 hover:scale-103 hover:-translate-y-1">
               <Image
                 src="/images/image_product_ks.png"
                 alt="Sản phẩm thảo mộc Xông Nhà Tẩy Uế"
@@ -390,7 +390,7 @@ export default function Home() {
                 priority
                 className="object-contain drop-shadow-[0_20px_40px_rgba(4,54,22,0.12)]"
               />
-            </div>
+            </div> */}
           </div>
         </section>
 
@@ -399,7 +399,7 @@ export default function Home() {
           <div className="bg-card rounded-[32px] border border-border/80 p-8 md:p-12 shadow-xl relative overflow-hidden">
             {/* Subtle Feng Shui background pattern */}
             <div className="absolute inset-0 asian-pattern opacity-[0.02] pointer-events-none" />
-            
+
             <div className="relative z-10 text-center mb-12 space-y-3 flex flex-col items-center justify-center">
               <ZenIcon className="h-8 w-8 text-primary animate-pulse" />
               <h2 className="font-serif text-2xl md:text-3xl font-semibold uppercase tracking-widest text-primary">
@@ -485,82 +485,82 @@ export default function Home() {
 
         {/* New Products Section (Carousel) */}
         {newProducts.length > 0 && (
-        <section id="new-arrivals" className="py-20 bg-background border-t border-border/40 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="flex justify-between items-end mb-12">
-              <div className="space-y-3">
-                <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">Sản Phẩm Mới</span>
-                <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">SỰ KHỞI ĐẦU MỚI</h2>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => scrollCarousel(newProductsScrollRef, "left")}
-                  className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => scrollCarousel(newProductsScrollRef, "right")}
-                  className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-
-            <div
-              ref={newProductsScrollRef}
-              className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {newProducts.map((product) => (
-                <div key={product.id} className="snap-start shrink-0 w-[260px] sm:w-[280px]">
-                  <ProductCard product={product} onAddToCart={handleAddToCart} />
+          <section id="new-arrivals" className="py-20 bg-background border-t border-border/40 overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 md:px-12">
+              <div className="flex justify-between items-end mb-12">
+                <div className="space-y-3">
+                  <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">Sản Phẩm Mới</span>
+                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">SỰ KHỞI ĐẦU MỚI</h2>
                 </div>
-              ))}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => scrollCarousel(newProductsScrollRef, "left")}
+                    className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => scrollCarousel(newProductsScrollRef, "right")}
+                    className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div
+                ref={newProductsScrollRef}
+                className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {newProducts.map((product) => (
+                  <div key={product.id} className="snap-start shrink-0 w-[260px] sm:w-[280px]">
+                    <ProductCard product={product} onAddToCart={handleAddToCart} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
         )}
 
         {/* Sale Products Section (Carousel) */}
         {saleProducts.length > 0 && (
-        <section id="sale-arrivals" className="py-20 bg-[#FAF6EE] border-t border-border/40 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="flex justify-between items-end mb-12">
-              <div className="space-y-3">
-                <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">Ưu Đãi Lành Mạnh</span>
-                <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">KHUYẾN MÃI ĐẶC BIỆT</h2>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => scrollCarousel(saleProductsScrollRef, "left")}
-                  className="h-10 w-10 rounded-full border border-border bg-white flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => scrollCarousel(saleProductsScrollRef, "right")}
-                  className="h-10 w-10 rounded-full border border-border bg-white flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-
-            <div
-              ref={saleProductsScrollRef}
-              className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {saleProducts.map((product) => (
-                <div key={product.id} className="snap-start shrink-0 w-[260px] sm:w-[280px]">
-                  <ProductCard product={product} onAddToCart={handleAddToCart} />
+          <section id="sale-arrivals" className="py-20 bg-[#FAF6EE] border-t border-border/40 overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 md:px-12">
+              <div className="flex justify-between items-end mb-12">
+                <div className="space-y-3">
+                  <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">Ưu Đãi Lành Mạnh</span>
+                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">KHUYẾN MÃI ĐẶC BIỆT</h2>
                 </div>
-              ))}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => scrollCarousel(saleProductsScrollRef, "left")}
+                    className="h-10 w-10 rounded-full border border-border bg-white flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => scrollCarousel(saleProductsScrollRef, "right")}
+                    className="h-10 w-10 rounded-full border border-border bg-white flex items-center justify-center text-primary hover:border-primary hover:bg-primary/4 transition-all duration-300 active:scale-90"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div
+                ref={saleProductsScrollRef}
+                className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {saleProducts.map((product) => (
+                  <div key={product.id} className="snap-start shrink-0 w-[260px] sm:w-[280px]">
+                    <ProductCard product={product} onAddToCart={handleAddToCart} />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
         )}
 
         {/* Storytelling Section (Asymmetric) */}
