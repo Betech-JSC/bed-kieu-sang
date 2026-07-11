@@ -35,22 +35,28 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/images/logo.svg", type: "image/svg+xml" },
+      { url: "/images/logo_ks2.png", type: "image/png" },
     ],
-    apple: [{ url: "/images/logo.png", sizes: "1024x1024", type: "image/png" }],
+    apple: [{ url: "/images/logo_ks2.png", sizes: "180x180", type: "image/png" }],
   },
   robots: {
     index: true,
     follow: true,
   },
-  openGraph: {
-    type: "website",
-    locale: "vi_VN",
-    url: "https://www.xongnhatayue.vn/",
-    siteName: "Xông Nhà Tẩy Uế",
-    images: ["/images/hero_lifestyle.png"],
-  },
-};
+    openGraph: {
+      type: "website",
+      locale: "vi_VN",
+      url: "https://www.xongnhatayue.vn/",
+      siteName: "Xông Nhà Tẩy Uế",
+      images: ["/images/hero_lifestyle.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Thảo Mộc Tẩy Uế-Thu Hút Tiền Tài Tài Lộc-Khai Thông-Nhập Trạch",
+      description: "Thương hiệu thảo mộc 100% thiên nhiên, thanh tẩy không gian nhà cửa nhập trạch nhà mới, xua đuổi tà ma,chiêu tài chiêu lộc",
+      images: ["/images/hero_lifestyle.png"],
+    },
+  };
 
 export default function RootLayout({
   children,
