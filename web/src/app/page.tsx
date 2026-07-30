@@ -658,6 +658,7 @@ export default function Home() {
                         src={blogPosts[0].image}
                         alt={blogPosts[0].title}
                         fill
+                        unoptimized={blogPosts[0].image?.startsWith("http")}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
                       />
                       <span className="absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
@@ -698,6 +699,7 @@ export default function Home() {
                         src={post.image}
                         alt={post.title}
                         fill
+                        unoptimized={post.image?.startsWith("http")}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
                       />
                       <span className="sm:hidden absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
@@ -769,6 +771,7 @@ export default function Home() {
                           src={review.avatar}
                           alt={review.name}
                           fill
+                          unoptimized={review.avatar?.startsWith("http")}
                           className="object-cover"
                         />
                       </div>

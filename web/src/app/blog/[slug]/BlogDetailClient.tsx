@@ -54,6 +54,10 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
 
   const [post, setPost] = useState<any>(() => initialPost || BLOG_POSTS.find((p) => p.slug === slug) || null);
   
+  const recommendedProducts = post?.recommended_products && post.recommended_products.length > 0
+    ? post.recommended_products
+    : RECOMENDED_PRODUCTS;
+
   useSeo(post?.seo_title || post?.title, post?.seo_desc || post?.summary || post?.excerpt);
 
   useEffect(() => {
@@ -188,6 +192,7 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
                   src={post.image}
                   alt={post.title}
                   fill
+                  unoptimized={post.image?.startsWith("http")}
                   className="object-cover"
                   priority
                 />
@@ -244,13 +249,14 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
                 </div>
 
                 <div className="space-y-4">
-                  {RECOMENDED_PRODUCTS.map((prod) => (
+                  {recommendedProducts.map((prod: Product) => (
                     <div key={prod.id} className="bg-transparent hover:bg-white rounded-xl p-3 flex gap-3 items-center group transition-all duration-300">
                       <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-background shrink-0">
                         <Image
                           src={prod.image}
                           alt={prod.name}
                           fill
+                          unoptimized={prod.image?.startsWith("http")}
                           className="object-contain p-1"
                         />
                       </div>

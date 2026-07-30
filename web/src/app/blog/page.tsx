@@ -30,7 +30,7 @@ export default function BlogArchive() {
       if (dbBlogs && dbBlogs.length > 0) {
         const mappedBlogs = dbBlogs.map((b: any) => ({
           ...b,
-          image: b.image_path,
+          image: b.image || b.image_path,
           date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : "Gần đây"
         }));
         setPostsList(mappedBlogs);
@@ -139,6 +139,7 @@ export default function BlogArchive() {
                     src={post.image}
                     alt={post.title}
                     fill
+                    unoptimized={post.image?.startsWith("http")}
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
                   />
                   <span className="absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">

@@ -42,7 +42,13 @@ class BlogPostController extends Controller
     public function create(): Response
     {
         $categories = Category::where('type', 'blog')->get();
-        return Inertia::render('Blog/Form', ['categories' => $categories]);
+        $products = \App\Models\Product::with('category')->where('status', 'active')->orderBy('name')->get(['id', 'name', 'image_path', 'category_id']);
+        $media = \App\Models\Media::latest()->get();
+        return Inertia::render('Blog/Form', [
+            'categories' => $categories,
+            'products' => $products,
+            'media' => $media
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -60,6 +66,8 @@ class BlogPostController extends Controller
             'published_at' => 'nullable|date',
             'seo_title' => 'nullable|string|max:255',
             'seo_desc' => 'nullable|string',
+            'recommended_product_ids' => 'nullable|array',
+            'recommended_product_ids.*' => 'nullable|exists:products,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -82,9 +90,13 @@ class BlogPostController extends Controller
     public function edit(BlogPost $blog): Response
     {
         $categories = Category::where('type', 'blog')->get();
+        $products = \App\Models\Product::with('category')->where('status', 'active')->orderBy('name')->get(['id', 'name', 'image_path', 'category_id']);
+        $media = \App\Models\Media::latest()->get();
         return Inertia::render('Blog/Form', [
             'post' => $blog,
-            'categories' => $categories
+            'categories' => $categories,
+            'products' => $products,
+            'media' => $media
         ]);
     }
 
@@ -103,6 +115,8 @@ class BlogPostController extends Controller
             'published_at' => 'nullable|date',
             'seo_title' => 'nullable|string|max:255',
             'seo_desc' => 'nullable|string',
+            'recommended_product_ids' => 'nullable|array',
+            'recommended_product_ids.*' => 'nullable|exists:products,id',
         ]);
 
         if ($request->hasFile('image')) {

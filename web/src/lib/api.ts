@@ -31,19 +31,38 @@ function normalizeApiUrl(url: string) {
 
 function resolveImageUrl(path: string | undefined | null): string {
   if (!path) return "/images/logo.png";
-  if (path.startsWith("http://") || path.startsWith("https://")) {
-    return path;
+  
+  // If the path contains a hardcoded local/production backend URL, strip the origin
+  let cleanPath = path;
+  if (
+    path.startsWith("http://127.0.0.1:8000") ||
+    path.startsWith("http://localhost:8000") ||
+    path.startsWith("https://cms.xongnhatayue.vn")
+  ) {
+    cleanPath = path.replace(/^https?:\/\/[^\/]+/, "");
   }
-  if (path.startsWith("/storage/")) {
-    const apiUrl = getApiUrl();
-    try {
-      const urlObj = new URL(apiUrl);
-      return `${urlObj.protocol}//${urlObj.host}${path}`;
-    } catch (e) {
-      return `http://127.0.0.1:8000${path}`;
+
+  // If it's still an absolute URL, return it
+  if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
+    return cleanPath;
+  }
+
+  // Ensure the path starts with /storage/ or /images/
+  if (!cleanPath.startsWith("/storage/") && !cleanPath.startsWith("/images/")) {
+    if (cleanPath.startsWith("storage/")) {
+      cleanPath = "/" + cleanPath;
+    } else {
+      cleanPath = "/storage/" + cleanPath.replace(/^\/+/, "");
     }
   }
-  return path;
+
+  const apiUrl = getApiUrl();
+  try {
+    const urlObj = new URL(apiUrl);
+    return `${urlObj.protocol}//${urlObj.host}${cleanPath}`;
+  } catch (e) {
+    return `http://127.0.0.1:8000${cleanPath}`;
+  }
 }
 
 function mapProduct(p: any) {
@@ -74,6 +93,7 @@ function mapBlog(b: any) {
     category: typeof b.category === "object" && b.category !== null ? b.category.name : b.category,
     image: resolveImageUrl(b.image_path || b.image),
     date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : b.date || "Gần đây",
+    recommended_products: Array.isArray(b.recommended_products) ? b.recommended_products.map(mapProduct) : [],
   };
 }
 
@@ -177,7 +197,7 @@ export async function getTestimonials() {
       name: t.customer_name,
       role: t.is_featured ? "Khách hàng thân thiết" : "Khách hàng",
       text: t.comment,
-      avatar: t.customer_avatar || "/images/avatar_woman_1.png"
+      avatar: t.customer_avatar ? resolveImageUrl(t.customer_avatar) : "/images/avatar_woman_1.png"
     }));
   }
   return [];

@@ -34,6 +34,15 @@ class PublicBlogController extends Controller
             ->where('published_at', '<=', now())
             ->firstOrFail();
 
+        $products = [];
+        if (!empty($post->recommended_product_ids)) {
+            $products = \App\Models\Product::with('category')
+                ->whereIn('id', $post->recommended_product_ids)
+                ->where('status', 'active')
+                ->get();
+        }
+        $post->setAttribute('recommended_products', $products);
+
         return response()->json($post);
     }
 }

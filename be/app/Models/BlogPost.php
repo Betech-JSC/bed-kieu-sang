@@ -13,12 +13,13 @@ class BlogPost extends Model
     protected $fillable = [
         'category_id', 'slug', 'title', 'excerpt', 'content', 
         'image_path', 'read_time', 'status', 'published_at',
-        'seo_title', 'seo_desc'
+        'seo_title', 'seo_desc', 'recommended_product_ids'
     ];
 
     protected $casts = [
         'content' => 'array',
         'published_at' => 'datetime',
+        'recommended_product_ids' => 'array',
     ];
 
     public function category(): BelongsTo
