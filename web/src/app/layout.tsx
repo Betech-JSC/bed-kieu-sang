@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Mail } from "lucide-react";
 import AiChatBox from "@/components/AiChatBox";
+import Script from "next/script";
 
 const notoSerif = Noto_Serif({
   subsets: ["latin", "vietnamese"],
@@ -68,6 +69,19 @@ export default function RootLayout({
       <body
         className={`${plusJakarta.variable} ${notoSerif.variable} antialiased`}
       >
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-Q8CEZCY45R"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-Q8CEZCY45R');
+          `}
+        </Script>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
