@@ -71,17 +71,17 @@ export default function DonateDialog({ className }: DonateDialogProps) {
                         <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
                             <div className="flex flex-col items-center gap-4">
                                 {/* QR Code Placeholder - Replace with actual QR code image */}
-                                <img className="w-48 h-48 rounded-lg" src="https://img.vietqr.io/image/mbbank-0779440918-compact.jpg" alt="" />
+                                <img className="w-48 h-48 rounded-lg" src="https://img.vietqr.io/image/techcombank-3502586746-compact.jpg" alt="" />
                                 {/* Bank Details */}
                                 <div className="text-center space-y-1">
                                     <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                                        Bank: <span className="font-mono">MB Bank</span>
+                                        Bank: <span className="font-mono">Techcombank</span>
                                     </div>
                                     <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                                        Account: <span className="font-mono">0779440918</span>
+                                        Account: <span className="font-mono">3502586746</span>
                                     </div>
                                     <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                                        Name: <span className="font-mono">DO VAN VU</span>
+                                        Name: <span className="font-mono">Cty TNHH XNK SX XO THOM</span>
                                     </div>
                                 </div>
                             </div>

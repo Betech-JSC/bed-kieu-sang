@@ -381,9 +381,9 @@ export default function CartDrawer({
                           Thông tin Chuyển Khoản:
                         </p>
                         <div className="space-y-1 text-muted-foreground font-sans">
-                          <p>Ngân hàng: <strong>MBBank (Ngân hàng Quân Đội)</strong></p>
-                          <p>Số tài khoản: <strong>0779440918</strong></p>
-                          <p>Tên tài khoản: <strong>DO VAN VU</strong></p>
+                          <p>Ngân hàng: <strong>Ngân hàng Techcombank</strong></p>
+                          <p>Số tài khoản: <strong>3502586746</strong></p>
+                          <p>Tên tài khoản: <strong>Cty TNHH XNK SX XO THOM</strong></p>
                           <p>
                             Nội dung CK: <strong>[Mã đơn hàng của bạn]</strong>
                           </p>

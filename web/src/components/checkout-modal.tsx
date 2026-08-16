@@ -29,7 +29,7 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
   };
 
   // Dynamic VietQR code URL
-  const qrUrl = `https://img.vietqr.io/image/mbbank-0779440918-compact.jpg?amount=${order.total}&addInfo=${encodeURIComponent(order.id)}&accountName=DO%20VAN%20VU`;
+  const qrUrl = `https://img.vietqr.io/image/techcombank-3502586746-compact.jpg?amount=${order.total}&addInfo=${encodeURIComponent(order.id)}&accountName=Cty%20TNHH%20XNK%20SX%20XO%20THOM`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans">
@@ -143,9 +143,9 @@ export default function CheckoutModal({ order, onClose }: CheckoutModalProps) {
               <div className="text-[10px] text-center text-muted-foreground leading-normal max-w-[200px]">
                 <p>Quét mã VietQR trên ứng dụng ngân hàng để chuyển khoản.</p>
                 <div className="mt-2 space-y-0.5 bg-[#FAF6EE] p-1.5 rounded-lg border border-border font-mono text-[9px] text-left">
-                  <p>TK: <strong>0779440918</strong></p>
-                  <p>Bank: <strong>MBBank</strong></p>
-                  <p>Chủ TK: <strong>DO VAN VU</strong></p>
+                  <p>TK: <strong>3502586746</strong></p>
+                  <p>Bank: <strong>Techcombank</strong></p>
+                  <p>Chủ TK: <strong>Cty TNHH XNK SX XO THOM</strong></p>
                   <p className="flex items-center justify-between mt-1">
                     <span>Nội dung: <strong>{order.id}</strong></span>
                     <button
