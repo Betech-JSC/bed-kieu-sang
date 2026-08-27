@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const props = defineProps({
     orders: Object,
@@ -10,6 +10,19 @@ const props = defineProps({
 
 const search = ref(props.filters?.search || '');
 const status = ref(props.filters?.status || '');
+
+// Default export month to current month YYYY-MM
+const now = new Date();
+const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+const exportMonth = ref(currentMonthStr);
+
+const exportUrl = computed(() => {
+    return route('admin.orders.export', {
+        month: exportMonth.value,
+        status: status.value || undefined,
+        search: search.value || undefined
+    });
+});
 
 let debounceTimeout = null;
 const handleFilterChange = () => {
@@ -50,8 +63,8 @@ watch(status, () => {
         </template>
 
         <div class="space-y-6">
-            <!-- Filters & Search Bar -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center bg-[#FFFDF9] p-4 rounded-xl border border-zinc-200/80">
+            <!-- Filters & Search Bar & Export -->
+            <div class="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center bg-[#FFFDF9] p-4 rounded-xl border border-zinc-200/80">
                 <div class="flex flex-wrap items-center gap-3">
                     <input 
                         v-model="search" 
@@ -69,6 +82,28 @@ watch(status, () => {
                         <option value="completed">Hoàn thành</option>
                         <option value="cancelled">Đã huỷ</option>
                     </select>
+                </div>
+
+                <!-- Export for Accounting section -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-1.5 bg-white border border-zinc-200 rounded-lg px-3 py-1.5">
+                        <span class="text-xs font-semibold text-zinc-600">Tháng:</span>
+                        <input 
+                            v-model="exportMonth" 
+                            type="month" 
+                            class="border-0 p-0 text-sm font-medium text-zinc-800 focus:ring-0 outline-none bg-transparent cursor-pointer"
+                        />
+                    </div>
+                    <a 
+                        :href="exportUrl" 
+                        class="inline-flex items-center gap-2 bg-[#043616] hover:bg-[#032810] text-[#FFFDF9] px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all duration-150"
+                        title="Xuất file CSV/Excel chi tiết đơn hàng cho kế toán"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Xuất Excel kế toán</span>
+                    </a>
                 </div>
             </div>
 

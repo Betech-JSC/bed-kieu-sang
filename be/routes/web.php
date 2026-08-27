@@ -94,6 +94,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('contacts', ContactController::class)->only(['destroy'])->middleware('permission:manage_contacts');
 
     // Orders
+    Route::get('orders/export', [OrderController::class, 'export'])->name('orders.export')->middleware('permission:view_orders');
     Route::resource('orders', OrderController::class)->only(['index', 'show'])->middleware('permission:view_orders');
     Route::resource('orders', OrderController::class)->only(['update'])->middleware('permission:manage_orders');
 
