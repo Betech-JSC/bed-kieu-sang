@@ -182,7 +182,7 @@
         <!-- Header -->
         <div class="header">
             <div class="badge">🔔 Đơn Hàng Mới</div>
-            <h1>Nội Thất Kiểu Sáng</h1>
+            <h1>Xông Nhà Tẩy Uế</h1>
             <p>Hệ thống vừa ghi nhận đơn hàng mới từ khách hàng</p>
         </div>
 
@@ -330,7 +330,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p style="margin: 0 0 4px 0;">Email thông báo tự động từ hệ thống website <strong>Nội Thất Kiểu Sáng</strong>.</p>
+            <p style="margin: 0 0 4px 0;">Email thông báo tự động từ hệ thống website <strong>Xông Nhà Tẩy Uế</strong>.</p>
             <p style="margin: 0;">Vui lòng liên hệ lại với khách hàng sớm nhất để xác nhận và điều phối vận chuyển.</p>
         </div>
     </div>
