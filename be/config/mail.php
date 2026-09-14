@@ -46,6 +46,7 @@ return [
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
@@ -114,5 +115,16 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notification Email
+    |--------------------------------------------------------------------------
+    |
+    | The email address that will receive notifications when a new order is placed.
+    |
+    */
+
+    'admin_email' => env('ADMIN_MAIL', 'nhatbao2850@gmail.com'),
 
 ];

@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use Illuminate\Http\Request;
+use App\Mail\NewOrderAdminNotification;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -39,7 +42,7 @@ class PublicOrderController extends Controller
             }
         }
 
-        return DB::transaction(function () use ($validated) {
+        $order = DB::transaction(function () use ($validated) {
             $totalAmount = 0;
             $itemsData = [];
 
@@ -119,13 +122,30 @@ class PublicOrderController extends Controller
                 Product::whereKey($itemData['product_id'])->increment('real_sales', $itemData['quantity']);
             }
 
-            return response()->json([
-                'success' => true,
-                'order_code' => $order->order_code,
-                'total_amount' => $order->total_amount,
-                'message' => 'Order placed successfully.'
-            ], 201);
+            return $order;
         });
+
+        // Tự động gửi email thông báo đơn hàng mới cho Admin
+        try {
+            $order->load('items.productVariant', 'items.product');
+            $adminEmail = config('mail.admin_email', env('ADMIN_MAIL', 'nhatbao2850@gmail.com'));
+            if (!empty($adminEmail)) {
+                Mail::to($adminEmail)->send(new NewOrderAdminNotification($order));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Failed to send admin order notification email: ' . $e->getMessage(), [
+                'order_id' => $order->id,
+                'order_code' => $order->order_code,
+                'exception' => $e,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'order_code' => $order->order_code,
+            'total_amount' => $order->total_amount,
+            'message' => 'Order placed successfully.'
+        ], 201);
     }
 
     public function show(string $orderCode): JsonResponse
