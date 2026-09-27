@@ -21,7 +21,9 @@ class BlogPostController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('excerpt', 'like', '%' . $request->search . '%');
+                  ->orWhere('title_en', 'like', '%' . $request->search . '%')
+                  ->orWhere('excerpt', 'like', '%' . $request->search . '%')
+                  ->orWhere('excerpt_en', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -56,9 +58,13 @@ class BlogPostController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'slug' => 'required|string|unique:blog_posts,slug',
+            'slug_en' => 'nullable|string|unique:blog_posts,slug_en',
             'excerpt' => 'required|string|max:500',
+            'excerpt_en' => 'nullable|string|max:500',
             'content' => 'required|array',
+            'content_en' => 'nullable|array',
             'image_path' => 'required_without:image|nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'read_time' => 'required|string|max:50',
@@ -105,9 +111,13 @@ class BlogPostController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'slug' => 'required|string|unique:blog_posts,slug,' . $blog->id,
+            'slug_en' => 'nullable|string|unique:blog_posts,slug_en,' . $blog->id,
             'excerpt' => 'required|string|max:500',
+            'excerpt_en' => 'nullable|string|max:500',
             'content' => 'required|array',
+            'content_en' => 'nullable|array',
             'image_path' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'read_time' => 'required|string|max:50',
@@ -132,7 +142,7 @@ class BlogPostController extends Controller
         $oldValue = $blog->toArray();
         $blog->update($validated);
 
-        ActivityLogger::log('UPDATE', 'blog_posts', "Updated blog post '{$blog->title}'", $oldValue, $blog->toArray());
+        ActivityLogger::log('UPDATE', 'blog_posts', "Updated blog post '{$blog->title}'", $oldValue, $blog->fresh()->toArray());
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog post updated successfully.');
     }

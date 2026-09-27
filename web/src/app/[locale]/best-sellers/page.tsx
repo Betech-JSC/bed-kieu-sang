@@ -15,16 +15,19 @@ import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components
 import CheckoutModal from "@/components/checkout-modal";
 import { getBestSellers } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function BestSellersPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
+  const locale = useLocale();
+  const tBestSellers = useTranslations("bestSellers");
 
   useSeo(
-    "Sản phẩm bán chạy | Xông Nhà Tẩy Uế",
-    "Các sản phẩm thảo mộc được Xông Nhà Tẩy Uế chọn ghim theo chiến dịch và lượt bán cộng dồn từ nhiều kênh."
+    tBestSellers("title"),
+    tBestSellers("subtitle")
   );
 
   useEffect(() => {
@@ -68,15 +71,22 @@ export default function BestSellersPage() {
   };
 
   const handleUpdateQuantity = (itemKey: string, delta: number) => {
-    saveCart(
-      cart
-        .map((item) => (getCartItemKey(item) === itemKey ? { ...item, quantity: item.quantity + delta } : item))
-        .filter((item) => item.quantity > 0)
-    );
+    const newCart = cart
+      .map((item) => {
+        if (getCartItemKey(item) === itemKey) {
+          const newQty = item.quantity + delta;
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
+
+    saveCart(newCart);
   };
 
   const handleRemoveItem = (itemKey: string) => {
-    saveCart(cart.filter((item) => getCartItemKey(item) !== itemKey));
+    const newCart = cart.filter((item) => getCartItemKey(item) !== itemKey);
+    saveCart(newCart);
   };
 
   const handleCheckoutComplete = (order: OrderDetails) => {
@@ -86,14 +96,14 @@ export default function BestSellersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/10 selection:text-primary">
+    <div className="min-h-screen bg-background text-foreground font-sans">
       <Header onCartOpen={() => setIsCartOpen(true)} />
 
       <main className="pt-20">
-        <section className="relative flex min-h-[300px] items-center overflow-hidden border-b border-border/40 bg-[#FAF6EE]">
+        <section className="relative overflow-hidden border-b border-border/40 bg-[#FAF6EE]">
           <Image
             src="/images/hero_lifestyle.png"
-            alt="Sản phẩm bán chạy Xông Nhà Tẩy Uế"
+            alt={tBestSellers("title")}
             fill
             priority
             className="object-cover opacity-30"
@@ -106,10 +116,10 @@ export default function BestSellersPage() {
                 Best Sellers
               </div>
               <h1 className="font-serif text-3xl font-bold uppercase text-primary md:text-4xl">
-                Sản phẩm bán chạy
+                {tBestSellers("title")}
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-7 text-[#414941]">
-                Danh sách sản phẩm được admin chủ động ghim theo lượt bán cộng dồn, chiến dịch bán hàng và nhu cầu đẩy doanh số.
+                {tBestSellers("subtitle")}
               </p>
             </div>
           </div>
@@ -125,10 +135,9 @@ export default function BestSellersPage() {
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-white px-6 py-20 text-center">
               <ShoppingBag className="h-10 w-10 text-primary/40" />
-              <h2 className="mt-4 font-serif text-xl font-bold text-primary">Chưa có sản phẩm bán chạy</h2>
-              <p className="mt-2 max-w-md text-sm text-[#414941]">
-                Vào CMS, mở chi tiết sản phẩm và chọn “Ghim vào Sản Phẩm Bán Chạy” để hiển thị tại đây.
-              </p>
+              <h2 className="mt-4 font-serif text-xl font-bold text-primary">
+                {locale === "en" ? "No best seller products yet" : "Chưa có sản phẩm bán chạy"}
+              </h2>
             </div>
           )}
         </section>

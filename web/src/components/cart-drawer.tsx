@@ -5,6 +5,8 @@ import Image from "next/image";
 import { X, ShoppingBag, Plus, Minus, Trash2, Award, ArrowRight } from "lucide-react";
 import { Product, ProductVariant } from "./product-card";
 import { submitOrder } from "@/lib/api";
+import { useLocale, useTranslations } from "next-intl";
+import { getLocalized } from "@/lib/i18n-utils";
 
 export interface CartItem {
   product: Product;
@@ -57,6 +59,10 @@ export default function CartDrawer({
   onRemoveItem,
   onCheckoutComplete,
 }: CartDrawerProps) {
+  const locale = useLocale();
+  const tCart = useTranslations("cart");
+  const tCheckout = useTranslations("checkout");
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -74,18 +80,21 @@ export default function CartDrawer({
   const total = cartItems.reduce((sum, item) => sum + getItemPrice(item) * item.quantity, 0);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+    return new Intl.NumberFormat(locale === "en" ? "en-US" : "vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = "Vui lòng nhập tên người nhận";
+    if (!formData.name.trim()) newErrors.name = tCheckout("errors.nameRequired");
     if (!formData.phone.trim()) {
-      newErrors.phone = "Vui lòng nhập số điện thoại";
-    } else if (!/^(0|84)\d{9}$/.test(formData.phone.replace(/\s+/g, ""))) {
-      newErrors.phone = "Số điện thoại không hợp lệ (phải có 10 chữ số)";
+      newErrors.phone = tCheckout("errors.phoneRequired");
+    } else if (!/^(0|84|\+84)\d{8,10}$/.test(formData.phone.replace(/\s+/g, ""))) {
+      newErrors.phone = tCheckout("errors.phoneRequired");
     }
-    if (!formData.address.trim()) newErrors.address = "Vui lòng nhập địa chỉ giao hàng";
+    if (!formData.address.trim()) newErrors.address = tCheckout("errors.addressRequired");
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,7 +108,7 @@ export default function CartDrawer({
     setSubmitError(null);
 
     const apiItems = cartItems.map(item => {
-      const parsedId = typeof item.product.id === "number" ? item.product.id : parseInt(item.product.id, 10);
+      const parsedId = typeof item.product.id === "number" ? item.product.id : parseInt(String(item.product.id), 10);
       const productSlug = item.product.slug || STATIC_PRODUCT_SLUGS[String(item.product.id)];
 
       return {
@@ -123,7 +132,6 @@ export default function CartDrawer({
       const orderCode = result.order_code || generateRandomId();
 
       if (formData.paymentMethod === "BANK" && result.pay_url) {
-        // Clear local cart
         onCheckoutComplete({
           id: orderCode,
           ...formData,
@@ -159,7 +167,7 @@ export default function CartDrawer({
         paymentMethod: "BANK",
       });
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Không thể gửi đơn hàng về CMS.");
+      setSubmitError(error instanceof Error ? error.message : "Error submitting order");
     } finally {
       setIsSubmitting(false);
     }
@@ -177,11 +185,13 @@ export default function CartDrawer({
             <div className="flex items-center justify-between border-b border-border/60 pb-4 mb-6">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="h-5 w-5 text-primary" />
-                <h2 className="font-serif text-lg font-bold text-foreground">Giỏ Hàng Của Bạn</h2>
+                <h2 className="font-serif text-lg font-bold text-foreground">{tCart("title")}</h2>
               </div>
               <button
+                type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-muted-foreground hover:bg-neutral-100 hover:text-foreground transition-all"
+                className="p-1 rounded-full text-muted-foreground hover:bg-neutral-100 hover:text-foreground transition-all cursor-pointer"
+                aria-label="Close"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -193,13 +203,14 @@ export default function CartDrawer({
                   <ShoppingBag className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Chưa có sản phẩm nào trong giỏ hàng.
+                  {tCart("empty")}
                 </p>
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="px-6 py-3 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-secondary transition-all"
+                  className="px-6 py-3 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-secondary transition-all cursor-pointer"
                 >
-                  Khám Phá Sản Phẩm
+                  {tCart("startShopping")}
                 </button>
               </div>
             ) : (
@@ -207,100 +218,112 @@ export default function CartDrawer({
                 {/* List Items */}
                 <div className="space-y-4">
                   <p className="text-xs font-semibold text-primary uppercase tracking-wider">
-                    Sản phẩm chọn lựa ({cartItems.length})
+                    {tCart("title")} ({cartItems.length})
                   </p>
                   <div className="divide-y divide-border/60">
-                    {cartItems.map((item) => (
-                      <div key={getCartItemKey(item)} className="flex py-4 gap-4 items-center">
-                        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted p-1">
-                          {(() => {
-                            const imageUrl = (item.variant?.image && item.variant.image !== "false")
-                              ? item.variant.image
-                              : (item.product.image && item.product.image !== "false")
-                              ? item.product.image
-                              : "/images/logo.png";
-                            return (
-                              <Image
-                                src={imageUrl}
-                                alt={item.product.name}
-                                fill
-                                unoptimized={imageUrl.startsWith("http")}
-                                className="object-contain"
-                              />
-                            );
-                          })()}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-serif text-sm font-bold text-foreground">
-                            {item.product.name}
-                          </h4>
-                          <p className="text-xs text-muted-foreground">
-                            {typeof item.product.category === "object" && item.product.category !== null
-                              ? (item.product.category as any).name
-                              : item.product.category}
-                          </p>
-                          {item.variant && (
-                            <p className="text-[11px] font-medium text-emerald-700 mt-0.5">{item.variant.label} · {item.variant.sku}</p>
-                          )}
-                          <span className="text-sm font-semibold text-primary mt-1 block">
-                            {formatPrice(getItemPrice(item))}
-                          </span>
-                        </div>
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-2 bg-[#FAF6EE] rounded-full border border-border px-2 py-1">
+                    {cartItems.map((item) => {
+                      const localizedProductName = getLocalized(item.product, "name", locale);
+                      const localizedVariantLabel = getLocalized(item.variant, "label", locale);
+
+                      return (
+                        <div key={getCartItemKey(item)} className="flex py-4 gap-4 items-center">
+                          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted p-1">
+                            {(() => {
+                              const imageUrl = (item.variant?.image && item.variant.image !== "false")
+                                ? item.variant.image
+                                : (item.product.image && item.product.image !== "false")
+                                ? item.product.image
+                                : "/images/logo.png";
+                              return (
+                                <Image
+                                  src={imageUrl}
+                                  alt={localizedProductName}
+                                  fill
+                                  className="object-contain"
+                                />
+                              );
+                            })()}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-serif text-sm font-bold text-foreground">
+                              {localizedProductName}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">
+                              {typeof item.product.category === "object" && item.product.category !== null
+                                ? getLocalized(item.product.category, "name", locale)
+                                : item.product.category}
+                            </p>
+                            {item.variant && (
+                              <p className="text-[11px] font-medium text-emerald-700 mt-0.5">
+                                {localizedVariantLabel || item.variant.label} · {item.variant.sku}
+                              </p>
+                            )}
+                            <span className="text-sm font-semibold text-primary mt-1 block">
+                              {formatPrice(getItemPrice(item))}
+                            </span>
+                          </div>
+                          {/* Quantity Controls */}
+                          <div className="flex items-center gap-2 bg-[#FAF6EE] rounded-full border border-border px-2 py-1">
+                            <button
+                              type="button"
+                              onClick={() => onUpdateQuantity(getCartItemKey(item), -1)}
+                              className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75 cursor-pointer"
+                              aria-label="Decrease quantity"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="text-xs font-bold font-sans w-4 text-center">
+                              {item.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => onUpdateQuantity(getCartItemKey(item), 1)}
+                              disabled={Boolean(item.variant && item.quantity >= item.variant.stock)}
+                              className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75 disabled:opacity-35 cursor-pointer"
+                              aria-label="Increase quantity"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                          </div>
+                          {/* Remove */}
                           <button
-                            onClick={() => onUpdateQuantity(getCartItemKey(item), -1)}
-                            className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75"
+                            type="button"
+                            onClick={() => onRemoveItem(getCartItemKey(item))}
+                            className="p-2 text-muted-foreground hover:text-destructive hover:bg-red-50 rounded-full transition-all active:scale-90 cursor-pointer"
+                            aria-label={tCart("remove")}
                           >
-                            <Minus className="h-3 w-3" />
-                          </button>
-                          <span className="text-xs font-bold font-sans w-4 text-center">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => onUpdateQuantity(getCartItemKey(item), 1)}
-                            disabled={Boolean(item.variant && item.quantity >= item.variant.stock)}
-                            className="p-1 hover:bg-white rounded-full transition-all text-primary active:scale-75 disabled:opacity-35"
-                          >
-                            <Plus className="h-3 w-3" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
-                        {/* Remove */}
-                        <button
-                          onClick={() => onRemoveItem(getCartItemKey(item))}
-                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-red-50 rounded-full transition-all active:scale-90"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Subtotal */}
                 <div className="bg-[#FAF6EE] rounded-[20px] p-5 border border-border">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-muted-foreground">Tổng cộng</span>
+                    <span className="text-sm text-muted-foreground">{tCart("total")}</span>
                     <span className="text-xl font-bold text-primary font-sans">
                       {formatPrice(total)}
                     </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground">
-                    * Giá đã bao gồm chi phí đóng gói cẩn thận bằng giấy kraft thân thiện với môi trường.
+                    {tCheckout("packagingNote")}
                   </p>
                 </div>
 
                 {/* Checkout Form */}
                 <div className="space-y-4 pt-4 border-t border-border/80">
                   <p className="text-xs font-semibold text-primary uppercase tracking-wider">
-                    Thông tin giao hàng nhận thảo mộc
+                    {tCheckout("title")}
                   </p>
 
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Name */}
                     <div>
                       <label className="block text-xs font-medium text-foreground mb-1">
-                        Họ và Tên người nhận *
+                        {tCheckout("fullName")} *
                       </label>
                       <input
                         type="text"
@@ -309,7 +332,7 @@ export default function CartDrawer({
                         className={`w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-primary ${
                           errors.name ? "border-red-500" : "border-border"
                         }`}
-                        placeholder="Nguyễn Văn A"
+                        placeholder={tCheckout("fullNamePlaceholder")}
                       />
                       {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
                     </div>
@@ -317,7 +340,7 @@ export default function CartDrawer({
                     {/* Phone */}
                     <div>
                       <label className="block text-xs font-medium text-foreground mb-1">
-                        Số điện thoại người nhận *
+                        {tCheckout("phone")} *
                       </label>
                       <input
                         type="tel"
@@ -326,7 +349,7 @@ export default function CartDrawer({
                         className={`w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-primary ${
                           errors.phone ? "border-red-500" : "border-border"
                         }`}
-                        placeholder="0901234567"
+                        placeholder={tCheckout("phonePlaceholder")}
                       />
                       {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
                     </div>
@@ -334,7 +357,7 @@ export default function CartDrawer({
                     {/* Address */}
                     <div>
                       <label className="block text-xs font-medium text-foreground mb-1">
-                        Địa chỉ nhận hàng *
+                        {tCheckout("address")} *
                       </label>
                       <input
                         type="text"
@@ -343,7 +366,7 @@ export default function CartDrawer({
                         className={`w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-primary ${
                           errors.address ? "border-red-500" : "border-border"
                         }`}
-                        placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện..."
+                        placeholder={tCheckout("addressPlaceholder")}
                       />
                       {errors.address && (
                         <p className="text-xs text-red-500 mt-1">{errors.address}</p>
@@ -353,23 +376,23 @@ export default function CartDrawer({
                     {/* Note */}
                     <div>
                       <label className="block text-xs font-medium text-foreground mb-1">
-                        Lời nhắn gửi (Ghi chú giao hàng)
+                        {tCheckout("notes")}
                       </label>
                       <textarea
                         value={formData.note}
                         onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl border border-border bg-white focus:outline-none focus:ring-1 focus:ring-primary h-20 resize-none"
-                        placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."
+                        placeholder={tCheckout("notesPlaceholder")}
                       />
                     </div>
 
                     {/* Payment Method */}
                     <div className="space-y-2">
                       <label className="block text-xs font-medium text-foreground">
-                        Phương thức thanh toán *
+                        {tCheckout("paymentMethod")} *
                       </label>
                       <div className="flex items-center justify-between p-3.5 rounded-xl border border-primary bg-primary/4 font-semibold text-primary">
-                        <span className="text-xs">Chuyển khoản Ngân hàng (VietQR)</span>
+                        <span className="text-xs">{tCheckout("bankTransfer")}</span>
                       </div>
                     </div>
 
@@ -378,18 +401,18 @@ export default function CartDrawer({
                       <div className="rounded-[16px] border border-[#E5C44B]/40 bg-[#FFFBEA]/70 p-4 space-y-2 text-xs">
                         <p className="font-semibold text-primary flex items-center gap-1.5">
                           <Award className="h-4 w-4 text-[#E5C44B]" />
-                          Thông tin Chuyển Khoản:
+                          {tCheckout("bankTransferTitle")}
                         </p>
                         <div className="space-y-1 text-muted-foreground font-sans">
-                          <p>Ngân hàng: <strong>Ngân hàng Techcombank</strong></p>
-                          <p>Số tài khoản: <strong>3502586746</strong></p>
-                          <p>Tên tài khoản: <strong>Cty TNHH XNK SX XO THOM</strong></p>
+                          <p>{tCheckout("bank")} <strong>{tCheckout("bankName")}</strong></p>
+                          <p>{tCheckout("accountNumber")} <strong>{tCheckout("accountNumberValue")}</strong></p>
+                          <p>{tCheckout("accountName")} <strong>{tCheckout("accountNameValue")}</strong></p>
                           <p>
-                            Nội dung CK: <strong>[Mã đơn hàng của bạn]</strong>
+                            {tCheckout("transferNote")} <strong>{tCheckout("transferNoteValue")}</strong>
                           </p>
                         </div>
                         <p className="text-[10px] text-primary italic mt-1">
-                          * Bạn có thể quét mã VietQR nhận khi đặt hàng thành công để tự động điền thông tin.
+                          {tCheckout("bankQrTip")}
                         </p>
                       </div>
                     )}
@@ -404,13 +427,13 @@ export default function CartDrawer({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-primary text-primary-foreground font-semibold transition-all duration-300 hover:bg-secondary disabled:bg-neutral-300 disabled:cursor-not-allowed hover:shadow-[0_4px_20px_rgba(31,77,43,0.2)] hover:scale-[1.01] active:scale-[0.99] mt-6"
+                      className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-primary text-primary-foreground font-semibold transition-all duration-300 hover:bg-secondary disabled:bg-neutral-300 disabled:cursor-not-allowed hover:shadow-[0_4px_20px_rgba(31,77,43,0.2)] hover:scale-[1.01] active:scale-[0.99] mt-6 cursor-pointer"
                     >
                       {isSubmitting ? (
                         <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                       ) : (
                         <>
-                          <span>Xác Nhận Đặt Hàng</span>
+                          <span>{tCheckout("placeOrder")}</span>
                           <ArrowRight className="h-4 w-4" />
                         </>
                       )}

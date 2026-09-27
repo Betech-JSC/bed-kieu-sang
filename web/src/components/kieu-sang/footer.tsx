@@ -1,14 +1,18 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { Facebook, Instagram, ArrowRight } from "lucide-react";
 import { getSettings } from "@/lib/api";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [settings, setSettings] = useState<Record<string, string> | null>(null);
+  const tFooter = useTranslations("footer");
+  const tNav = useTranslations("nav");
+  const tCommon = useTranslations("common");
 
   useEffect(() => {
     getSettings().then((data) => {
@@ -34,17 +38,18 @@ export default function Footer() {
               className="h-9 w-9 object-contain transition-transform duration-300 group-hover:scale-105"
             />
             <span className="font-serif text-sm tracking-widest text-primary font-bold uppercase">
-              Xông Nhà Tẩy Uế
+              {tCommon("brandName")}
             </span>
           </Link>
           <p className="text-xs leading-relaxed font-light">
-            Nuôi dưỡng tâm hồn lành mạnh và thanh lọc không gian qua những tinh túy từ thảo dược cổ truyền Việt Nam.
+            {tFooter("brandDesc")}
           </p>
           <div className="flex gap-4">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noreferrer"
+              aria-label="Facebook"
               className="p-2 bg-white rounded-lg border border-border text-primary hover:text-secondary transition-colors"
             >
               <Facebook className="h-4.5 w-4.5" />
@@ -53,6 +58,7 @@ export default function Footer() {
               href="https://instagram.com"
               target="_blank"
               rel="noreferrer"
+              aria-label="Instagram"
               className="p-2 bg-white rounded-lg border border-border text-primary hover:text-secondary transition-colors"
             >
               <Instagram className="h-4.5 w-4.5" />
@@ -63,20 +69,20 @@ export default function Footer() {
         {/* Column 2: Products routing links */}
         <div className="space-y-6 text-left">
           <h4 className="text-xs font-semibold text-primary uppercase border-b border-primary/10 pb-2">
-            Sản Phẩm
+            {tFooter("products")}
           </h4>
           <ul className="space-y-3 font-medium text-xs">
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/products?category=Thanh Lọc Không Gian">Thảo Mộc Xông Nhà</Link>
+              <Link href="/products?category=Thanh Lọc Không Gian">{tFooter("purify")}</Link>
             </li>
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/products?category=Thư Giãn Tinh Thần">Nụ Trầm Thảo Mộc</Link>
+              <Link href="/products?category=Thư Giãn Tinh Thần">{tFooter("incense")}</Link>
             </li>
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/products?category=Thanh Lọc Không Gian">Nước Xịt Thanh Lọc</Link>
+              <Link href="/products?category=Thanh Lọc Không Gian">{tFooter("mist")}</Link>
             </li>
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/products?category=Trà An Yên">Trà Thảo Mộc An Yên</Link>
+              <Link href="/products?category=Trà An Yên">{tFooter("tea")}</Link>
             </li>
           </ul>
         </div>
@@ -84,26 +90,23 @@ export default function Footer() {
         {/* Column 3: Site pages navigation */}
         <div className="space-y-6 text-left">
           <h4 className="text-xs font-semibold text-primary uppercase border-b border-primary/10 pb-2">
-            Khám phá
+            {tFooter("explore")}
           </h4>
           <ul className="space-y-3 font-medium text-xs">
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/">Trang chủ</Link>
+              <Link href="/">{tNav("home")}</Link>
             </li>
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/about">Giới thiệu</Link>
+              <Link href="/about">{tNav("about")}</Link>
             </li>
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/products">Sản phẩm</Link>
+              <Link href="/products">{tNav("products")}</Link>
             </li>
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/blog">Góc an yên (Blog)</Link>
+              <Link href="/blog">{tNav("blog")}</Link>
             </li>
-            {/* <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/contact">Liên hệ</Link>
-            </li> */}
             <li className="hover:text-primary transition-colors cursor-pointer">
-              <Link href="/faq">Câu hỏi thường gặp</Link>
+              <Link href="/faq">{tNav("faq")}</Link>
             </li>
           </ul>
         </div>
@@ -111,12 +114,11 @@ export default function Footer() {
         {/* Column 4: Address, contact & newsletter */}
         <div className="space-y-6 text-left">
           <h4 className="text-xs font-semibold text-primary uppercase border-b border-primary/10 pb-2">
-            Liên hệ & Đăng ký
+            {tFooter("contact")}
           </h4>
           <p className={`text-[11px] italic leading-relaxed text-muted-foreground font-light transition-opacity duration-300 ${settings ? "opacity-100" : "opacity-0"}`}>
-            Địa chỉ: {settings?.store_address || ""} <br />
-            {/* Hotline: {settings?.store_hotline || ""} <br /> */}
-            Email: {settings?.store_email || ""}
+            {tFooter("address")}: {settings?.store_address || ""} <br />
+            {tFooter("email")}: {settings?.store_email || ""}
           </p>
           <form
             onSubmit={(e) => e.preventDefault()}
@@ -124,12 +126,13 @@ export default function Footer() {
           >
             <input
               className="bg-transparent border-none outline-none focus:ring-0 text-xs w-full placeholder:text-muted-foreground/40 text-primary"
-              placeholder="Email của bạn"
+              placeholder={tFooter("emailPlaceholder")}
               type="email"
               required
             />
             <button
               type="submit"
+              aria-label={tFooter("subscribe")}
               className="text-primary hover:translate-x-1 transition-transform cursor-pointer"
             >
               <ArrowRight className="h-4 w-4" />
@@ -139,7 +142,7 @@ export default function Footer() {
       </div>
 
       <div className="py-8 border-t border-border/40 text-center text-[10px] opacity-80">
-        © {currentYear} Xông Nhà Tẩy Uế. Nuôi dưỡng tĩnh lặng qua trí tuệ cổ truyền.
+        © {currentYear} {tCommon("brandName")}. {tFooter("copyright")}
       </div>
     </footer>
   );

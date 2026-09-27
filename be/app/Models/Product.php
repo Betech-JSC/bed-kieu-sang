@@ -15,6 +15,7 @@ class Product extends Model
         'category_id', 'slug', 'name', 'price', 'original_price', 
         'rating', 'channel_one_sales', 'channel_two_sales', 'virtual_sales',
         'real_sales', 'description', 'image_path', 'benefits', 'badge',
+        'name_en', 'slug_en', 'description_en', 'benefits_en', 'badge_en',
         'is_best_seller', 'status',
         'seo_title', 'seo_desc'
     ];
@@ -23,6 +24,7 @@ class Product extends Model
 
     protected $casts = [
         'benefits' => 'array',
+        'benefits_en' => 'array',
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
         'rating' => 'decimal:2',
@@ -69,5 +71,16 @@ class Product extends Model
     public function activeVariants(): HasMany
     {
         return $this->variants()->where('status', 'active');
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if ($field === 'slug') {
+            return $this->where('slug', $value)
+                ->orWhere('slug_en', $value)
+                ->first();
+        }
+
+        return parent::resolveRouteBinding($value, $field);
     }
 }

@@ -20,6 +20,9 @@ scratch_step_*.txt
 .gemini/
 .impeccable/
 
+# OpenSpec artifacts
+openspec/
+
 # Dependency directories
 node_modules/
 
@@ -27,4 +30,5 @@ node_modules/
 tests
 others
 .claude
+.agents
 config.bat

@@ -31,7 +31,7 @@ class FaqController extends Controller
     {
         $old = $faq->toArray();
         $faq->update($this->validated($request));
-        ActivityLogger::log('UPDATE', 'faqs', "Updated FAQ '{$faq->question}'", $old, $faq->toArray());
+        ActivityLogger::log('UPDATE', 'faqs', "Updated FAQ '{$faq->question}'", $old, $faq->fresh()->toArray());
         return redirect()->route('admin.faqs.index')->with('success', 'Đã cập nhật câu hỏi thường gặp.');
     }
 
@@ -47,7 +47,9 @@ class FaqController extends Controller
     {
         return $request->validate([
             'question' => ['required', 'string', 'max:500'],
+            'question_en' => ['nullable', 'string', 'max:500'],
             'answer' => ['required', 'string', 'max:10000'],
+            'answer_en' => ['nullable', 'string', 'max:10000'],
             'sort_order' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'in:active,inactive'],
         ]);

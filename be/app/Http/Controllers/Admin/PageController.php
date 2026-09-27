@@ -27,8 +27,11 @@ class PageController extends Controller
     {
         $validated = $request->validate([
             'slug' => 'required|string|unique:pages,slug',
+            'slug_en' => 'nullable|string|unique:pages,slug_en',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'content' => 'required|string',
+            'content_en' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:255',
@@ -53,8 +56,11 @@ class PageController extends Controller
     {
         $validated = $request->validate([
             'slug' => 'required|string|unique:pages,slug,' . $page->id,
+            'slug_en' => 'nullable|string|unique:pages,slug_en,' . $page->id,
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'content' => 'required|string',
+            'content_en' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:255',
@@ -66,7 +72,7 @@ class PageController extends Controller
         $oldValue = $page->toArray();
         $page->update($validated);
 
-        ActivityLogger::log('UPDATE', 'pages', "Updated static page '{$page->title}'", $oldValue, $page->toArray());
+        ActivityLogger::log('UPDATE', 'pages', "Updated static page '{$page->title}'", $oldValue, $page->fresh()->toArray());
 
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully.');
     }

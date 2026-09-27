@@ -12,6 +12,7 @@ const props = defineProps({
 
 const isEdit = ref(!!props.post);
 const contentText = ref(props.post?.content ? props.post.content.join('\n\n') : '');
+const contentTextEn = ref(props.post?.content_en ? props.post.content_en.join('\n\n') : '');
 
 const imagePreview = ref('');
 const isMediaModalOpen = ref(false);
@@ -42,9 +43,13 @@ const handleImageChange = (e) => {
 const form = useForm({
     category_id: props.post?.category_id || '',
     title: props.post?.title || '',
+    title_en: props.post?.title_en || '',
     slug: props.post?.slug || '',
+    slug_en: props.post?.slug_en || '',
     excerpt: props.post?.excerpt || '',
+    excerpt_en: props.post?.excerpt_en || '',
     content: props.post?.content || [],
+    content_en: props.post?.content_en || [],
     image_path: props.post?.image_path || '',
     image: null,
     read_time: props.post?.read_time || '5 phút',
@@ -70,12 +75,33 @@ const generateSlug = () => {
     }
 };
 
+const generateSlugEn = () => {
+    if (!isEdit.value || !form.slug_en) {
+        form.slug_en = (form.title_en || '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    }
+};
+
 const submit = () => {
     // Process content text area into paragraph array
     form.content = contentText.value
         .split('\n\n')
         .map(p => p.trim())
         .filter(p => p.length > 0);
+
+    form.content_en = contentTextEn.value.trim()
+        ? contentTextEn.value
+            .split('\n\n')
+            .map(p => p.trim())
+            .filter(p => p.length > 0)
+        : null;
 
     if (isEdit.value) {
         form.transform((data) => ({
@@ -139,9 +165,9 @@ const toggleProductSelection = (productId) => {
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <form @submit.prevent="submit" class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Title -->
-                        <div class="flex flex-col space-y-2 col-span-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề bài viết *</label>
+                        <!-- Title VI -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề bài viết (VI) *</label>
                             <input 
                                 v-model="form.title" 
                                 type="text" 
@@ -151,10 +177,28 @@ const toggleProductSelection = (productId) => {
                             />
                         </div>
 
-                        <!-- Slug -->
+                        <!-- Title EN -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) *</label>
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề bài viết (EN)</label>
+                            <input 
+                                v-model="form.title_en" 
+                                type="text" 
+                                @input="generateSlugEn"
+                                placeholder="Article title in English..."
+                                class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" 
+                            />
+                        </div>
+
+                        <!-- Slug VI -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (VI) *</label>
                             <input v-model="form.slug" type="text" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Slug EN -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (EN)</label>
+                            <input v-model="form.slug_en" type="text" placeholder="article-slug-en" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
                         <!-- Category -->
@@ -193,6 +237,7 @@ const toggleProductSelection = (productId) => {
                                 <!-- Upload Input -->
                                 <div v-if="imageSourceType === 'upload'" class="flex-1">
                                     <input type="file" @change="handleImageChange" accept="image/*" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
+                                    <p class="text-xs text-zinc-500 mt-1">Khuyên dùng: Ảnh ngang tỉ lệ 16:9, tối thiểu 1200x630px. Dung lượng tối đa 20MB.</p>
                                     <p class="text-[10px] text-zinc-400 mt-1">Định dạng hỗ trợ: JPEG, PNG, JPG, GIF, SVG, WebP. Tối đa 20MB.</p>
                                 </div>
 
@@ -233,21 +278,39 @@ const toggleProductSelection = (productId) => {
                         </div>
                     </div>
 
-                    <!-- Excerpt -->
+                    <!-- Excerpt VI -->
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Tóm tắt ngắn (Excerpt) *</label>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Tóm tắt ngắn (VI) *</label>
                         <textarea v-model="form.excerpt" required rows="2" placeholder="Tóm tắt ngắn gọn nội dung bài viết..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"></textarea>
                     </div>
 
-                    <!-- Content Editor -->
+                    <!-- Excerpt EN -->
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Nội dung bài viết *</label>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Tóm tắt ngắn (EN)</label>
+                        <textarea v-model="form.excerpt_en" rows="2" placeholder="Short summary in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"></textarea>
+                    </div>
+
+                    <!-- Content Editor VI -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Nội dung bài viết (VI) *</label>
                         <div class="text-xs text-zinc-500 mb-1">Mẹo: Mỗi đoạn văn cách nhau bằng 2 lần xuống dòng (phím Enter). Hệ thống tự động chuyển đổi thành các khối nội dung.</div>
                         <textarea 
                             v-model="contentText" 
                             required 
-                            rows="12" 
+                            rows="10" 
                             placeholder="Nhập nội dung bài viết ở đây..." 
+                            class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"
+                        ></textarea>
+                    </div>
+
+                    <!-- Content Editor EN -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Nội dung bài viết (EN)</label>
+                        <div class="text-xs text-zinc-500 mb-1">Tip: Each paragraph separated by 2 newlines (Enter). Fallbacks to Vietnamese if left empty.</div>
+                        <textarea 
+                            v-model="contentTextEn" 
+                            rows="10" 
+                            placeholder="Enter English blog content here..." 
                             class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"
                         ></textarea>
                     </div>

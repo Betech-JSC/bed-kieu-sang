@@ -22,7 +22,10 @@ class ProductController extends Controller
     {
         $query = Product::with('category')->withCount('variants')->latest();
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->search.'%')
+                  ->orWhere('name_en', 'like', '%'.$request->search.'%');
+            });
         }
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
@@ -101,15 +104,21 @@ class ProductController extends Controller
         $rules = [
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
+            'name_en' => 'nullable|string|max:255',
             'slug' => 'required|string|unique:products,slug'.($productId ? ','.$productId : ''),
+            'slug_en' => 'nullable|string|unique:products,slug_en'.($productId ? ','.$productId : ''),
             'price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
+            'description_en' => 'nullable|string',
             'image_path' => ($product ? 'nullable' : 'required_without:image|nullable').'|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'benefits' => 'nullable|array',
             'benefits.*' => 'string|max:255',
+            'benefits_en' => 'nullable|array',
+            'benefits_en.*' => 'string|max:255',
             'badge' => 'nullable|string|max:50',
+            'badge_en' => 'nullable|string|max:50',
             'channel_one_sales' => 'nullable|integer|min:0',
             'channel_two_sales' => 'nullable|integer|min:0',
             'virtual_sales' => 'nullable|integer|min:0',
@@ -182,6 +191,7 @@ class ProductController extends Controller
             $data['image_path'] = Storage::disk('public')->url($path);
         }
         $data['benefits'] = $data['benefits'] ?? [];
+        $data['benefits_en'] = !empty($data['benefits_en']) ? $data['benefits_en'] : null;
         $data['is_best_seller'] = $request->boolean('is_best_seller');
 
         // Prevent null values for NOT NULL integer sales columns

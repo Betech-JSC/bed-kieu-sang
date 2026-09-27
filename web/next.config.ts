@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -7,6 +8,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -29,5 +31,6 @@ const nextConfig: NextConfig = {
 };
 
 const withMDX = createMDX({});
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-export default withMDX(nextConfig);
+export default withNextIntl(withMDX(nextConfig));

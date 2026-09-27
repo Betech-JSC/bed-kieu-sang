@@ -7,8 +7,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { CheckCircle, ChevronLeft, ShoppingBag, Facebook, Instagram } from "lucide-react";
+import { Link } from "@/i18n/routing";
+import { ChevronLeft, Facebook, Instagram } from "lucide-react";
 import { BLOG_POSTS } from "@/data/blog-posts";
 import { getBlog } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
@@ -17,29 +17,37 @@ import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
+import { useLocale, useTranslations } from "next-intl";
+import { getLocalized } from "@/lib/i18n-utils";
 
 // Sample products for recommendation
 const RECOMENDED_PRODUCTS: Product[] = [
   {
     id: "p1",
     name: "Bó Thảo Mộc Xông Nhà",
+    name_en: "Herbal House Smudge Stick",
     price: 120000,
     category: "Thanh Lọc Không Gian",
+    category_en: "Space Purification",
     rating: 4.8,
     description: "Sự kết hợp hoàn hảo giữa lá ngải cứu khô, sả chanh thơm mát và vỏ quế.",
+    description_en: "A perfect harmony of dried mugwort, fresh lemongrass, and cinnamon bark.",
     image: "/images/smudge_stick.png",
-    benefits: ["Organic", "Thảo Dược"]
+    benefits: ["Organic", "Thảo Dược"],
   },
   {
     id: "p2",
     name: "Nụ Trầm Thảo Mộc",
+    name_en: "Herbal Incense Cones",
     price: 180000,
     category: "Thư Giãn Tinh Thần",
+    category_en: "Mind Relaxation",
     rating: 4.9,
     description: "Trầm hương nguyên chất kết hợp các vị thuốc Bắc thảo mộc giúp tĩnh tâm.",
+    description_en: "Pure agarwood combined with calming traditional Eastern herbs.",
     image: "/images/incense_cones.png",
-    benefits: ["Tĩnh Tâm", "Trầm Hương"]
-  }
+    benefits: ["Tĩnh Tâm", "Trầm Hương"],
+  },
 ];
 
 interface BlogDetailClientProps {
@@ -48,17 +56,20 @@ interface BlogDetailClientProps {
 }
 
 export default function BlogDetailClient({ slug, initialPost }: BlogDetailClientProps) {
+  const locale = useLocale();
+  const tBlog = useTranslations("blog");
+  const tCommon = useTranslations("common");
+
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
 
   const [post, setPost] = useState<any>(() => initialPost || BLOG_POSTS.find((p) => p.slug === slug) || null);
-  
-  const recommendedProducts = post?.recommended_products && post.recommended_products.length > 0
-    ? post.recommended_products
-    : RECOMENDED_PRODUCTS;
 
-  useSeo(post?.seo_title || post?.title, post?.seo_desc || post?.summary || post?.excerpt);
+  const localizedTitle = post ? getLocalized(post, "title", locale) : "";
+  const localizedExcerpt = post ? getLocalized(post, "excerpt", locale) : "";
+
+  useSeo(post?.seo_title || localizedTitle, post?.seo_desc || post?.summary || localizedExcerpt);
 
   useEffect(() => {
     async function loadPost() {
@@ -67,13 +78,15 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
         const mappedPost = {
           ...dbPost,
           image: dbPost.image || dbPost.image_path,
-          date: dbPost.published_at ? new Date(dbPost.published_at).toLocaleDateString("vi-VN") : dbPost.date || "Gần đây"
+          date: dbPost.published_at
+            ? new Date(dbPost.published_at).toLocaleDateString(locale === "en" ? "en-US" : "vi-VN")
+            : dbPost.date || (locale === "en" ? "Recent" : "Gần đây"),
         };
         setPost(mappedPost);
       }
     }
     loadPost();
-  }, [slug]);
+  }, [slug, locale]);
 
   // Load cart from LocalStorage on mount
   useEffect(() => {
@@ -138,14 +151,31 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
   if (!post) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
-        <p className="font-serif text-3xl font-bold text-primary">Không Tìm Thấy Bài Viết</p>
-        <p className="text-sm text-muted-foreground max-w-sm">Bài viết bạn tìm kiếm có thể đã được chuyển đổi hoặc không tồn tại.</p>
+        <p className="font-serif text-3xl font-bold text-primary">{tCommon("notFound")}</p>
+        <p className="text-sm text-muted-foreground max-w-sm">
+          {locale === "en" ? "The article you are looking for may have been moved or does not exist." : "Bài viết bạn tìm kiếm có thể đã được chuyển đổi hoặc không tồn tại."}
+        </p>
         <Link href="/blog" className="bg-[#043616] text-white px-8 py-3 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-[#2d6a3e]">
-          Quay lại Blog
+          {tBlog("backToList")}
         </Link>
       </div>
     );
   }
+
+  const rawContent = locale === "en" && post.content_en ? post.content_en : post.content;
+  const contentParagraphs = Array.isArray(rawContent)
+    ? rawContent
+    : typeof rawContent === "string"
+    ? rawContent.split("\n\n").filter(Boolean)
+    : [];
+
+  const localizedCategory = typeof post.category === "object" && post.category !== null
+    ? getLocalized(post.category, "name", locale)
+    : (locale === "en" && post.category_en ? post.category_en : post.category);
+
+  const recommendedProducts = post?.recommended_products && post.recommended_products.length > 0
+    ? post.recommended_products
+    : RECOMENDED_PRODUCTS;
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans relative selection:bg-primary/10 selection:text-primary overflow-x-hidden">
@@ -162,27 +192,24 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-6">
           <Link href="/blog" className="inline-flex items-center gap-1 text-xs font-serif font-bold text-secondary uppercase hover:text-primary transition-all">
             <ChevronLeft className="h-4 w-4" />
-            <span>Quay lại danh sách bài viết</span>
+            <span>{tBlog("backToList")}</span>
           </Link>
         </div>
 
         {/* Article Layout Grid */}
         <section className="pb-24 px-6 md:px-12 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
             {/* Left Content Column */}
             <article className="lg:col-span-8 space-y-6 bg-white rounded-[32px] p-6 md:p-8 shadow-xs">
               <div className="space-y-4">
                 <span className="text-sm font-bold text-white bg-primary px-3 py-1 rounded-full uppercase tracking-wider inline-block">
-                  {typeof post.category === "object" && post.category !== null
-                    ? (post.category as any).name
-                    : post.category}
+                  {localizedCategory}
                 </span>
                 <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-primary">
-                  {post.title}
+                  {localizedTitle}
                 </h1>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground font-sans pt-2 border-b border-border/40 pb-3">
-                  <span>Ngày đăng: {post.date}</span>
+                  <span>{tBlog("publishedDate")}: {post.date}</span>
                 </div>
               </div>
 
@@ -190,9 +217,8 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
               <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[24px]">
                 <Image
                   src={post.image}
-                  alt={post.title}
+                  alt={localizedTitle}
                   fill
-                  unoptimized={post.image?.startsWith("http")}
                   className="object-cover"
                   priority
                 />
@@ -200,8 +226,7 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
 
               {/* Article Content Text Paragraphs */}
               <div className="space-y-6 pt-4">
-                {post.content.map((paragraph: string, index: number) => {
-                  // Render bullet lists
+                {contentParagraphs.map((paragraph: string, index: number) => {
                   if (paragraph.startsWith("-")) {
                     return (
                       <li key={index} className="list-disc list-inside font-sans text-sm text-muted-foreground pl-6 my-2 leading-relaxed font-light">
@@ -209,7 +234,6 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
                       </li>
                     );
                   }
-                  // Render subheaders/numbered lists
                   if (paragraph.match(/^\d+\./)) {
                     return (
                       <p key={index} className="font-serif text-sm md:text-base font-bold text-primary pl-4 border-l-2 border-accent mt-6 mb-3 leading-relaxed">
@@ -217,7 +241,6 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
                       </p>
                     );
                   }
-                  // Render standard paragraphs
                   return (
                     <p key={index} className="font-sans text-sm text-muted-foreground leading-relaxed font-light text-justify">
                       {paragraph}
@@ -228,73 +251,64 @@ export default function BlogDetailClient({ slug, initialPost }: BlogDetailClient
 
               {/* Share Banner */}
               <div className="border-t border-border/50 pt-6 mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p className="text-sm text-muted-foreground font-serif italic">Thanh lọc không gian sống, nuôi dưỡng năng lượng tốt lành.</p>
+                <p className="text-sm text-muted-foreground font-serif italic">
+                  {locale === "en"
+                    ? "Purifying living spaces, nurturing serene positive energy."
+                    : "Thanh lọc không gian sống, nuôi dưỡng năng lượng tốt lành."}
+                </p>
                 <div className="flex gap-4">
-                  <a href="https://facebook.com" className="p-2 border border-border hover:bg-neutral-50 rounded-lg text-primary transition-colors">
+                  <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="p-2 border border-border hover:bg-neutral-50 rounded-lg text-primary transition-colors">
                     <Facebook className="h-4 w-4" />
                   </a>
-                  <a href="https://instagram.com" className="p-2 border border-border hover:bg-neutral-50 rounded-lg text-primary transition-colors">
+                  <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="p-2 border border-border hover:bg-neutral-50 rounded-lg text-primary transition-colors">
                     <Instagram className="h-4 w-4" />
                   </a>
                 </div>
               </div>
             </article>
 
-            {/* Right Recommendation Sidebar Column */}
-            <aside className="lg:col-span-4 space-y-6">
-              {/* Related products widget */}
-              <div className="bg-[#FAF6EE] rounded-[24px] p-5 md:p-6 space-y-4">
-                <div className="border-b border-border/60 pb-3">
-                  <h4 className="font-serif text-sm font-bold text-primary uppercase tracking-wider">Sản Phẩm Gợi Ý</h4>
-                </div>
-
+            {/* Right Sidebar */}
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="bg-white rounded-[32px] p-6 border border-border/80 shadow-xs space-y-6">
+                <h3 className="font-serif text-lg font-bold text-primary border-b border-border/40 pb-3">
+                  {tBlog("recommendedProducts")}
+                </h3>
                 <div className="space-y-4">
-                  {recommendedProducts.map((prod: Product) => (
-                    <div key={prod.id} className="bg-transparent hover:bg-white rounded-xl p-3 flex gap-3 items-center group transition-all duration-300">
-                      <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-background shrink-0">
-                        <Image
-                          src={prod.image}
-                          alt={prod.name}
-                          fill
-                          unoptimized={prod.image?.startsWith("http")}
-                          className="object-contain p-1"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h5 className="font-serif text-sm font-bold text-primary truncate group-hover:text-secondary transition-colors">
-                          {prod.name}
-                        </h5>
-                        <p className="text-sm text-muted-foreground truncate uppercase tracking-tighter mt-0.5">
-                          {typeof prod.category === "object" && prod.category !== null
-                            ? (prod.category as any).name
-                            : prod.category}
-                        </p>
-                        <span className="text-sm font-bold text-primary font-sans mt-0.5 block">
-                          {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(prod.price)}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => handleAddToCart(prod)}
-                        className="h-7 w-7 rounded-full bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors shrink-0 active:scale-90"
-                      >
-                        <ShoppingBag className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                
-                <Link href="/products" className="block text-center text-sm font-serif font-bold text-[#043616] uppercase border-2 border-primary/20 hover:border-[#043616] hover:bg-[#043616] hover:text-white rounded-full py-2.5 transition-all">
-                  Ghé Cửa Hàng Xông Nhà Tẩy Uế
-                </Link>
-              </div>
+                  {recommendedProducts.map((prod: Product) => {
+                    const localizedProdName = getLocalized(prod, "name", locale);
+                    const prodSlug = locale === "en" && prod.slug_en ? prod.slug_en : (prod.slug || prod.id);
 
-              {/* Zen wisdom widget */}
-              <div className="bg-white/50 rounded-[24px] p-4 text-center space-y-2">
-                <CheckCircle className="h-5 w-5 text-secondary mx-auto" />
-                <h4 className="font-serif text-sm font-bold text-primary">CAM KẾT THẢO MỘC SẠCH</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed font-light">
-                  100% thảo mộc tự nhiên Việt Nam, phơi khô thủ công, không hóa chất độc hại.
-                </p>
+                    return (
+                      <div key={prod.id} className="flex gap-4 items-center group">
+                        <Link href={`/products/${prodSlug}`} className="relative h-20 w-20 rounded-2xl overflow-hidden bg-background shrink-0 border border-border/40">
+                          <Image
+                            src={prod.image}
+                            alt={localizedProdName}
+                            fill
+                            className="object-contain p-1"
+                          />
+                        </Link>
+                        <div className="flex-1 min-w-0">
+                          <Link href={`/products/${prodSlug}`}>
+                            <h4 className="font-serif text-sm font-semibold text-primary truncate group-hover:text-secondary transition-colors">
+                              {localizedProdName}
+                            </h4>
+                          </Link>
+                          <p className="text-xs font-bold text-primary font-sans mt-1">
+                            {new Intl.NumberFormat(locale === "en" ? "en-US" : "vi-VN", { style: "currency", currency: "VND" }).format(prod.price)}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => handleAddToCart(prod)}
+                            className="mt-2 text-[10px] font-bold uppercase tracking-wider text-secondary hover:text-primary transition-colors cursor-pointer"
+                          >
+                            + {locale === "en" ? "Add to cart" : "Thêm vào giỏ"}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </aside>
           </div>

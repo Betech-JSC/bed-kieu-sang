@@ -11,7 +11,9 @@ const isEdit = ref(!!props.category);
 
 const form = useForm({
     name: props.category?.name || '',
+    name_en: props.category?.name_en || '',
     slug: props.category?.slug || '',
+    slug_en: props.category?.slug_en || '',
     type: props.category?.type || 'product',
 });
 
@@ -19,6 +21,20 @@ const form = useForm({
 const generateSlug = () => {
     if (!isEdit.value) {
         form.slug = form.name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    }
+};
+
+const generateSlugEn = () => {
+    if (!isEdit.value || !form.slug_en) {
+        form.slug_en = (form.name_en || '')
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
@@ -68,13 +84,23 @@ const submit = () => {
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <form @submit.prevent="submit" class="p-8 space-y-6">
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Tên danh mục *</label>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Tên danh mục (VI) *</label>
                         <input v-model="form.name" type="text" required @input="generateSlug" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                     </div>
 
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) *</label>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Tên danh mục (EN)</label>
+                        <input v-model="form.name_en" type="text" @input="generateSlugEn" placeholder="Category name in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                    </div>
+
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (VI) *</label>
                         <input v-model="form.slug" type="text" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                    </div>
+
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (EN)</label>
+                        <input v-model="form.slug_en" type="text" placeholder="category-slug-en" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                     </div>
 
                     <div class="flex flex-col space-y-2">

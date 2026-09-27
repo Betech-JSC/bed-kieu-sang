@@ -14,8 +14,11 @@ import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 import { submitContact, getSettings } from "@/lib/api";
+import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
+  const tContact = useTranslations("contact");
+  const tCommon = useTranslations("common");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
@@ -107,7 +110,7 @@ export default function ContactPage() {
           <div className="absolute inset-0 z-0">
             <Image
               src="/images/contact_banner.png"
-              alt="Liên hệ Xông Nhà Tẩy Uế"
+              alt={tContact("bannerAlt")}
               fill
               className="object-cover opacity-35"
               priority
@@ -116,8 +119,8 @@ export default function ContactPage() {
           </div>
           
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 text-left space-y-3">
-            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Kết nối an yên</span>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">LIÊN HỆ & HỒ SƠ THƯƠNG HIỆU</h1>
+            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">{tContact("bannerSubtitle")}</span>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">{tContact("bannerTitle")}</h1>
           </div>
         </section>
 
@@ -128,27 +131,27 @@ export default function ContactPage() {
             {/* Left Column: Contact details cards */}
             <div className="lg:col-span-5 space-y-8">
               <div className="space-y-4">
-                <span className="text-secondary font-serif italic text-sm">Thông Tin Kết Nối</span>
+                <span className="text-secondary font-serif italic text-sm">{tContact("infoLabel")}</span>
                 <h2 className="font-serif text-2xl font-bold text-primary">
-                  XÔNG NHÀ TẨY UẾ
+                  {tContact("brandName")}
                 </h2>
                 <p className="text-sm leading-7 text-[#414941]">
-                  Xông Nhà Tẩy Uế xây dựng các sản phẩm thảo mộc từ nguyên liệu bản địa, quy trình thủ công và trải nghiệm mùi hương phù hợp không gian sống Việt.
+                  {tContact("brandDesc")}
                 </p>
               </div>
 
               <div className="rounded-xl border border-border bg-white p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary">Tầm nhìn</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary">{tContact("visionLabel")}</p>
                 <p className="mt-2 text-sm leading-6 text-[#414941]">
-                  Trở thành thương hiệu thảo mộc tin cậy cho gia đình, studio yoga, spa và cửa hàng quà tặng yêu thích sản phẩm tự nhiên.
+                  {tContact("visionDesc")}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {[
-                  ["2022", "Khởi tạo công thức xông nhà"],
-                  ["2024", "Mở rộng dòng tinh dầu và trà"],
-                  ["2026", "Phát triển kênh bán đa nền tảng"],
+                  [tContact("milestones.m2022Title"), tContact("milestones.m2022Desc")],
+                  [tContact("milestones.m2024Title"), tContact("milestones.m2024Desc")],
+                  [tContact("milestones.m2026Title"), tContact("milestones.m2026Desc")],
                 ].map(([year, text]) => (
                   <div key={year} className="rounded-xl border border-border bg-white p-4">
                     <div className="text-lg font-bold text-primary">{year}</div>
@@ -181,7 +184,7 @@ export default function ContactPage() {
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif text-sm font-bold text-primary">Địa chỉ</h4>
+                    <h4 className="font-serif text-sm font-bold text-primary">{tContact("addressLabel")}</h4>
                     <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_address || ""}</p>
                   </div>
                 </div>
@@ -192,7 +195,7 @@ export default function ContactPage() {
                     <Phone className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif text-sm font-bold text-primary">Điện thoại</h4>
+                    <h4 className="font-serif text-sm font-bold text-primary">{tContact("phoneLabel")}</h4>
                     <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_hotline || ""}</p>
                   </div>
                 </div>
@@ -203,7 +206,7 @@ export default function ContactPage() {
                     <Mail className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="font-serif text-sm font-bold text-primary">Email</h4>
+                    <h4 className="font-serif text-sm font-bold text-primary">{tContact("emailLabel")}</h4>
                     <p className="text-xs text-muted-foreground font-light mt-1">{settings?.store_email || ""}</p>
                   </div>
                 </div>
@@ -218,28 +221,28 @@ export default function ContactPage() {
                   <div className="h-16 w-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                     <CheckCircle className="h-10 w-10" />
                   </div>
-                  <h3 className="font-serif text-xl md:text-2xl font-bold text-primary">GỬI LỜI NHẮN THÀNH CÔNG</h3>
+                  <h3 className="font-serif text-xl md:text-2xl font-bold text-primary">{tContact("successTitle")}</h3>
                   <p className="text-xs text-muted-foreground max-w-sm font-light leading-relaxed">
-                    Lời nhắn đã được tiếp nhận. Chúng tôi sẽ phản hồi trong vòng 12 giờ.
+                    {tContact("successDesc")}
                   </p>
                   <button
                     onClick={() => setFormSubmitted(false)}
                     className="bg-[#043616] text-white px-8 py-3 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-[#2d6a3e] cursor-pointer"
                   >
-                    Gửi lời nhắn mới
+                    {tContact("newMsgButton")}
                   </button>
                 </div>
               ) : (
                 // Contact Form View
                 <form onSubmit={handleFormSubmit} className="space-y-6">
                   <div className="space-y-1">
-                    <h3 className="font-serif text-lg font-bold text-[#043616] uppercase tracking-wide">Gửi lời nhắn</h3>
+                    <h3 className="font-serif text-lg font-bold text-[#043616] uppercase tracking-wide">{tContact("formHeading")}</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Name */}
                     <div className="space-y-2">
-                      <label className="text-xs font-serif font-bold text-[#043616] uppercase block">Họ và tên *</label>
+                      <label className="text-xs font-serif font-bold text-[#043616] uppercase block">{tContact("nameLabel")}</label>
                       <input
                         type="text"
                         required
@@ -247,13 +250,13 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full bg-[#FAF6EE]/50 border border-border rounded-xl px-4 py-3 text-xs text-primary focus:outline-none focus:border-primary focus:bg-white"
-                        placeholder="Nguyễn Văn A"
+                        placeholder={tContact("namePlaceholder")}
                       />
                     </div>
 
                     {/* Phone */}
                     <div className="space-y-2">
-                      <label className="text-xs font-serif font-bold text-[#043616] uppercase block">Số điện thoại *</label>
+                      <label className="text-xs font-serif font-bold text-[#043616] uppercase block">{tContact("phoneLabel")}</label>
                       <input
                         type="tel"
                         required
@@ -261,14 +264,14 @@ export default function ContactPage() {
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full bg-[#FAF6EE]/50 border border-border rounded-xl px-4 py-3 text-xs text-primary focus:outline-none focus:border-primary focus:bg-white"
-                        placeholder="0901234567"
+                        placeholder={tContact("phonePlaceholder")}
                       />
                     </div>
                   </div>
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="text-xs font-serif font-bold text-[#043616] uppercase block">Địa chỉ Email *</label>
+                    <label className="text-xs font-serif font-bold text-[#043616] uppercase block">{tContact("emailLabel")}</label>
                     <input
                       type="email"
                       required
@@ -276,20 +279,20 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full bg-[#FAF6EE]/50 border border-border rounded-xl px-4 py-3 text-xs text-primary focus:outline-none focus:border-primary focus:bg-white"
-                      placeholder="email@example.com"
+                      placeholder={tContact("emailPlaceholder")}
                     />
                   </div>
 
                   {/* Message */}
                   <div className="space-y-2">
-                    <label className="text-xs font-serif font-bold text-[#043616] uppercase block">Lời nhắn của bạn *</label>
+                    <label className="text-xs font-serif font-bold text-[#043616] uppercase block">{tContact("messageLabel")}</label>
                     <textarea
                       rows={5}
                       required
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       className="w-full bg-[#FAF6EE]/50 border border-border rounded-xl px-4 py-3 text-xs text-primary focus:outline-none focus:border-primary focus:bg-white resize-none"
-                      placeholder="Nhập nội dung cần tư vấn..."
+                      placeholder={tContact("messagePlaceholder")}
                     />
                   </div>
 
@@ -298,7 +301,7 @@ export default function ContactPage() {
                     type="submit"
                     className="w-full bg-primary text-white py-4 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-secondary transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-99"
                   >
-                    <span>Gửi liên hệ ngay</span>
+                    <span>{tContact("submitButton")}</span>
                     <Send className="h-4 w-4" />
                   </button>
                 </form>
@@ -313,12 +316,12 @@ export default function ContactPage() {
             <div className="absolute inset-0 asian-pattern opacity-[0.03] pointer-events-none" />
             <div className="relative z-10 max-w-lg space-y-4">
               <MapPin className="h-8 w-8 text-secondary mx-auto animate-pulse" />
-              <h3 className="font-serif text-lg font-bold text-primary uppercase">BẢN ĐỒ KHU VỰC CỬA HÀNG</h3>
+              <h3 className="font-serif text-lg font-bold text-primary uppercase">{tContact("mapHeading")}</h3>
               <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                Mở cửa: 8:00 - 21:00 hàng ngày • Quận 1, TP. Hồ Chí Minh
+                {tContact("mapDesc")}
               </p>
               <span className="text-[10px] uppercase font-bold text-secondary tracking-widest border border-secondary/30 px-4 py-1.5 rounded-full inline-block bg-white/60">
-                Chỉ đường trên Google Maps
+                {tContact("mapDirections")}
               </span>
             </div>
           </div>

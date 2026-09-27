@@ -5,7 +5,6 @@
 
 "use client";
 import { useState, useEffect, type FormEvent } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ShoppingBag, Plus, Minus, Check, Star } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
@@ -16,6 +15,9 @@ import { useSeo } from "@/hooks/useSeo";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 import PageBanner from "@/components/page-banner";
+import { Link } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
+import { getLocalized } from "@/lib/i18n-utils";
 
 interface ProductDetailClientProps {
   id: string;
@@ -23,6 +25,10 @@ interface ProductDetailClientProps {
 }
 
 export default function ProductDetailClient({ id, initialProduct }: ProductDetailClientProps) {
+  const locale = useLocale();
+  const t = useTranslations("product");
+  const tCommon = useTranslations("common");
+
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
@@ -34,7 +40,10 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
   const [productError, setProductError] = useState("");
   const [isLoadingProduct, setIsLoadingProduct] = useState(!initialProduct);
 
-  useSeo(product?.seo_title || product?.name, product?.seo_desc || product?.description);
+  const localizedTitle = product ? getLocalized(product, "name", locale) : "";
+  const localizedDesc = product ? getLocalized(product, "description", locale) : "";
+
+  useSeo(product?.seo_title || localizedTitle, product?.seo_desc || localizedDesc);
   const [activeImage, setActiveImage] = useState(initialProduct?.image || "");
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
   const [variantMessage, setVariantMessage] = useState("");
@@ -47,7 +56,6 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
 
   useEffect(() => {
     async function loadData() {
-      // If we don't have the product, or the product ID changed, load it
       if (!product || product.id !== id) {
         setIsLoadingProduct(true);
         setProductError("");
@@ -57,7 +65,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
         const dbProduct = await getProduct(id);
         if (!dbProduct) {
           setProduct(null);
-          setProductError("Không tìm thấy sản phẩm trong CMS.");
+          setProductError(locale === "en" ? "Product not found in CMS." : "Không tìm thấy sản phẩm trong CMS.");
           return;
         }
 
@@ -73,13 +81,13 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
       } catch (error) {
         setProduct(null);
         setRelatedProductsList([]);
-        setProductError("Không tải được sản phẩm từ CMS. Vui lòng kiểm tra API.");
+        setProductError(locale === "en" ? "Failed to load product from CMS." : "Không tải được sản phẩm từ CMS. Vui lòng kiểm tra API.");
       } finally {
         setIsLoadingProduct(false);
       }
     }
     loadData();
-  }, [id, initialProduct]);
+  }, [id, initialProduct, locale]);
 
   const [prevProductId, setPrevProductId] = useState(product?.id);
   if (product && product.id !== prevProductId) {
@@ -112,11 +120,11 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
     if (!product) return;
     const selectedVariant = product.variants?.find((variant) => variant.id === selectedVariantId);
     if (product.has_variants && !selectedVariant) {
-      setVariantMessage("Vui lòng chọn đầy đủ phân loại sản phẩm trước khi thêm vào giỏ.");
+      setVariantMessage(locale === "en" ? "Please select a variant before adding to cart." : "Vui lòng chọn đầy đủ phân loại sản phẩm trước khi thêm vào giỏ.");
       return;
     }
     if (selectedVariant && selectedVariant.stock < quantity) {
-      setVariantMessage(`Phân loại này chỉ còn ${selectedVariant.stock} sản phẩm.`);
+      setVariantMessage(locale === "en" ? `Only ${selectedVariant.stock} items left for this variant.` : `Phân loại này chỉ còn ${selectedVariant.stock} sản phẩm.`);
       return;
     }
 
@@ -127,7 +135,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
 
     if (existingIndex > -1) {
       if (selectedVariant && newCart[existingIndex].quantity + quantity > selectedVariant.stock) {
-        setVariantMessage(`Phân loại này chỉ còn ${selectedVariant.stock} sản phẩm.`);
+        setVariantMessage(locale === "en" ? `Only ${selectedVariant.stock} items left for this variant.` : `Phân loại này chỉ còn ${selectedVariant.stock} sản phẩm.`);
         return;
       }
       newCart[existingIndex].quantity += quantity;
@@ -185,7 +193,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
   const handleQuestionSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!product?.slug) {
-      setQuestionMessage("Không thể gửi câu hỏi vì không tìm thấy mã sản phẩm.");
+      setQuestionMessage(locale === "en" ? "Cannot submit question: missing product code." : "Không thể gửi câu hỏi vì không tìm thấy mã sản phẩm.");
       return;
     }
     setQuestionMessage("");
@@ -194,14 +202,14 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
       setQuestionMessage(result.message);
       setQuestionForm({ customer_name: "", customer_email: "", question: "" });
     } catch {
-      setQuestionMessage("Không thể gửi câu hỏi. Vui lòng thử lại sau.");
+      setQuestionMessage(locale === "en" ? "Unable to submit question. Please try again later." : "Không thể gửi câu hỏi. Vui lòng thử lại sau.");
     }
   };
 
   if (isLoadingProduct) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
-        <p className="font-serif text-3xl font-bold text-primary">ĐANG TẢI SẢN PHẨM...</p>
+        <p className="font-serif text-3xl font-bold text-primary">{tCommon("loading")}</p>
       </div>
     );
   }
@@ -209,20 +217,18 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
   if (!product) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
-        <p className="font-serif text-3xl font-bold text-primary">KHÔNG TÌM THẤY SẢN PHẨM</p>
+        <p className="font-serif text-3xl font-bold text-primary">{tCommon("notFound")}</p>
         <p className="text-sm text-muted-foreground max-w-sm">
-          {productError || "Sản phẩm bạn tìm kiếm có thể đã ngừng bán hoặc không tồn tại."}
+          {productError || (locale === "en" ? "The product you are looking for may have been discontinued." : "Sản phẩm bạn tìm kiếm có thể đã ngừng bán hoặc không tồn tại.")}
         </p>
         <Link href="/products" className="bg-[#043616] text-white px-8 py-3 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-[#2d6a3e] transition-all">
-          Quay lại cửa hàng
+          {tCommon("back")}
         </Link>
       </div>
     );
   }
 
-  // Get related products (same category, excluding current product)
   const relatedProducts = relatedProductsList;
-
   const selectedVariant: ProductVariant | undefined = product.variants?.find((variant) => variant.id === selectedVariantId);
   const displayPrice = selectedVariant?.price ?? product.price;
   const displayOriginalPrice = selectedVariant?.original_price ?? product.originalPrice;
@@ -235,7 +241,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat(locale === "en" ? "en-US" : "vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(price);
@@ -246,21 +252,30 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
       "bg-[#043616]/10 text-[#043616]",
       "bg-amber-100 text-amber-800",
       "bg-emerald-100 text-emerald-800",
-      "bg-orange-100 text-orange-800"
+      "bg-orange-100 text-orange-800",
     ];
     return colors[index % colors.length];
   };
 
   const galleryItems = [
-    { src: product.image, label: "Ảnh sản phẩm", variant: undefined as ProductVariant | undefined },
+    { src: product.image, label: locale === "en" ? "Product Photo" : "Ảnh sản phẩm", variant: undefined as ProductVariant | undefined },
     ...(product.variants || [])
       .filter((variant) => Boolean(variant.image))
       .map((variant) => ({
         src: variant.image as string,
-        label: variant.name || variant.label,
+        label: getLocalized(variant, "label", locale) || variant.name || variant.label,
         variant,
       })),
   ];
+
+  const localizedBadge = getLocalized(product, "badge", locale);
+  const localizedCategory = typeof product.category === "object" && product.category !== null
+    ? getLocalized(product.category, "name", locale)
+    : (locale === "en" && product.category_en ? product.category_en : product.category);
+
+  const displayBenefits = locale === "en" && product.benefits_en && product.benefits_en.length > 0
+    ? product.benefits_en
+    : product.benefits;
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans relative selection:bg-primary/10 selection:text-primary overflow-x-hidden">
@@ -277,7 +292,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-6">
           <Link href="/products" className="inline-flex items-center gap-1.5 text-sm font-serif font-bold text-secondary uppercase hover:text-primary transition-all">
             <ChevronLeft className="h-4 w-4" />
-            <span>Quay lại cửa hàng</span>
+            <span>{tCommon("back")}</span>
           </Link>
         </div>
 
@@ -288,25 +303,24 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
               {/* Product Image Column */}
               <div className="lg:col-span-6 flex flex-col space-y-4">
                 <div className="relative aspect-square w-full overflow-hidden rounded-[32px] bg-[#FAF6EE]/40 flex items-center justify-center">
-                  {product.badge && (
+                  {localizedBadge && (
                     <span className="absolute top-6 left-6 z-10 text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-accent text-[#112215] shadow-sm">
-                      {product.badge}
+                      {localizedBadge}
                     </span>
                   )}
                   <div className="relative w-full h-full">
                     <Image
                       src={activeImage}
-                      alt={product.name}
+                      alt={localizedTitle}
                       fill
                       priority
-                      unoptimized={activeImage.startsWith("http")}
                       className="object-cover transition-all duration-300"
                     />
                   </div>
                 </div>
 
                 {/* Thumbnail Gallery */}
-                <div className="flex gap-3 overflow-x-auto pt-2 pb-1" aria-label="Hình ảnh sản phẩm và phân loại">
+                <div className="flex gap-3 overflow-x-auto pt-2 pb-1" aria-label="Product Gallery">
                   {galleryItems.map((item, idx) => (
                     <button
                       key={`${item.variant?.id ?? "product"}-${idx}`}
@@ -320,16 +334,15 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                         setVariantMessage("");
                         setActiveImage(product.image);
                       }}
-                      aria-label={`Xem ${item.label}`}
+                      aria-label={item.label}
                       aria-pressed={item.variant ? selectedVariantId === item.variant.id : selectedVariantId === null && activeImage === product.image}
-                      className={`group/thumb w-24 shrink-0 rounded-xl border bg-white p-1.5 text-left transition-colors duration-200 ${(item.variant ? selectedVariantId === item.variant.id : selectedVariantId === null && activeImage === product.image) ? "border-primary" : "border-border/80 hover:border-primary/50"}`}
+                      className={`group/thumb w-24 shrink-0 rounded-xl border bg-white p-1.5 text-left transition-colors duration-200 ${(item.variant ? selectedVariantId === item.variant.id : selectedVariantId === null && activeImage === product.image) ? "border-primary" : "border-border/80 hover:border-primary/50"} cursor-pointer`}
                     >
                       <span className="relative block aspect-square overflow-hidden rounded-lg bg-[#FAF6EE]">
                         <Image
                           src={item.src}
-                          alt={item.variant ? `${product.name}, ${item.label}` : product.name}
+                          alt={item.variant ? `${localizedTitle}, ${item.label}` : localizedTitle}
                           fill
-                          unoptimized={item.src.startsWith("http")}
                           sizes="96px"
                           className="object-cover transition-transform duration-200 group-hover/thumb:scale-[1.03]"
                         />
@@ -344,12 +357,10 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
               <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
                 <div className="space-y-3">
                   <span className="text-sm text-primary/70 font-semibold tracking-widest uppercase border border-primary/20 rounded-full px-4 py-1.5 bg-primary/5 inline-block">
-                    {typeof product.category === "object" && product.category !== null
-                      ? (product.category as any).name
-                      : product.category}
+                    {localizedCategory}
                   </span>
                   <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-primary">
-                    {product.name}
+                    {localizedTitle}
                   </h1>
 
                   {/* Rating & Social Proof */}
@@ -361,14 +372,18 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                     </div>
                     <span className="text-[#414941] font-semibold">{product.rating} / 5.0</span>
                     <span className="text-muted-foreground/60">|</span>
-                    <span className="text-muted-foreground font-light">100% đánh giá hài lòng</span>
+                    <span className="text-muted-foreground font-light">
+                      {locale === "en" ? "100% Satisfied Reviews" : "100% đánh giá hài lòng"}
+                    </span>
                   </div>
                 </div>
 
                 {/* Price block */}
                 <div className="bg-[#FAF6EE] rounded-2xl p-5 border border-border/30 flex items-center justify-between">
                   <div>
-                    <span className="text-sm text-muted-foreground uppercase tracking-wider block mb-1">Giá bán lẻ</span>
+                    <span className="text-sm text-muted-foreground uppercase tracking-wider block mb-1">
+                      {t("price")}
+                    </span>
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl font-bold text-primary font-sans leading-none">
                         {formatPrice(displayPrice)}
@@ -382,44 +397,53 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                   </div>
                   {displayOriginalPrice && (
                     <span className="text-sm font-bold text-[#043616] bg-[#2d6a3e]/10 border border-[#2d6a3e]/20 px-3 py-1 rounded-full uppercase">
-                      Tiết kiệm {formatPrice(displayOriginalPrice - displayPrice)}
+                      {locale === "en" ? "Save " : "Tiết kiệm "}
+                      {formatPrice(displayOriginalPrice - displayPrice)}
                     </span>
                   )}
                 </div>
 
                 {/* Description */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Mô tả sản phẩm</h3>
+                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">{t("description")}</h3>
                   <p className="font-sans text-sm text-muted-foreground leading-relaxed font-light text-justify">
-                    {product.description}
+                    {localizedDesc}
                   </p>
                 </div>
 
                 {product.has_variants && product.variants && product.variants.length > 0 && (
                   <div className="space-y-4 rounded-2xl border border-border/60 bg-white p-4">
-                    <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">Chọn phân loại</h3>
+                    <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">{t("selectVariant")}</h3>
                     <div className="flex flex-wrap gap-2">
-                      {product.variants.map((variant) => (
-                        <button
-                          key={variant.id}
-                          onClick={() => selectVariant(variant)}
-                          disabled={variant.stock === 0}
-                          className={`min-h-11 text-sm px-4 py-2 rounded-full border transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-45 ${selectedVariantId === variant.id ? "bg-primary text-white border-primary shadow-xs" : "bg-white text-muted-foreground border-border/80 hover:border-primary/50"}`}
-                        >
-                          {variant.name || variant.label}
-                        </button>
-                      ))}
+                      {product.variants.map((variant) => {
+                        const localizedVariantLabel = getLocalized(variant, "label", locale) || variant.name || variant.label;
+                        return (
+                          <button
+                            key={variant.id}
+                            type="button"
+                            onClick={() => selectVariant(variant)}
+                            disabled={variant.stock === 0}
+                            className={`min-h-11 text-sm px-4 py-2 rounded-full border transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-45 ${
+                              selectedVariantId === variant.id
+                                ? "bg-primary text-white border-primary shadow-xs"
+                                : "bg-white text-muted-foreground border-border/80 hover:border-primary/50"
+                            } cursor-pointer`}
+                          >
+                            {localizedVariantLabel}
+                          </button>
+                        );
+                      })}
                     </div>
                     {variantMessage && <p className="text-xs font-medium text-rose-600" role="alert">{variantMessage}</p>}
                   </div>
                 )}
 
                 {/* Benefits / Ingredients */}
-                {product.benefits && product.benefits.length > 0 && (
+                {displayBenefits && displayBenefits.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Đặc tính nổi bật</h3>
+                    <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">{t("benefits")}</h3>
                     <div className="flex flex-wrap gap-2">
-                      {product.benefits.map((benefit, index) => (
+                      {displayBenefits.map((benefit, index) => (
                         <span key={index} className={`text-sm font-medium px-4 py-1.5 rounded-full ${getBadgeColors(index)}`}>
                           {benefit}
                         </span>
@@ -433,17 +457,21 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                   {/* Quantity selector */}
                   <div className="flex items-center justify-between border border-border/80 rounded-full px-4 py-2 bg-white sm:w-36">
                     <button
+                      type="button"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       disabled={quantity <= 1}
                       className="h-8 w-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-primary disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                      aria-label="Decrease quantity"
                     >
                       <Minus className="h-4 w-4" />
                     </button>
                     <span className="font-bold text-sm text-primary w-8 text-center">{quantity}</span>
                     <button
+                      type="button"
                       onClick={() => setQuantity(quantity + 1)}
                       disabled={Boolean(selectedVariant && quantity >= selectedVariant.stock)}
                       className="h-8 w-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-primary transition-colors cursor-pointer disabled:opacity-35"
+                      aria-label="Increase quantity"
                     >
                       <Plus className="h-4 w-4" />
                     </button>
@@ -451,6 +479,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
 
                   {/* Add to cart CTA */}
                   <button
+                    type="button"
                     onClick={handleAddToCart}
                     disabled={Boolean(product.has_variants && selectedVariant?.stock === 0)}
                     className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3.5 px-8 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
@@ -458,41 +487,79 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                     {isAddedSuccessfully ? (
                       <>
                         <Check className="h-4 w-4" />
-                        <span>Đã thêm vào giỏ</span>
+                        <span>{locale === "en" ? "Added to Cart" : "Đã thêm vào giỏ"}</span>
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="h-4 w-4" />
-                        <span>Thêm vào giỏ hàng</span>
+                        <span>{t("addToCart")}</span>
                       </>
                     )}
                   </button>
                 </div>
-
               </div>
             </div>
           </div>
         </section>
 
+        {/* Product Q&A Section */}
         <section className="border-t border-border/40 bg-white py-16">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 md:px-12 lg:grid-cols-2">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">Tư vấn sản phẩm</p>
-              <h2 className="mt-2 font-serif text-2xl font-bold text-primary">HỎI ĐÁP SẢN PHẨM</h2>
+              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">
+                {locale === "en" ? "Consultation" : "Tư vấn sản phẩm"}
+              </p>
+              <h2 className="mt-2 font-serif text-2xl font-bold text-primary">{t("faqTitle")}</h2>
               <div className="mt-6 divide-y divide-border border-y border-border">
-                {questions.map((item) => <article key={item.id} className="py-5">
-                  <p className="text-sm font-semibold text-primary">{item.customer_name}: {item.question}</p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">Trả lời: {item.answer}</p>
-                </article>)}
-                {!questions.length && <p className="py-6 text-sm text-muted-foreground">Chưa có câu hỏi được công khai.</p>}
+                {questions.map((item) => (
+                  <article key={item.id} className="py-5">
+                    <p className="text-sm font-semibold text-primary">{item.customer_name}: {item.question}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      {locale === "en" ? "Answer: " : "Trả lời: "}{item.answer}
+                    </p>
+                  </article>
+                ))}
+                {!questions.length && (
+                  <p className="py-6 text-sm text-muted-foreground">
+                    {locale === "en" ? "No public questions yet." : "Chưa có câu hỏi được công khai."}
+                  </p>
+                )}
               </div>
             </div>
             <form className="space-y-4 rounded-lg border border-border bg-[#FAF6EE]/40 p-6" onSubmit={handleQuestionSubmit}>
-              <h3 className="font-serif text-lg font-bold text-primary">Gửi câu hỏi cho chúng tôi</h3>
-              <div className="grid gap-4 sm:grid-cols-2"><input required value={questionForm.customer_name} onChange={(e) => setQuestionForm({ ...questionForm, customer_name: e.target.value })} placeholder="Họ tên *" className="rounded-lg border border-border bg-white px-4 py-3 text-sm" /><input type="email" value={questionForm.customer_email} onChange={(e) => setQuestionForm({ ...questionForm, customer_email: e.target.value })} placeholder="Email" className="rounded-lg border border-border bg-white px-4 py-3 text-sm" /></div>
-              <textarea required minLength={10} rows={5} value={questionForm.question} onChange={(e) => setQuestionForm({ ...questionForm, question: e.target.value })} placeholder="Câu hỏi của bạn *" className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm" />
+              <h3 className="font-serif text-lg font-bold text-primary">{t("askQuestion")}</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <input
+                  required
+                  value={questionForm.customer_name}
+                  onChange={(e) => setQuestionForm({ ...questionForm, customer_name: e.target.value })}
+                  placeholder={locale === "en" ? "Full Name *" : "Họ tên *"}
+                  className="rounded-lg border border-border bg-white px-4 py-3 text-sm"
+                />
+                <input
+                  type="email"
+                  value={questionForm.customer_email}
+                  onChange={(e) => setQuestionForm({ ...questionForm, customer_email: e.target.value })}
+                  placeholder="Email"
+                  className="rounded-lg border border-border bg-white px-4 py-3 text-sm"
+                />
+              </div>
+              <textarea
+                required
+                minLength={10}
+                rows={5}
+                value={questionForm.question}
+                onChange={(e) => setQuestionForm({ ...questionForm, question: e.target.value })}
+                placeholder={t("questionPlaceholder")}
+                className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm"
+              />
               {questionMessage && <p className="text-sm text-emerald-800">{questionMessage}</p>}
-              <button className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">Gửi câu hỏi</button>
+              <button
+                type="submit"
+                className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                {t("sendQuestion")}
+              </button>
             </form>
           </div>
         </section>
@@ -502,7 +569,9 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
           <section className="py-16 bg-[#FAF6EE]/50 border-t border-border/30">
             <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-8">
               <div className="border-b border-border/40 pb-4 text-left">
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary uppercase">SAN PHAM CUNG DANH MUC</h2>
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-primary uppercase">
+                  {t("relatedProducts")}
+                </h2>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">

@@ -7,15 +7,18 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Leaf, Scroll, Users } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
+import { useTranslations } from "next-intl";
 
 export default function AboutPage() {
+  const tAbout = useTranslations("about");
+  const tCommon = useTranslations("common");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
@@ -83,7 +86,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 z-0">
             <Image
               src="/images/story_herbs.png"
-              alt="Hành trình bản địa"
+              alt={tAbout("bannerAlt")}
               fill
               className="object-cover opacity-35"
               priority
@@ -92,8 +95,8 @@ export default function AboutPage() {
           </div>
           
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 text-left space-y-3">
-            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Hành trình bản địa</span>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">GIỚI THIỆU</h1>
+            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">{tAbout("bannerSubtitle")}</span>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">{tAbout("bannerTitle")}</h1>
           </div>
         </section>
 
@@ -102,15 +105,15 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-6 space-y-6">
-              <span className="text-secondary font-serif italic text-sm">Câu Chuyện Khởi Nguồn</span>
+              <span className="text-secondary font-serif italic text-sm">{tAbout("storyLabel")}</span>
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary">
-                TỪ NHỮNG VÙNG ĐỒI NÚI HOANG SƠ ĐẾN KHÔNG GIAN SỐNG AN YÊN
+                {tAbout("storyHeading")}
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-light text-justify">
-                Xông Nhà Tẩy Uế được kiến tạo từ niềm trăn trở trước cuộc sống phố thị ồn ào và khói bụi. Chúng tôi nhận thấy nhu cầu tìm về sự an nhiên, chữa lành tinh thần bằng hương thơm tự nhiên của cỏ cây bản địa đang trở nên thiết yếu hơn bao giờ hết.
+                {tAbout("storyP1")}
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-light text-justify">
-                Hành trình của Xông Nhà Tẩy Uế bắt đầu từ việc tìm kiếm những loại thảo mộc tốt tại các vùng núi cao Tây Bắc, Trung Bộ và vùng đất đỏ Tây Nguyên như sả chanh, ngải cứu khô, trầm hương, vỏ quế nguyên chất. Chúng tôi kết hợp các vị thuốc Nam lành tính theo công thức cổ truyền để tạo nên những bó thảo mộc xông nhà tinh sạch.
+                {tAbout("storyP2")}
               </p>
             </div>
 
@@ -119,7 +122,7 @@ export default function AboutPage() {
               <div className="relative aspect-[16/11] w-full overflow-hidden rounded-[32px] border border-border shadow-xs">
                 <Image
                   src="/images/story_herbs.png"
-                  alt="Thu hoạch thảo mộc thủ công"
+                  alt={tAbout("imageAlt")}
                   fill
                   className="object-cover"
                 />
@@ -133,10 +136,10 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary uppercase">
-                CAM KẾT TỪ XÔNG NHÀ TẨY UẾ
+                {tAbout("commitmentsHeading")}
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground font-light">
-                Xông Nhà Tẩy Uế luôn đặt sức khỏe người tiêu dùng và sự trong lành của môi trường lên vị trí tối cao.
+                {tAbout("commitmentsSubtitle")}
               </p>
             </div>
 
@@ -146,9 +149,9 @@ export default function AboutPage() {
                 <div className="h-12 w-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                   <Leaf className="h-6 w-6" />
                 </div>
-                <h3 className="font-serif text-base font-bold text-primary">100% Thảo Mộc Sạch</h3>
+                <h3 className="font-serif text-base font-bold text-primary">{tAbout("cleanTitle")}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Mọi lá trà, bó xông hay nụ trầm đều được làm từ nguyên liệu tự nhiên nguyên bản, thu hái thủ công và sấy khô tự nhiên, tuyệt đối không chứa hóa chất bảo quản hóa học.
+                  {tAbout("cleanDesc")}
                 </p>
               </div>
 
@@ -157,9 +160,9 @@ export default function AboutPage() {
                 <div className="h-12 w-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                   <Scroll className="h-6 w-6" />
                 </div>
-                <h3 className="font-serif text-base font-bold text-primary">Công Thức Cổ Truyền</h3>
+                <h3 className="font-serif text-base font-bold text-primary">{tAbout("traditionalTitle")}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Các vị thuốc Nam được kết hợp điều hòa theo âm dương ngũ hành phong thủy giúp thanh tẩy khí uế hiệu quả, đồng thời mang hương thơm ấm áp, tĩnh mịch nuôi dưỡng tâm hồn.
+                  {tAbout("traditionalDesc")}
                 </p>
               </div>
 
@@ -168,9 +171,9 @@ export default function AboutPage() {
                 <div className="h-12 w-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                   <Users className="h-6 w-6" />
                 </div>
-                <h3 className="font-serif text-base font-bold text-primary">Phát Triển Bền Vững</h3>
+                <h3 className="font-serif text-base font-bold text-primary">{tAbout("sustainableTitle")}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Xông Nhà Tẩy Uế hợp tác trực tiếp với các hộ nông dân địa phương ở các vùng trồng dược liệu sạch, thu mua với mức giá công bằng để cùng phát triển sinh kế bản địa vững bền.
+                  {tAbout("sustainableDesc")}
                 </p>
               </div>
             </div>
@@ -180,10 +183,10 @@ export default function AboutPage() {
         {/* Vision & Brand Values */}
         <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto text-center space-y-12">
           <div className="max-w-2xl mx-auto space-y-4">
-            <span className="text-secondary font-serif italic text-sm">Giá Trị Cốt Lõi</span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary uppercase">TĨNH LẶNG & PHỤC HỒI</h2>
+            <span className="text-secondary font-serif italic text-sm">{tAbout("valuesLabel")}</span>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary uppercase">{tAbout("valuesHeading")}</h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-light">
-              Chúng tôi tin rằng ngôi nhà không chỉ là nơi để ở, mà còn là một tổ ấm thiêng liêng để phục hồi năng lượng tinh thần sau một ngày mỏi mệt.
+              {tAbout("valuesDesc")}
             </p>
           </div>
 
@@ -191,7 +194,7 @@ export default function AboutPage() {
           <div className="relative w-full aspect-[21/9] md:aspect-[24/10] overflow-hidden rounded-[32px] border border-border/20 shadow-xs">
             <Image
               src="/images/about_horizontal_banner.png"
-              alt="Không gian tĩnh lặng Xông Nhà Tẩy Uế"
+              alt={tAbout("bannerAlt2")}
               fill
               className="object-cover"
               priority
@@ -201,19 +204,19 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 transition-transform hover:-translate-y-1 duration-300">
               <span className="font-serif text-2xl font-bold text-secondary block mb-1">Purity</span>
-              <span className="text-xs text-muted-foreground font-light">Tinh khiết tự nhiên</span>
+              <span className="text-xs text-muted-foreground font-light">{tAbout("valPurity")}</span>
             </div>
             <div className="p-6 transition-transform hover:-translate-y-1 duration-300">
               <span className="font-serif text-2xl font-bold text-secondary block mb-1">Tranquility</span>
-              <span className="text-xs text-muted-foreground font-light">Tĩnh tâm an lạc</span>
+              <span className="text-xs text-muted-foreground font-light">{tAbout("valTranquility")}</span>
             </div>
             <div className="p-6 transition-transform hover:-translate-y-1 duration-300">
               <span className="font-serif text-2xl font-bold text-secondary block mb-1">Heritage</span>
-              <span className="text-xs text-muted-foreground font-light">Trí tuệ truyền thống</span>
+              <span className="text-xs text-muted-foreground font-light">{tAbout("valHeritage")}</span>
             </div>
             <div className="p-6 transition-transform hover:-translate-y-1 duration-300">
               <span className="font-serif text-2xl font-bold text-secondary block mb-1">Harmony</span>
-              <span className="text-xs text-muted-foreground font-light">Cân bằng sinh khí</span>
+              <span className="text-xs text-muted-foreground font-light">{tAbout("valHarmony")}</span>
             </div>
           </div>
 
@@ -222,7 +225,7 @@ export default function AboutPage() {
               href="/products"
               className="inline-block bg-primary text-white px-8 py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-secondary transition-all"
             >
-              Ghé Thăm Cửa Hàng
+              {tAbout("shopButton")}
             </Link>
           </div>
         </section>

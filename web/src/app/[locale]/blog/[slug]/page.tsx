@@ -1,22 +1,25 @@
 import type { Metadata } from "next";
 import BlogDetailClient from "./BlogDetailClient";
 import { getBlog } from "@/lib/api";
+import { getLocalized } from "@/lib/i18n-utils";
 
 interface BlogPostDetailProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }
 
 export async function generateMetadata({ params }: BlogPostDetailProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   try {
     const post = await getBlog(slug);
     if (!post) {
       return {
-        title: "Không tìm thấy bài viết | Xông Nhà Tẩy Uế",
+        title: locale === "en" ? "Article Not Found | Kieu Sang" : "Không tìm thấy bài viết | Xông Nhà Tẩy Uế",
       };
     }
-    const title = post.seo_title || `${post.title} | Xông Nhà Tẩy Uế`;
-    const description = post.seo_desc || post.summary || post.excerpt;
+    const localizedTitle = getLocalized(post, "title", locale);
+    const localizedDesc = getLocalized(post, "excerpt", locale) || post.summary;
+    const title = post.seo_title || `${localizedTitle} | ${locale === "en" ? "Kieu Sang" : "Xông Nhà Tẩy Uế"}`;
+    const description = post.seo_desc || localizedDesc;
     const imageUrl = post.image || "/images/logo.png";
 
     return {
@@ -30,7 +33,7 @@ export async function generateMetadata({ params }: BlogPostDetailProps): Promise
             url: imageUrl,
             width: 1200,
             height: 630,
-            alt: post.title,
+            alt: localizedTitle,
           },
         ],
         type: "article",
@@ -44,7 +47,7 @@ export async function generateMetadata({ params }: BlogPostDetailProps): Promise
     };
   } catch (e) {
     return {
-      title: "Bài viết | Xông Nhà Tẩy Uế",
+      title: locale === "en" ? "Blog | Kieu Sang" : "Bài viết | Xông Nhà Tẩy Uế",
     };
   }
 }

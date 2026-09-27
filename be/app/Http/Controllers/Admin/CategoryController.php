@@ -18,7 +18,10 @@ class CategoryController extends Controller
         $query = Category::latest();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('name_en', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->filled('type')) {
@@ -42,12 +45,18 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'name_en' => 'nullable|string|max:255',
             'slug' => 'nullable|string|unique:categories,slug',
+            'slug_en' => 'nullable|string|max:255',
             'type' => 'required|in:product,blog',
         ]);
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']);
+        }
+
+        if (!empty($validated['name_en']) && empty($validated['slug_en'])) {
+            $validated['slug_en'] = Str::slug($validated['name_en']);
         }
 
         // Double check uniqueness of slug
@@ -74,7 +83,9 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'name_en' => 'nullable|string|max:255',
             'slug' => 'nullable|string|unique:categories,slug,' . $category->id,
+            'slug_en' => 'nullable|string|max:255',
             'type' => 'required|in:product,blog',
         ]);
 
@@ -82,10 +93,14 @@ class CategoryController extends Controller
             $validated['slug'] = Str::slug($validated['name']);
         }
 
+        if (!empty($validated['name_en']) && empty($validated['slug_en'])) {
+            $validated['slug_en'] = Str::slug($validated['name_en']);
+        }
+
         $oldValue = $category->toArray();
         $category->update($validated);
 
-        ActivityLogger::log('UPDATE', 'categories', "Updated category '{$category['name']}'", $oldValue, $category->toArray());
+        ActivityLogger::log('UPDATE', 'categories', "Updated category '{$category['name']}'", $oldValue, $category->fresh()->toArray());
 
         return redirect()->route('admin.categories.index')->with('success', 'Danh mục đã được cập nhật thành công.');
     }

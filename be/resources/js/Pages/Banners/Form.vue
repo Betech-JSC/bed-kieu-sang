@@ -21,7 +21,9 @@ const handleImageChange = (e) => {
 
 const form = useForm({
     title: props.banner?.title || '',
+    title_en: props.banner?.title_en || '',
     subtitle: props.banner?.subtitle || '',
+    subtitle_en: props.banner?.subtitle_en || '',
     image_path: props.banner?.image_path || '',
     image: null,
     link_url: props.banner?.link_url || '',
@@ -72,22 +74,35 @@ const submit = () => {
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <form @submit.prevent="submit" class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Title -->
+                        <!-- Title VI -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề (Không bắt buộc)</label>
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề (VI)</label>
                             <input v-model="form.title" type="text" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
-                        <!-- Subtitle -->
+                        <!-- Title EN -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Phụ đề (Subtitle)</label>
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề (EN)</label>
+                            <input v-model="form.title_en" type="text" placeholder="Banner title in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Subtitle VI -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Phụ đề (VI)</label>
                             <input v-model="form.subtitle" type="text" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Subtitle EN -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Phụ đề (EN)</label>
+                            <input v-model="form.subtitle_en" type="text" placeholder="Banner subtitle in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
                         <!-- Image Upload -->
                         <div class="flex flex-col space-y-2">
                             <label class="text-sm font-serif font-bold text-emerald-950">Hình ảnh slide *</label>
                             <input type="file" @change="handleImageChange" accept="image/*" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
+                            <p class="text-xs text-zinc-500 mt-1">Khuyên dùng: Ảnh tối thiểu 1920x700px (Hero banner) hoặc 1200x300px (Page banner). Dung lượng tối đa 20MB.</p>
                         </div>
 
                         <!-- Link URL -->

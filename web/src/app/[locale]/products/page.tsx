@@ -17,11 +17,19 @@ import { getProducts, getCategories } from "@/lib/api";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import { useSeo } from "@/hooks/useSeo";
 import CheckoutModal from "@/components/checkout-modal";
+import { useTranslations, useLocale } from "next-intl";
+
+const ALL_CATEGORY_KEY = "all";
 
 function ProductsCatalogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const selectedCategory = searchParams.get("category") || "Tất cả";
+  const tCatalog = useTranslations("catalog");
+  const locale = useLocale();
+
+  const selectedCategoryParam = searchParams.get("category");
+  const isAllCategory = !selectedCategoryParam || selectedCategoryParam === ALL_CATEGORY_KEY;
+  const selectedCategory = isAllCategory ? ALL_CATEGORY_KEY : selectedCategoryParam;
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -34,13 +42,13 @@ function ProductsCatalogContent() {
   const [productsError, setProductsError] = useState("");
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [categories, setCategories] = useState<string[]>(["Tất cả"]);
+  const [categories, setCategories] = useState<string[]>([ALL_CATEGORY_KEY]);
 
   useSeo(
-    selectedCategory === "Tất cả" 
-      ? "Sản phẩm Thảo Mộc Tự Nhiên" 
-      : `Danh mục ${selectedCategory}`,
-    `Khám phá các sản phẩm thảo mộc tự nhiên cao cấp thuộc danh mục ${selectedCategory} tại Xông Nhà Tẩy Uế.`
+    isAllCategory 
+      ? tCatalog("allProductsSeoTitle") 
+      : tCatalog("categorySeoTitle", { category: selectedCategory }),
+    tCatalog("categorySeoDesc", { category: isAllCategory ? tCatalog("allCategories") : selectedCategory })
   );
 
   useEffect(() => {
@@ -53,19 +61,19 @@ function ProductsCatalogContent() {
         setProductsList(dbProducts as unknown as Product[]);
       } catch (error) {
         setProductsList([]);
-        setProductsError("Không tải được sản phẩm từ CMS. Vui lòng kiểm tra API.");
+        setProductsError(tCatalog("loadErrorDesc"));
       } finally {
         setIsLoadingProducts(false);
       }
     }
     loadProducts();
-  }, []);
+  }, [tCatalog]);
 
   useEffect(() => {
     async function loadCategories() {
       const dbCats = await getCategories("product");
       if (dbCats && dbCats.length > 0) {
-        setCategories(["Tất cả", ...dbCats.map((c: any) => c.name)]);
+        setCategories([ALL_CATEGORY_KEY, ...dbCats.map((c: any) => c.name)]);
       }
     }
     loadCategories();
@@ -142,7 +150,7 @@ function ProductsCatalogContent() {
   // Filtering & Sorting Logic
   const filteredProducts = productsList.filter((product) => {
     const matchesCategory =
-      selectedCategory === "Tất cả" || product.category === selectedCategory;
+      isAllCategory || product.category === selectedCategory;
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -182,7 +190,7 @@ function ProductsCatalogContent() {
           <div className="absolute inset-0 z-0">
             <Image
               src="/images/hero_lifestyle.png"
-              alt="Cửa hàng thảo mộc"
+              alt={tCatalog("bannerAlt")}
               fill
               className="object-cover opacity-35"
               priority
@@ -191,8 +199,8 @@ function ProductsCatalogContent() {
           </div>
           
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 text-left space-y-3">
-            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Xông Nhà Tẩy Uế</span>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">CỬA HÀNG</h1>
+            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">{tCatalog("bannerSubtitle")}</span>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">{tCatalog("bannerTitle")}</h1>
           </div>
         </section>
 
@@ -203,12 +211,12 @@ function ProductsCatalogContent() {
             <aside className="w-full md:w-64 shrink-0 space-y-8">
               {/* Search Widget */}
               <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">Tìm kiếm</h3>
+                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">{tCatalog("searchTitle")}</h3>
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     type="text"
-                    placeholder="Tìm thảo mộc..."
+                    placeholder={tCatalog("searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full bg-white border border-border/60 rounded-full pl-11 pr-6 py-3 text-xs text-primary focus:outline-none focus:border-primary placeholder:text-muted-foreground/50 shadow-xs"
@@ -218,35 +226,41 @@ function ProductsCatalogContent() {
 
               {/* Categories Navigation Widget */}
               <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">Danh mục</h3>
+                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">{tCatalog("categoriesTitle")}</h3>
                 <div className="flex flex-row md:flex-col flex-wrap gap-2 md:gap-1.5 overflow-x-auto pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => {
-                        const params = new URLSearchParams(searchParams.toString());
-                        if (cat === "Tất cả") {
-                          params.delete("category");
-                        } else {
-                          params.set("category", cat);
-                        }
-                        router.push(`/products?${params.toString()}`, { scroll: false });
-                      }}
-                      className={`text-left px-4 py-2.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all cursor-pointer border ${
-                        selectedCategory === cat
-                          ? "bg-primary text-white border-primary"
-                          : "bg-white border-border/60 text-[#414941] hover:border-primary/45"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                  {categories.map((cat) => {
+                    const isCatAll = cat === ALL_CATEGORY_KEY;
+                    const isSelected = isCatAll ? isAllCategory : selectedCategory === cat;
+                    const displayLabel = isCatAll ? tCatalog("allCategories") : cat;
+
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          const params = new URLSearchParams(searchParams.toString());
+                          if (isCatAll) {
+                            params.delete("category");
+                          } else {
+                            params.set("category", cat);
+                          }
+                          router.push(`/products?${params.toString()}`, { scroll: false });
+                        }}
+                        className={`text-left px-4 py-2.5 rounded-full text-xs font-semibold tracking-wide whitespace-nowrap transition-all cursor-pointer border ${
+                          isSelected
+                            ? "bg-primary text-white border-primary"
+                            : "bg-white border-border/60 text-[#414941] hover:border-primary/45"
+                        }`}
+                      >
+                        {displayLabel}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Sorting Widget */}
               <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">Sắp xếp</h3>
+                <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">{tCatalog("sortTitle")}</h3>
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="h-3.5 w-3.5 text-[#414941]" />
                   <select
@@ -254,9 +268,9 @@ function ProductsCatalogContent() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full bg-white border border-border/60 rounded-full px-5 py-3 text-xs text-primary focus:outline-none focus:border-primary shadow-xs cursor-pointer"
                   >
-                    <option value="default">Mặc định</option>
-                    <option value="price-asc">Giá: Thấp đến Cao</option>
-                    <option value="price-desc">Giá: Cao đến Thấp</option>
+                    <option value="default">{tCatalog("sortDefault")}</option>
+                    <option value="price-asc">{tCatalog("sortPriceAsc")}</option>
+                    <option value="price-desc">{tCatalog("sortPriceDesc")}</option>
                   </select>
                 </div>
               </div>
@@ -266,12 +280,12 @@ function ProductsCatalogContent() {
             <div className="flex-1">
               {isLoadingProducts ? (
                 <div className="rounded-xl border border-border bg-white px-6 py-16 text-center">
-                  <p className="text-sm font-semibold text-primary">Đang tải sản phẩm từ CMS...</p>
+                  <p className="text-sm font-semibold text-primary">{tCatalog("loading")}</p>
                 </div>
               ) : productsError ? (
                 <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-16 text-center">
                   <ShoppingBag className="h-12 w-12 text-red-400 mx-auto" />
-                  <h3 className="mt-4 font-serif text-lg font-bold text-red-700">Không thể tải sản phẩm</h3>
+                  <h3 className="mt-4 font-serif text-lg font-bold text-red-700">{tCatalog("loadErrorTitle")}</h3>
                   <p className="mt-2 text-sm text-red-700">{productsError}</p>
                 </div>
               ) : paginatedProducts.length > 0 ? (
@@ -292,7 +306,7 @@ function ProductsCatalogContent() {
                         disabled={currentPage === 1}
                         className="px-4 py-2 rounded-full text-xs font-semibold border border-[#043616]/10 bg-white text-[#043616] hover:border-[#043616]/35 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
                       >
-                        Trước
+                        {tCatalog("prevPage")}
                       </button>
                       
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -314,7 +328,7 @@ function ProductsCatalogContent() {
                         disabled={currentPage === totalPages}
                         className="px-4 py-2 rounded-full text-xs font-semibold border border-[#043616]/10 bg-white text-[#043616] hover:border-[#043616]/35 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
                       >
-                        Sau
+                        {tCatalog("nextPage")}
                       </button>
                     </div>
                   )}
@@ -323,9 +337,9 @@ function ProductsCatalogContent() {
                 // Empty State View
                 <div className="text-center py-24 space-y-4">
                   <ShoppingBag className="h-12 w-12 text-[#414941] mx-auto opacity-40 animate-pulse" />
-                  <h3 className="font-serif text-lg font-bold text-primary">KHÔNG TÌM THẤY SẢN PHẨM KHỚP</h3>
+                  <h3 className="font-serif text-lg font-bold text-primary">{tCatalog("emptyTitle")}</h3>
                   <p className="text-xs text-muted-foreground font-light max-w-sm mx-auto">
-                    Hãy thử kiểm tra lại chính tả hoặc thay đổi tiêu chí lọc danh mục của bạn.
+                    {tCatalog("emptyDesc")}
                   </p>
                 </div>
               )}
@@ -357,10 +371,11 @@ function ProductsCatalogContent() {
 }
 
 export default function ProductsCatalogPage() {
+  const tCatalog = useTranslations("catalog");
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-6">
-        <p className="font-serif text-2xl font-bold text-primary animate-pulse">ĐANG TẢI CỬA HÀNG...</p>
+        <p className="font-serif text-2xl font-bold text-primary animate-pulse">{tCatalog("loadingPage")}</p>
       </div>
     }>
       <ProductsCatalogContent />

@@ -113,7 +113,8 @@ const deleteCategory = (id) => {
                                 </td>
 
                                 <td class="py-4 px-4 border-r border-zinc-200/60 align-middle font-bold text-zinc-900">
-                                    {{ category.name }}
+                                    <div>{{ category.name }}</div>
+                                    <div v-if="category.name_en" class="text-xs text-zinc-400 font-normal mt-0.5">EN: {{ category.name_en }}</div>
                                 </td>
 
                                 <td class="py-4 px-4 border-r border-zinc-200/60 align-middle text-zinc-500 font-mono text-xs">

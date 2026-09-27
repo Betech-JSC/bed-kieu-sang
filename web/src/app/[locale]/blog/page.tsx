@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ArrowRight } from "lucide-react";
 import { BLOG_POSTS } from "@/data/blog-posts";
 import { getBlogs } from "@/lib/api";
@@ -16,8 +16,14 @@ import Footer from "@/components/kieu-sang/footer";
 import PageBanner from "@/components/page-banner";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
+import { useLocale, useTranslations } from "next-intl";
+import { getLocalized } from "@/lib/i18n-utils";
 
 export default function BlogArchive() {
+  const locale = useLocale();
+  const tBlog = useTranslations("blog");
+  const tCommon = useTranslations("common");
+
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
@@ -31,13 +37,15 @@ export default function BlogArchive() {
         const mappedBlogs = dbBlogs.map((b: any) => ({
           ...b,
           image: b.image || b.image_path,
-          date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : "Gần đây"
+          date: b.published_at
+            ? new Date(b.published_at).toLocaleDateString(locale === "en" ? "en-US" : "vi-VN")
+            : b.date || (locale === "en" ? "Recent" : "Gần đây"),
         }));
         setPostsList(mappedBlogs);
       }
     }
     loadBlogs();
-  }, []);
+  }, [locale]);
 
   // Load cart from LocalStorage on mount
   useEffect(() => {
@@ -111,76 +119,88 @@ export default function BlogArchive() {
           <div className="absolute inset-0 z-0">
             <Image
               src="/images/story_herbs.png"
-              alt="Góc An Yên"
+              alt={tBlog("title")}
               fill
               className="object-cover opacity-35"
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#FFFDF9] via-[#FFFDF9]/85 to-transparent" />
           </div>
-          
+
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 text-left space-y-3">
-            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">Cảm Hứng & Kiến Thức</span>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">GÓC AN YÊN</h1>
+            <span className="text-secondary font-semibold tracking-[0.3em] uppercase text-[10px]">
+              {tBlog("subtitle")}
+            </span>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary uppercase">
+              {tBlog("title")}
+            </h1>
           </div>
         </section>
 
         {/* Blog Archive Grid */}
         <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {paginatedPosts.map((post) => (
-              <Link
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                className="group flex flex-col bg-white rounded-[32px] border border-border/80 overflow-hidden shadow-xs transition-all duration-500 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
-              >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-background">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    fill
-                    unoptimized={post.image?.startsWith("http")}
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
-                  />
-                  <span className="absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
-                    {typeof post.category === "object" && post.category !== null
-                      ? (post.category as any).name
-                      : post.category}
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col p-6 md:p-8">
-                  <div className="flex items-center gap-4 text-[10px] text-muted-foreground font-sans mb-3">
-                    <span>{post.date}</span>
+            {paginatedPosts.map((post) => {
+              const localizedTitle = getLocalized(post, "title", locale);
+              const localizedExcerpt = getLocalized(post, "excerpt", locale);
+              const postSlug = locale === "en" && post.slug_en ? post.slug_en : post.slug;
+              const localizedCategory = typeof post.category === "object" && post.category !== null
+                ? getLocalized(post.category, "name", locale)
+                : (locale === "en" && post.category_en ? post.category_en : post.category);
+
+              return (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${postSlug}`}
+                  className="group flex flex-col bg-white rounded-[32px] border border-border/80 overflow-hidden shadow-xs transition-all duration-500 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+                >
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-background">
+                    <Image
+                      src={post.image}
+                      alt={localizedTitle}
+                      fill
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
+                    />
+                    <span className="absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
+                      {localizedCategory}
+                    </span>
                   </div>
-                  <h3 className="font-serif text-lg font-bold leading-normal text-primary mb-3 group-hover:text-secondary transition-colors duration-300 line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground font-light leading-relaxed mb-6 line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                  <div className="mt-auto flex items-center gap-1.5 text-xs font-serif font-bold text-secondary uppercase tracking-wider">
-                    <span>Đọc tiếp</span>
-                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex-1 flex flex-col p-6 md:p-8">
+                    <div className="flex items-center gap-4 text-[10px] text-muted-foreground font-sans mb-3">
+                      <span>{post.date}</span>
+                    </div>
+                    <h3 className="font-serif text-lg font-bold leading-normal text-primary mb-3 group-hover:text-secondary transition-colors duration-300 line-clamp-2">
+                      {localizedTitle}
+                    </h3>
+                    <p className="text-xs text-muted-foreground font-light leading-relaxed mb-6 line-clamp-3">
+                      {localizedExcerpt}
+                    </p>
+                    <div className="mt-auto flex items-center gap-1.5 text-xs font-serif font-bold text-secondary uppercase tracking-wider">
+                      <span>{tBlog("readMore")}</span>
+                      <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="flex justify-center items-center gap-2 pt-8 border-t border-border/40">
               <button
+                type="button"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="px-4 py-2 rounded-full text-xs font-semibold border border-[#043616]/10 bg-white text-[#043616] hover:border-[#043616]/35 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
               >
-                Trước
+                {locale === "en" ? "Previous" : "Trước"}
               </button>
-              
+
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
+                  type="button"
                   onClick={() => setCurrentPage(page)}
                   className={`w-8 h-8 rounded-full text-xs font-semibold flex items-center justify-center transition-all cursor-pointer border ${
                     currentPage === page
@@ -193,11 +213,12 @@ export default function BlogArchive() {
               ))}
 
               <button
+                type="button"
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 rounded-full text-xs font-semibold border border-[#043616]/10 bg-white text-[#043616] hover:border-[#043616]/35 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
               >
-                Sau
+                {locale === "en" ? "Next" : "Sau"}
               </button>
             </div>
           )}

@@ -69,6 +69,22 @@ function mapProduct(p: any) {
   if (!p) return p;
   return {
     ...p,
+    name_en: p.name_en ?? undefined,
+    slug_en: p.slug_en ?? undefined,
+    description_en: p.description_en ?? undefined,
+    benefits_en: Array.isArray(p.benefits_en)
+      ? p.benefits_en
+      : typeof p.benefits_en === "string"
+      ? (() => {
+          try {
+            return JSON.parse(p.benefits_en);
+          } catch {
+            return undefined;
+          }
+        })()
+      : undefined,
+    badge_en: p.badge_en ?? undefined,
+    category_en: typeof p.category === "object" && p.category !== null ? p.category.name_en : p.category_en,
     price: Number(p.price || 0),
     category: typeof p.category === "object" && p.category !== null ? p.category.name : p.category,
     image: resolveImageUrl(p.image_path || p.image),
@@ -78,6 +94,8 @@ function mapProduct(p: any) {
     has_variants: Boolean(p.has_variants),
     variants: Array.isArray(p.variants) ? p.variants.map((variant: any) => ({
       ...variant,
+      name_en: variant.name_en ?? undefined,
+      label_en: variant.label_en ?? undefined,
       price: Number(variant.price || 0),
       original_price: variant.original_price != null ? Number(variant.original_price) : undefined,
       stock: Number(variant.stock || 0),
@@ -90,6 +108,11 @@ function mapBlog(b: any) {
   if (!b) return b;
   return {
     ...b,
+    title_en: b.title_en ?? undefined,
+    slug_en: b.slug_en ?? undefined,
+    excerpt_en: b.excerpt_en ?? undefined,
+    content_en: b.content_en ?? undefined,
+    category_en: typeof b.category === "object" && b.category !== null ? b.category.name_en : b.category_en,
     category: typeof b.category === "object" && b.category !== null ? b.category.name : b.category,
     image: resolveImageUrl(b.image_path || b.image),
     date: b.published_at ? new Date(b.published_at).toLocaleDateString("vi-VN") : b.date || "Gần đây",

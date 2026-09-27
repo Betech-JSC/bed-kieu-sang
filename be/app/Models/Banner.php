@@ -10,6 +10,6 @@ class Banner extends Model
     use HasPublicImageUrl;
 
     protected $fillable = [
-        'title', 'subtitle', 'image_path', 'link_url', 'page_key', 'position', 'order_index', 'status'
+        'title', 'title_en', 'subtitle', 'subtitle_en', 'image_path', 'link_url', 'page_key', 'position', 'order_index', 'status'
     ];
 }

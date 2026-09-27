@@ -24,16 +24,21 @@ class SettingController extends Controller
             'settings' => 'required|array',
             'settings.*.key' => 'required|string|exists:settings,key',
             'settings.*.value' => 'nullable',
+            'settings.*.value_en' => 'nullable',
         ]);
 
         foreach ($validated['settings'] as $settingData) {
             $setting = Setting::where('key', $settingData['key'])->first();
             if ($setting) {
                 $oldValue = $setting->toArray();
-                $setting->update(['value' => $settingData['value']]);
+                $updateData = ['value' => $settingData['value'] ?? null];
+                if (array_key_exists('value_en', $settingData)) {
+                    $updateData['value_en'] = $settingData['value_en'];
+                }
+                $setting->update($updateData);
                 
-                if ($oldValue['value'] !== $setting->value) {
-                    ActivityLogger::log('UPDATE', 'settings', "Updated setting '{$setting->key}'", $oldValue, $setting->toArray());
+                if ($oldValue['value'] !== $setting->value || ($oldValue['value_en'] ?? null) !== $setting->value_en) {
+                    ActivityLogger::log('UPDATE', 'settings', "Updated setting '{$setting->key}'", $oldValue, $setting->fresh()->toArray());
                 }
             }
         }

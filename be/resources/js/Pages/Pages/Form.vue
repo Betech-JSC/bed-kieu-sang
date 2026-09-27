@@ -11,8 +11,11 @@ const isEdit = ref(!!props.page);
 
 const form = useForm({
     title: props.page?.title || '',
+    title_en: props.page?.title_en || '',
     slug: props.page?.slug || '',
+    slug_en: props.page?.slug_en || '',
     content: props.page?.content || '',
+    content_en: props.page?.content_en || '',
     meta_title: props.page?.meta_title || '',
     meta_description: props.page?.meta_description || '',
     meta_keywords: props.page?.meta_keywords || '',
@@ -25,6 +28,20 @@ const form = useForm({
 const generateSlug = () => {
     if (!isEdit.value) {
         form.slug = form.title
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    }
+};
+
+const generateSlugEn = () => {
+    if (!isEdit.value || !form.slug_en) {
+        form.slug_en = (form.title_en || '')
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
@@ -74,20 +91,32 @@ const submit = () => {
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <form @submit.prevent="submit" class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Title -->
-                        <div class="flex flex-col space-y-2 col-span-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề trang *</label>
+                        <!-- Title VI -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề trang (VI) *</label>
                             <input v-model="form.title" type="text" required @input="generateSlug" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
-                        <!-- Slug -->
+                        <!-- Title EN -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) *</label>
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tiêu đề trang (EN)</label>
+                            <input v-model="form.title_en" type="text" @input="generateSlugEn" placeholder="Page title in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Slug VI -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (VI) *</label>
                             <input v-model="form.slug" type="text" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
-                        <!-- Status -->
+                        <!-- Slug EN -->
                         <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (EN)</label>
+                            <input v-model="form.slug_en" type="text" placeholder="page-slug-en" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Status -->
+                        <div class="flex flex-col space-y-2 col-span-1 md:col-span-2">
                             <label class="text-sm font-serif font-bold text-emerald-950">Trạng thái *</label>
                             <select v-model="form.status" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all">
                                 <option value="draft">Bản nháp</option>
@@ -96,10 +125,16 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <!-- Content Area -->
+                    <!-- Content Area VI -->
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Nội dung trang *</label>
-                        <textarea v-model="form.content" required rows="10" placeholder="Nhập mã HTML hoặc nội dung văn bản của trang..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all font-mono text-sm"></textarea>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Nội dung trang (VI) *</label>
+                        <textarea v-model="form.content" required rows="8" placeholder="Nhập mã HTML hoặc nội dung văn bản của trang (tiếng Việt)..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all font-mono text-sm"></textarea>
+                    </div>
+
+                    <!-- Content Area EN -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Nội dung trang (EN)</label>
+                        <textarea v-model="form.content_en" rows="8" placeholder="Enter HTML or text content for English page..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all font-mono text-sm"></textarea>
                     </div>
 
                     <!-- SEO Metadata -->

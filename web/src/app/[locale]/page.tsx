@@ -18,7 +18,7 @@ import {
   Star
 } from "lucide-react";
 import ProductCard, { Product } from "@/components/product-card";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import CartDrawer, { CartItem, getCartItemKey, OrderDetails } from "@/components/cart-drawer";
 import CheckoutModal from "@/components/checkout-modal";
 import Header from "@/components/kieu-sang/header";
@@ -26,30 +26,8 @@ import Footer from "@/components/kieu-sang/footer";
 
 import { getProducts, getBlogs, getBanners, getTestimonials, getSettings } from "@/lib/api";
 import { useSeo } from "@/hooks/useSeo";
+import { useTranslations, useLocale } from "next-intl";
 
-const REVIEWS = [
-  {
-    id: 1,
-    name: "Chị Minh Thư",
-    role: "Khách hàng tại Hà Nội",
-    text: "Sau khi sử dụng sản phẩm Xông Nhà Tẩy Uế, tôi cảm thấy không gian sống nhẹ nhàng và thanh thoát hơn hẳn. Mùi hương sả quế rất tự nhiên, không hề bị gắt như các loại nhang hóa chất khác. Thực sự là một trải nghiệm chữa lành tuyệt vời.",
-    avatar: "/images/avatar_woman_1.png"
-  },
-  {
-    id: 2,
-    name: "Anh Hoàng Nam",
-    role: "Người thực hành Thiền & Yoga",
-    text: "Bó thảo mộc xông nhà rất chất lượng, khói thơm dịu nhẹ chứ không bị nồng hắc. Không gian phòng thiền của mình như được làm sạch hoàn toàn năng lượng xấu, mang lại vận khí cực tốt.",
-    avatar: "/images/avatar_man_1.png"
-  },
-  {
-    id: 3,
-    name: "Bạn Lan Phương",
-    role: "Nhà thiết kế đồ họa",
-    text: "Nước xịt thảo mộc là cứu cánh cho những ngày mình bị stress do deadline. Mùi vỏ cam ngọt và bưởi rất tự nhiên, sảng khoái cực kỳ. Cảm giác thư giãn an lành như đang ở spa vậy.",
-    avatar: "/images/avatar_woman_2.png"
-  }
-];
 
 const ZenIcon = ({ className }: { className?: string }) => (
   <svg
@@ -70,9 +48,38 @@ const ZenIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const formatCounter = (value: number) => new Intl.NumberFormat("vi-VN").format(value);
-
 export default function Home() {
+  const locale = useLocale();
+  const tHome = useTranslations("home");
+  const tCommon = useTranslations("common");
+
+  const formatCounter = (value: number) =>
+    new Intl.NumberFormat(locale === "en" ? "en-US" : "vi-VN").format(value);
+
+  const fallbackReviews = [
+    {
+      id: 1,
+      name: tHome("review1Name"),
+      role: tHome("review1Role"),
+      text: tHome("review1Text"),
+      avatar: "/images/avatar_woman_1.png"
+    },
+    {
+      id: 2,
+      name: tHome("review2Name"),
+      role: tHome("review2Role"),
+      text: tHome("review2Text"),
+      avatar: "/images/avatar_man_1.png"
+    },
+    {
+      id: 3,
+      name: tHome("review3Name"),
+      role: tHome("review3Role"),
+      text: tHome("review3Text"),
+      avatar: "/images/avatar_woman_2.png"
+    }
+  ];
+
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<OrderDetails | null>(null);
@@ -86,7 +93,7 @@ export default function Home() {
   const [homepageLoadError, setHomepageLoadError] = useState(false);
 
   const [banners, setBanners] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>(REVIEWS);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
   const [seoSettings, setSeoSettings] = useState<{ title?: string; desc?: string; keywords?: string }>({});
   const [socialProof, setSocialProof] = useState({ salesCount: 50000, rating: "4.9" });
@@ -291,19 +298,19 @@ export default function Home() {
         <section className="border-b border-border/60 bg-white">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-12">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">Được khách hàng tin chọn</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-secondary">{tHome("customerTrust")}</p>
               <h2 className="mt-2 font-serif text-2xl font-bold text-primary md:text-3xl">
-                Hơn {formatCounter(displayedSalesCount)}+ sản phẩm đã được bán ra
+                {tHome("salesCountText", { count: formatCounter(displayedSalesCount) })}
               </h2>
             </div>
             <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-[#FFFDF9] px-5 py-4">
-              <div className="flex items-center gap-1 text-[#604b12]" aria-label={`${socialProof.rating} trên 5 sao`}>
+              <div className="flex items-center gap-1 text-[#604b12]" aria-label={tHome("ratingAria", { rating: socialProof.rating })}>
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Star key={index} className="h-4 w-4 fill-[#E5C44B] text-[#E5C44B]" />
                 ))}
               </div>
               <div className="text-sm font-semibold text-primary">
-                {socialProof.rating}/5 đánh giá từ khách hàng
+                {tHome("ratingReview", { rating: socialProof.rating })}
               </div>
             </div>
           </div>
@@ -328,14 +335,14 @@ export default function Home() {
               <button
                 onClick={prevBanner}
                 className="absolute left-6 z-25 p-2.5 rounded-full bg-white/25 hover:bg-white/40 text-primary backdrop-blur-xs transition-all duration-200"
-                title="Banner trước"
+                title={tHome("prevBanner")}
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={nextBanner}
                 className="absolute right-6 z-25 p-2.5 rounded-full bg-white/25 hover:bg-white/40 text-primary backdrop-blur-xs transition-all duration-200"
-                title="Banner tiếp theo"
+                title={tHome("nextBanner")}
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -346,13 +353,13 @@ export default function Home() {
             {/* Hero Left Info */}
             <div className="space-y-6 text-left">
               <div className="inline-block border border-primary/30 px-3.5 py-1 rounded-full text-primary text-xs font-semibold uppercase tracking-[0.2em]">
-                {banners.length > 0 ? (banners[activeBannerIndex].subtitle || "Tinh Hoa Thảo Mộc") : "Tinh Hoa Thảo Mộc"}
+                {banners.length > 0 ? (banners[activeBannerIndex].subtitle || tHome("heroSubtitleFallback")) : tHome("heroSubtitleFallback")}
               </div>
               <h1 className="font-serif text-primary leading-tight text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                {banners.length > 0 ? (banners[activeBannerIndex].title || "Thảo Mộc Xông Nhà") : "Thảo Mộc Xông Nhà"}
+                {banners.length > 0 ? (banners[activeBannerIndex].title || tHome("heroTitleFallback")) : tHome("heroTitleFallback")}
               </h1>
               <p className="text-sm md:text-base text-primary/95 max-w-md leading-relaxed font-medium">
-                {banners.length > 0 ? "Thanh lọc không gian sống với các sản phẩm thảo mộc chữa lành và bình an tinh thần." : "Thanh lọc không gian sống, khơi thông vận khí lành và mang lại sự bình an tuyệt đối cho tâm trí."}
+                {banners.length > 0 ? (banners[activeBannerIndex].description || tHome("heroDescFallbackWithBanners")) : tHome("heroDescFallback")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <button
@@ -370,13 +377,13 @@ export default function Home() {
                   }}
                   className="bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-serif font-bold text-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                 >
-                  Đặt Hàng Ngay
+                  {tHome("orderNow")}
                 </button>
                 <button
                   onClick={() => scrollToSection("story")}
                   className="border border-primary/20 text-primary px-8 py-3.5 rounded-full font-serif font-bold text-sm hover:bg-primary/5 transition-all duration-300"
                 >
-                  Tìm Hiểu Thêm
+                  {tHome("learnMore")}
                 </button>
               </div>
             </div>
@@ -385,7 +392,7 @@ export default function Home() {
             {/* <div className="relative w-full h-[300px] md:h-[450px] mt-8 md:mt-0 transition-all duration-500 hover:scale-103 hover:-translate-y-1">
               <Image
                 src="/images/image_product_ks.png"
-                alt="Sản phẩm thảo mộc Xông Nhà Tẩy Uế"
+                alt="Kieu Sang Product"
                 fill
                 priority
                 className="object-contain drop-shadow-[0_20px_40px_rgba(4,54,22,0.12)]"
@@ -403,7 +410,7 @@ export default function Home() {
             <div className="relative z-10 text-center mb-12 space-y-3 flex flex-col items-center justify-center">
               <ZenIcon className="h-8 w-8 text-primary animate-pulse" />
               <h2 className="font-serif text-2xl md:text-3xl font-semibold uppercase tracking-widest text-primary">
-                Năng Lượng Chữa Lành
+                {tHome("valuesTitle")}
               </h2>
               <div className="h-1 w-24 bg-primary/20 mx-auto rounded-full">
                 <div className="h-full w-1/3 bg-primary mx-auto rounded-full" />
@@ -416,9 +423,9 @@ export default function Home() {
                 <div className="w-16 h-16 bg-[#FAF6EE] rounded-full flex items-center justify-center mx-auto mb-6 border border-border group-hover:rotate-12 transition-transform duration-300">
                   <Wind className="h-7 w-7 text-primary" />
                 </div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-3">Thanh Lọc (Purify)</h3>
+                <h3 className="font-serif text-lg font-bold text-foreground mb-3">{tHome("purifyTitle")}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Khử sạch mùi hôi, ẩm mốc khó chịu và các năng lượng trì trệ trong nhà, mang lại không khí thanh tịnh nguyên bản.
+                  {tHome("purifyDesc")}
                 </p>
               </div>
 
@@ -427,9 +434,9 @@ export default function Home() {
                 <div className="w-16 h-16 bg-[#FAF6EE] rounded-full flex items-center justify-center mx-auto mb-6 border border-border group-hover:rotate-12 transition-transform duration-300">
                   <Leaf className="h-7 w-7 text-primary" />
                 </div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-3">Thư Giãn (Relax)</h3>
+                <h3 className="font-serif text-lg font-bold text-foreground mb-3">{tHome("relaxTitle")}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Hương thơm ngào ngạt thảo mộc giúp giải tỏa căng thẳng hệ thần kinh, hỗ trợ giấc ngủ sâu tinh tế và an yên.
+                  {tHome("relaxDesc")}
                 </p>
               </div>
 
@@ -438,9 +445,9 @@ export default function Home() {
                 <div className="w-16 h-16 bg-[#FAF6EE] rounded-full flex items-center justify-center mx-auto mb-6 border border-border group-hover:-rotate-12 transition-transform duration-300">
                   <Compass className="h-7 w-7 text-primary" />
                 </div>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-3">Vận Khí (Feng Shui)</h3>
+                <h3 className="font-serif text-lg font-bold text-foreground mb-3">{tHome("fengShuiTitle")}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Tẩy uế không gian cũ, xua tà khí tích tụ lâu ngày để khơi thông vượng khí, đón chào tài lộc và sự bình an.
+                  {tHome("fengShuiDesc")}
                 </p>
               </div>
             </div>
@@ -451,21 +458,21 @@ export default function Home() {
         <section id="products" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div className="space-y-4">
-              <span className="text-primary font-semibold tracking-[0.3em] uppercase text-xs">Sản Phẩm Nổi Bật</span>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">BỘ SƯU TẬP THẢO MỘC</h2>
+              <span className="text-primary font-semibold tracking-[0.3em] uppercase text-xs">{tHome("curatedSubtitle")}</span>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{tHome("curatedTitle")}</h2>
             </div>
             <button
               onClick={() => scrollToSection("products")}
               className="group flex items-center gap-2 text-primary font-serif font-bold text-xs uppercase hover:gap-3 transition-all"
             >
-              <span>Xem tất cả sản phẩm</span>
+              <span>{tHome("viewAllProducts")}</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
 
           {homepageLoadError && !isHomepageLoading && (
             <p className="mb-8 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="status">
-              Một phần dữ liệu trang chủ chưa tải được. Vui lòng thử tải lại trang.
+              {tHome("loadError")}
             </p>
           )}
 
@@ -489,8 +496,8 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-6 md:px-12">
               <div className="flex justify-between items-end mb-12">
                 <div className="space-y-3">
-                  <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">Sản Phẩm Mới</span>
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">SỰ KHỞI ĐẦU MỚI</h2>
+                  <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">{tHome("newSubtitle")}</span>
+                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{tHome("newTitle")}</h2>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -529,8 +536,8 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-6 md:px-12">
               <div className="flex justify-between items-end mb-12">
                 <div className="space-y-3">
-                  <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">Ưu Đãi Lành Mạnh</span>
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">KHUYẾN MÃI ĐẶC BIỆT</h2>
+                  <span className="text-secondary font-semibold tracking-[0.25em] uppercase text-[10px] block">{tHome("saleSubtitle")}</span>
+                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{tHome("saleTitle")}</h2>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -574,16 +581,16 @@ export default function Home() {
                 <div className="relative w-full max-w-[380px] aspect-[4/5] rounded-[32px] overflow-hidden shadow-xl border-4 border-white bg-white">
                   <Image
                     src="/images/story_herbs.png"
-                    alt="Quy trình chế biến thảo mộc Xông Nhà Tẩy Uế"
+                    alt={tHome("imageAlt")}
                     fill
                     className="object-cover"
                   />
                 </div>
 
                 <div className="absolute -bottom-6 right-4 bg-primary text-primary-foreground p-5 rounded-[20px] shadow-lg max-w-[200px] border border-accent/20">
-                  <p className="text-xs font-serif italic text-accent font-medium mb-1">“Hương thảo mộc”</p>
+                  <p className="text-xs font-serif italic text-accent font-medium mb-1">{tHome("quoteTitle")}</p>
                   <p className="text-[11px] leading-relaxed text-primary-foreground/90 font-light">
-                    Linh hồn của đất trời lắng đọng trong từng sớ lá ngải cứu, vỏ quế khô thơm lành.
+                    {tHome("quoteDesc")}
                   </p>
                 </div>
               </div>
@@ -591,22 +598,15 @@ export default function Home() {
               {/* Right content text */}
               <div className="lg:col-span-7 space-y-6 text-left">
                 <span className="text-xs font-semibold text-primary uppercase tracking-widest">
-                  Về Chúng Tôi
+                  {tHome("storySubtitle")}
                 </span>
                 <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                  Hành Trình Chữa Lành Từ Tâm Hồn Người Sáng Lập
+                  {tHome("storyTitle")}
                 </h2>
                 <div className="space-y-4 text-sm text-muted-foreground leading-relaxed font-light">
-                  <p>
-                    Thương hiệu <strong>Xông Nhà Tẩy Uế</strong> ra đời từ tình yêu với mùi khói bếp củi quê hương và mong muốn gìn giữ những giá trị thảo mộc truyền thống. Trong cuộc sống hiện đại ồn ào và bụi bặm, chúng tôi nhận ra con người ngày càng cần những khoảng lặng an yên để kết nối lại với tâm hồn.
-                  </p>
-                  <p>
-                    Bằng việc kết hợp các công thức thảo mộc gia truyền cùng kiến thức năng lượng phong thủy phương Đông, Xông Nhà Tẩy Uế mong muốn mang lại trạng thái cân bằng cho không gian sống:
-                    <em> “Nhà có thơm tho, khí có lưu thông thì tâm hồn mới được nuôi dưỡng khỏe mạnh.”</em>
-                  </p>
-                  <p>
-                    Tất cả các loại lá cây, vỏ quả, quế, trầm đều được thu hoạch thủ công tại các vùng nguyên liệu sạch tự nhiên của Việt Nam, qua quá trình phơi sấy kỹ lưỡng để giữ nguyên tinh dầu thơm quý giá nhất.
-                  </p>
+                  <p>{tHome("storyP1")}</p>
+                  <p>{tHome("storyP2")}</p>
+                  <p>{tHome("storyP3")}</p>
                 </div>
 
                 <div className="pt-4 flex flex-wrap gap-6">
@@ -614,13 +614,13 @@ export default function Home() {
                     <div className="h-9 w-9 rounded-full border border-primary/20 bg-white flex items-center justify-center text-primary">
                       <CheckCircle className="h-4 w-4 text-primary" />
                     </div>
-                    <span className="text-xs font-bold text-primary">Nguyên liệu bản địa sạch</span>
+                    <span className="text-xs font-bold text-primary">{tHome("cleanIngredients")}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="h-9 w-9 rounded-full border border-primary/20 bg-white flex items-center justify-center text-primary">
                       <CheckCircle className="h-4 w-4 text-primary" />
                     </div>
-                    <span className="text-xs font-bold text-primary">Thủ công tỉ mỉ</span>
+                    <span className="text-xs font-bold text-primary">{tHome("meticulousCraft")}</span>
                   </div>
                 </div>
               </div>
@@ -633,14 +633,14 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div className="space-y-4">
-                <span className="text-primary font-semibold tracking-[0.3em] uppercase text-xs">Cảm Hứng & Kiến Thức</span>
-                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground uppercase">GÓC AN YÊN & CHỮA LÀNH</h2>
+                <span className="text-primary font-semibold tracking-[0.3em] uppercase text-xs">{tHome("blogSubtitle")}</span>
+                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground uppercase">{tHome("blogTitle")}</h2>
               </div>
               <Link
                 href="/blog"
                 className="group flex items-center gap-2 text-primary font-serif font-bold text-xs uppercase hover:gap-3 transition-all"
               >
-                <span>Xem tất cả bài viết</span>
+                <span>{tHome("viewAllArticles")}</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -658,7 +658,6 @@ export default function Home() {
                         src={blogPosts[0].image}
                         alt={blogPosts[0].title}
                         fill
-                        unoptimized={blogPosts[0].image?.startsWith("http")}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
                       />
                       <span className="absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
@@ -678,7 +677,7 @@ export default function Home() {
                         {blogPosts[0].excerpt}
                       </p>
                       <div className="mt-auto flex items-center gap-1.5 text-xs font-serif font-bold text-secondary uppercase tracking-wider">
-                        <span>Đọc tiếp</span>
+                        <span>{tHome("readMore")}</span>
                         <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
@@ -699,7 +698,6 @@ export default function Home() {
                         src={post.image}
                         alt={post.title}
                         fill
-                        unoptimized={post.image?.startsWith("http")}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
                       />
                       <span className="sm:hidden absolute top-4 left-4 z-10 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-xs">
@@ -725,7 +723,7 @@ export default function Home() {
                         {post.excerpt}
                       </p>
                       <div className="mt-auto flex items-center gap-1 text-[11px] font-serif font-bold text-secondary uppercase tracking-wider">
-                        <span>Đọc tiếp</span>
+                        <span>{tHome("readMore")}</span>
                         <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                       </div>
                     </div>
@@ -754,12 +752,12 @@ export default function Home() {
               <div className="mb-20">
                 <span className="font-serif text-primary/30 text-5xl mb-2 block">“</span>
                 <h2 className="font-serif text-2xl md:text-3xl uppercase tracking-widest text-primary font-semibold">
-                  Lòng Tin Từ Khách Hàng
+                  {tHome("reviewsTitle")}
                 </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-8">
-                {reviews.map((review) => (
+                {(reviews.length > 0 ? reviews : fallbackReviews).map((review) => (
                   <div
                     key={review.id}
                     className="relative p-8 md:p-10 bg-white rounded-[36px] flex flex-col justify-between text-center shadow-xs hover:shadow-md transition-all duration-300 border border-border/40"
@@ -771,7 +769,6 @@ export default function Home() {
                           src={review.avatar}
                           alt={review.name}
                           fill
-                          unoptimized={review.avatar?.startsWith("http")}
                           className="object-cover"
                         />
                       </div>
@@ -802,27 +799,28 @@ export default function Home() {
               <div className="absolute inset-0 bg-primary opacity-[0.01]" />
 
               <div className="relative z-10 space-y-8">
-                <h2 className="font-serif text-2xl md:text-4xl font-bold leading-tight uppercase tracking-wide text-primary">
-                  BẮT ĐẦU HÀNH TRÌNH <br /> CHỮA LÀNH KHÔNG GIAN CỦA BẠN
-                </h2>
+                <h2
+                  className="font-serif text-2xl md:text-4xl font-bold leading-tight uppercase tracking-wide text-primary"
+                  dangerouslySetInnerHTML={{ __html: tHome("ctaTitle") }}
+                />
                 <p className="text-sm text-muted-foreground max-w-lg mx-auto font-light leading-relaxed">
-                  Khám phá sức mạnh thanh tẩy của tự nhiên và mang lại sự cân bằng ngũ hành hanh thông cho ngôi nhà của bạn ngay hôm nay.
+                  {tHome("ctaDesc")}
                 </p>
                 <button
                   onClick={() => scrollToSection("products")}
                   className="bg-primary text-primary-foreground px-10 py-4 rounded-full font-serif font-bold text-sm hover:bg-secondary hover:text-white transition-all duration-300 shadow-md hover:scale-105"
                 >
-                  Mua Ngay &amp; Nhận Ưu Đãi
+                  {tHome("ctaButton")}
                 </button>
 
                 <div className="flex flex-wrap justify-center gap-8 pt-8 border-t border-border max-w-md mx-auto">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4.5 w-4.5 text-secondary" />
-                    <span className="text-[10px] uppercase tracking-widest font-semibold text-primary">100% Thiên Nhiên</span>
+                    <span className="text-[10px] uppercase tracking-widest font-semibold text-primary">{tHome("badgeNatural")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4.5 w-4.5 text-secondary" />
-                    <span className="text-[10px] uppercase tracking-widest font-semibold text-primary">Giao Hàng Toàn Quốc</span>
+                    <span className="text-[10px] uppercase tracking-widest font-semibold text-primary">{tHome("badgeNationwide")}</span>
                   </div>
                 </div>
               </div>

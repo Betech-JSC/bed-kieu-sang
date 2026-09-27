@@ -64,14 +64,19 @@ const handleImageChange = (e) => {
 const form = useForm({
     category_id: props.product?.category_id || '',
     name: props.product?.name || '',
+    name_en: props.product?.name_en || '',
     slug: props.product?.slug || '',
+    slug_en: props.product?.slug_en || '',
     price: props.product?.price || 0,
     original_price: props.product?.original_price || '',
     description: props.product?.description || '',
+    description_en: props.product?.description_en || '',
     image_path: props.product?.image_path || '',
     image: null,
     benefits: props.product?.benefits || [],
+    benefits_en: props.product?.benefits_en || [],
     badge: props.product?.badge || '',
+    badge_en: props.product?.badge_en || '',
     channel_one_sales: props.product?.channel_one_sales || 0,
     channel_two_sales: props.product?.channel_two_sales || 0,
     virtual_sales: props.product?.virtual_sales || 0,
@@ -133,10 +138,35 @@ const removeBenefit = (index) => {
     form.benefits.splice(index, 1);
 };
 
+const benefitEnInput = ref('');
+const addBenefitEn = () => {
+    if (benefitEnInput.value.trim() && !form.benefits_en.includes(benefitEnInput.value.trim())) {
+        form.benefits_en.push(benefitEnInput.value.trim());
+        benefitEnInput.value = '';
+    }
+};
+const removeBenefitEn = (index) => {
+    form.benefits_en.splice(index, 1);
+};
+
 // Auto-generate slug from name
 const generateSlug = () => {
     if (!isEdit.value) {
         form.slug = form.name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    }
+};
+
+const generateSlugEn = () => {
+    if (!isEdit.value || !form.slug_en) {
+        form.slug_en = (form.name_en || '')
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
@@ -190,16 +220,28 @@ const submit = () => {
             <div class="overflow-hidden bg-[#FFFDF9] rounded-xl border border-zinc-200/80">
                 <form @submit.prevent="submit" class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Name -->
+                        <!-- Name VI -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Tên sản phẩm *</label>
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tên sản phẩm (VI) *</label>
                             <input v-model="form.name" type="text" required @input="generateSlug" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
-                        <!-- Slug -->
+                        <!-- Name EN -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) *</label>
+                            <label class="text-sm font-serif font-bold text-emerald-950">Tên sản phẩm (EN)</label>
+                            <input v-model="form.name_en" type="text" @input="generateSlugEn" placeholder="Product name in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Slug VI -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (VI) *</label>
                             <input v-model="form.slug" type="text" required class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        </div>
+
+                        <!-- Slug EN -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="text-sm font-serif font-bold text-emerald-950">Slug (URL) (EN)</label>
+                            <input v-model="form.slug_en" type="text" placeholder="product-slug-en" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
                         </div>
 
                         <!-- Category -->
@@ -211,10 +253,16 @@ const submit = () => {
                             </select>
                         </div>
 
-                        <!-- Badge -->
-                        <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Nhãn (Badge - ví dụ: NEW, -15%)</label>
-                            <input v-model="form.badge" type="text" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                        <!-- Badge VI & EN -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Nhãn (VI)</label>
+                                <input v-model="form.badge" type="text" placeholder="NEW, -15%..." class="border border-zinc-200 rounded-lg px-3 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" />
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <label class="text-sm font-serif font-bold text-emerald-950">Nhãn (EN)</label>
+                                <input v-model="form.badge_en" type="text" placeholder="NEW, HOT..." class="border border-zinc-200 rounded-lg px-3 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" />
+                            </div>
                         </div>
 
                         <!-- Price -->
@@ -255,6 +303,7 @@ const submit = () => {
                                 </div>
                                 <div class="flex-1 space-y-2">
                                     <input type="file" @change="handleImageChange" accept="image/*" class="text-xs text-zinc-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
+                                    <p class="text-xs text-zinc-500 mt-1">Khuyên dùng: Ảnh vuông tỉ lệ 1:1, tối thiểu 800x800px (đẹp nhất 1000x1000px đến 1200x1200px). Dung lượng tối đa 20MB.</p>
                                     <p class="text-[10px] text-zinc-400">Chọn file ảnh chất lượng từ máy tính để tải lên.</p>
                                 </div>
                             </div>
@@ -318,23 +367,44 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <!-- Description -->
+                    <!-- Description VI -->
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Mô tả sản phẩm *</label>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Mô tả sản phẩm (VI) *</label>
                         <textarea v-model="form.description" required rows="4" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"></textarea>
                     </div>
 
-                    <!-- Benefits -->
+                    <!-- Description EN -->
                     <div class="flex flex-col space-y-2">
-                        <label class="text-sm font-serif font-bold text-emerald-950">Lợi ích sản phẩm (Benefits)</label>
+                        <label class="text-sm font-serif font-bold text-emerald-950">Mô tả sản phẩm (EN)</label>
+                        <textarea v-model="form.description_en" rows="4" placeholder="Product description in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all"></textarea>
+                    </div>
+
+                    <!-- Benefits VI -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Lợi ích sản phẩm (VI)</label>
                         <div class="flex gap-2">
-                            <input v-model="benefitInput" type="text" placeholder="Nhập lợi ích..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all flex-1" />
+                            <input v-model="benefitInput" type="text" placeholder="Nhập lợi ích tiếng Việt..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all flex-1" />
                             <button type="button" @click="addBenefit" class="bg-[#043616] text-[#FFFDF9] px-6 rounded-lg hover:bg-[#112215] transition-all">Thêm</button>
                         </div>
                         <div class="flex flex-wrap gap-2 mt-2">
                             <span v-for="(benefit, idx) in form.benefits" :key="idx" class="bg-emerald-100 text-[#043616] px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-emerald-200/50">
                                 {{ benefit }}
                                 <button type="button" @click="removeBenefit(idx)" class="text-rose-600 font-bold hover:text-rose-800">&times;</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Benefits EN -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-serif font-bold text-emerald-950">Lợi ích sản phẩm (EN)</label>
+                        <div class="flex gap-2">
+                            <input v-model="benefitEnInput" type="text" placeholder="Enter product benefit in English..." class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all flex-1" />
+                            <button type="button" @click="addBenefitEn" class="bg-[#043616] text-[#FFFDF9] px-6 rounded-lg hover:bg-[#112215] transition-all">Thêm</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <span v-for="(benefit, idx) in form.benefits_en" :key="idx" class="bg-blue-100 text-blue-900 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-blue-200/50">
+                                {{ benefit }}
+                                <button type="button" @click="removeBenefitEn(idx)" class="text-rose-600 font-bold hover:text-rose-800">&times;</button>
                             </span>
                         </div>
                     </div>

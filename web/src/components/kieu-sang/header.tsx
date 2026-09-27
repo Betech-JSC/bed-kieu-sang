@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { ShoppingBag, Menu, X } from "lucide-react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 interface HeaderProps {
   onCartOpen?: () => void;
@@ -12,6 +13,8 @@ interface HeaderProps {
 
 export default function Header({ onCartOpen }: HeaderProps) {
   const pathname = usePathname();
+  const tNav = useTranslations("nav");
+  const tHeader = useTranslations("header");
   const [cartCount, setCartCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -43,12 +46,11 @@ export default function Header({ onCartOpen }: HeaderProps) {
   }, []);
 
   const navLinks = [
-    { name: "Trang Chủ", href: "/" },
-    { name: "Giới Thiệu", href: "/about" },
-    { name: "Sản Phẩm", href: "/products" },
-    { name: "Bán Chạy", href: "/best-sellers" },
-    { name: "Góc An Yên", href: "/blog" },
-    // { name: "Liên Hệ", href: "/contact" },
+    { name: tNav("home"), href: "/" },
+    { name: tNav("about"), href: "/about" },
+    { name: tNav("products"), href: "/products" },
+    { name: tNav("bestSellers"), href: "/best-sellers" },
+    { name: tNav("blog"), href: "/blog" },
   ];
 
   return (
@@ -79,10 +81,11 @@ export default function Header({ onCartOpen }: HeaderProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`transition-colors pb-1 hover:text-[#043616] ${isActive
+                className={`transition-colors pb-1 hover:text-[#043616] ${
+                  isActive
                     ? "text-[#043616] font-bold border-b-2 border-[#043616]"
                     : "text-[#414941]"
-                  }`}
+                }`}
               >
                 {link.name}
               </Link>
@@ -91,10 +94,17 @@ export default function Header({ onCartOpen }: HeaderProps) {
         </div>
 
         {/* Header CTA & Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* Language Switcher (Desktop) */}
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
+
           {/* Cart Icon button */}
           <button
+            type="button"
             onClick={onCartOpen}
+            aria-label={tHeader("cart")}
             className="relative h-11 w-11 rounded-full border border-neutral-200 bg-white flex items-center justify-center text-[#043616] transition-all duration-300 hover:border-[#043616] hover:shadow-[0_4px_12px_rgba(4,54,22,0.08)] active:scale-95 cursor-pointer"
           >
             <ShoppingBag className="h-5 w-5" />
@@ -110,12 +120,14 @@ export default function Header({ onCartOpen }: HeaderProps) {
             href="/products"
             className="hidden sm:block bg-[#043616] text-white px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-[#2d6a3e] transition-all duration-300"
           >
-            Cửa Hàng
+            {tHeader("shopNow")}
           </Link>
 
           {/* Mobile hamburger */}
           <button
+            type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={tHeader("menu")}
             className="md:hidden h-11 w-11 rounded-full border border-neutral-200 bg-white flex items-center justify-center text-[#043616] transition-all active:scale-95 cursor-pointer"
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -126,17 +138,32 @@ export default function Header({ onCartOpen }: HeaderProps) {
       {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-neutral-200 shadow-lg py-6 px-8 flex flex-col gap-4 text-sm font-semibold animate-fade-in text-[#414941]">
+          {/* Mobile Language Switcher */}
+          <div className="pb-3 border-b border-neutral-100 flex items-center justify-between">
+            <span className="text-xs text-neutral-500 font-normal">{tHeader("language")}:</span>
+            <LanguageSwitcher />
+          </div>
+
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-left py-2 border-b border-neutral-100 hover:text-primary ${pathname === link.href ? "text-[#043616] font-bold" : "text-[#414941]"
-                }`}
+              className={`text-left py-2 border-b border-neutral-100 hover:text-primary ${
+                pathname === link.href ? "text-[#043616] font-bold" : "text-[#414941]"
+              }`}
             >
               {link.name}
             </Link>
           ))}
+
+          <Link
+            href="/products"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="mt-2 text-center bg-[#043616] text-white px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-[#2d6a3e] transition-all"
+          >
+            {tHeader("shopNow")}
+          </Link>
         </div>
       )}
     </nav>

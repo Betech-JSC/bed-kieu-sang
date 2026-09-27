@@ -24,7 +24,8 @@ const getSettingsPayload = () => {
         groupItems.forEach(item => {
             list.push({
                 key: item.key,
-                value: item.value || ''
+                value: item.value || '',
+                value_en: item.value_en || ''
             });
         });
     });
@@ -83,6 +84,25 @@ const submit = () => {
                                         :type="item.key === 'social_proof_sales_count' ? 'number' : 'text'" 
                                         class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm" 
                                     />
+
+                                    <!-- English Translation for text settings -->
+                                    <div v-if="['store_address', 'meta_title', 'meta_desc'].includes(item.key)" class="pt-1">
+                                        <label class="text-xs text-zinc-500 font-semibold">Bản dịch tiếng Anh (EN):</label>
+                                        <textarea 
+                                            v-if="item.key === 'meta_desc' || item.key === 'store_address'"
+                                            v-model="item.value_en" 
+                                            rows="2"
+                                            placeholder="English translation..."
+                                            class="border border-zinc-200 rounded-lg px-4 py-2 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm w-full mt-1" 
+                                        ></textarea>
+                                        <input 
+                                            v-else
+                                            v-model="item.value_en" 
+                                            type="text"
+                                            placeholder="English translation..."
+                                            class="border border-zinc-200 rounded-lg px-4 py-2 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all text-sm w-full mt-1" 
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { MessageSquare, X, Send, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Message {
   id: string;
@@ -11,6 +12,7 @@ interface Message {
 }
 
 export default function AiChatBox() {
+  const tChat = useTranslations("aiChat");
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [visibleCount, setVisibleCount] = useState(15);
@@ -29,6 +31,9 @@ export default function AiChatBox() {
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length === 1 && parsed[0]?.id === "welcome") {
+            parsed[0].message = tChat("welcome");
+          }
           setMessages(parsed);
         } catch (e) {
           console.error("Error parsing chat history:", e);
@@ -38,7 +43,7 @@ export default function AiChatBox() {
         const welcome: Message = {
           id: "welcome",
           role: "model",
-          message: "Xin chào! Tôi là Trợ lý AI của Thảo Mộc Tẩy Uế. Tôi có thể giúp gì cho bạn hôm nay?",
+          message: tChat("welcome"),
           created_at: new Date().toISOString(),
         };
         setMessages([welcome]);
@@ -46,7 +51,7 @@ export default function AiChatBox() {
       }
       setIsInitialized(true);
     }
-  }, []);
+  }, [tChat]);
 
   // Save to localStorage when messages change
   useEffect(() => {
@@ -63,7 +68,7 @@ export default function AiChatBox() {
       container.scrollTop = diff;
       setLoadingMore(false);
     }
-  }, [visibleCount]);
+  }, [visibleCount, loadingMore]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
@@ -91,25 +96,21 @@ export default function AiChatBox() {
       prevScrollHeightRef.current = messageContainerRef.current.scrollHeight;
     }
 
-    console.log("[AI Chat Web] Đang tải các tin nhắn cũ hơn từ bộ nhớ local...");
+    console.log("[AI Chat Web] Loading older messages...");
 
     // Simulate loading/pagination API delay
     setTimeout(() => {
       const newVisibleCount = Math.min(visibleCount + 15, messages.length);
-      const loadedMessages = messages.slice(-newVisibleCount, -visibleCount);
-      
-      console.log("Các tin nhắn cũ hơn:", loadedMessages);
-      
       setVisibleCount(newVisibleCount);
     }, 600);
   };
 
-  const SUGGESTIONS = [
-    { text: "🏠 Chọn loại xông nhà phù hợp", prompt: "Tôi muốn chuyển nhà/nhập trạch hoặc đang gặp khó khăn trong làm ăn, tôi nên chọn loại Tẩy uế xông nhà nào và cách dùng ra sao?" },
-    { text: "🌿 Thơm phòng & Sức khỏe", prompt: "Tôi muốn xông nhà thơm phòng hoặc tốt cho sức khỏe thì chọn loại nào phù hợp và dùng ra sao?" },
-    { text: "🔥 Cách xông nhà chung cư", prompt: "Nhà chung cư thì nên xông tẩy uế bằng phương pháp nào là tốt nhất?" },
-    { text: "📞 Nhận tư vấn sâu hơn", prompt: "Tôi cần tư vấn chi tiết hơn, vui lòng hướng dẫn cách để lại thông tin liên hệ." }
-  ];
+  const suggestions = useMemo(() => [
+    { text: tChat("prompt1Text"), prompt: tChat("prompt1Prompt") },
+    { text: tChat("prompt2Text"), prompt: tChat("prompt2Prompt") },
+    { text: tChat("prompt3Text"), prompt: tChat("prompt3Prompt") },
+    { text: tChat("prompt4Text"), prompt: tChat("prompt4Prompt") },
+  ], [tChat]);
 
   const handleSuggestionClick = (promptText: string) => {
     setNewMessage(promptText);
@@ -158,7 +159,7 @@ export default function AiChatBox() {
       }
 
       const data = await res.json();
-      const modelText = data.text || "Xin lỗi, tôi không nhận được phản hồi.";
+      const modelText = data.text || tChat("noResponse");
 
       const modelMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -175,7 +176,7 @@ export default function AiChatBox() {
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "model",
-        message: "Rất tiếc, đã có lỗi kết nối tới trợ lý AI. Vui lòng thử lại sau.",
+        message: tChat("errorResponse"),
         created_at: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -213,10 +214,10 @@ export default function AiChatBox() {
                 AI
               </div>
               <div className="text-left">
-                <h4 className="text-sm font-semibold tracking-wide text-[#E5C44B]">Trợ lý Thảo Mộc Tẩy Uế</h4>
+                <h4 className="text-sm font-semibold tracking-wide text-[#E5C44B]">{tChat("headerTitle")}</h4>
                 <span className="text-[10px] text-[#FAF6EE]/75 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Trực tuyến
+                  {tChat("online")}
                 </span>
               </div>
             </div>
@@ -237,7 +238,7 @@ export default function AiChatBox() {
             {loadingMore && (
               <div className="flex justify-center items-center py-2 gap-2 text-xs text-zinc-500">
                 <Loader2 className="animate-spin h-4 w-4 text-[#043616]" />
-                <span>Đang tải tin nhắn cũ...</span>
+                <span>{tChat("loadingOlder")}</span>
               </div>
             )}
 
@@ -272,7 +273,7 @@ export default function AiChatBox() {
 
           {/* Suggestions Bar */}
           <div className="px-3 py-2 border-t border-zinc-100 bg-white flex gap-1.5 overflow-x-auto shrink-0 select-none no-scrollbar">
-            {SUGGESTIONS.map((sug) => (
+            {suggestions.map((sug) => (
               <button
                 key={sug.text}
                 type="button"
@@ -293,13 +294,14 @@ export default function AiChatBox() {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               type="text"
-              placeholder="Nhập câu hỏi của bạn..."
+              placeholder={tChat("placeholder")}
               className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#043616] focus:bg-white transition-all duration-200 text-zinc-800 placeholder-zinc-400"
               disabled={isLoading}
             />
             <button
               type="submit"
               disabled={!newMessage.trim() || isLoading}
+              aria-label={tChat("send")}
               className="p-2.5 bg-[#043616] text-[#E5C44B] rounded-xl hover:bg-[#032610] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center shadow-sm"
             >
               <Send className="w-5 h-5" />

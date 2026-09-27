@@ -17,7 +17,11 @@ class PublicBlogController extends Controller
 
         if ($request->has('category')) {
             $query->whereHas('category', function ($q) use ($request) {
-                $q->where('slug', $request->input('category'));
+                $categorySlug = $request->input('category');
+                $q->where(function ($catQuery) use ($categorySlug) {
+                    $catQuery->where('slug', $categorySlug)
+                        ->orWhere('slug_en', $categorySlug);
+                });
             });
         }
 
@@ -29,7 +33,10 @@ class PublicBlogController extends Controller
     public function show(string $slug): JsonResponse
     {
         $post = BlogPost::with('category')
-            ->where('slug', $slug)
+            ->where(function ($query) use ($slug) {
+                $query->where('slug', $slug)
+                    ->orWhere('slug_en', $slug);
+            })
             ->where('status', 'published')
             ->where('published_at', '<=', now())
             ->firstOrFail();

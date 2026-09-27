@@ -29,7 +29,9 @@ class BannerController extends Controller
     {
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'subtitle_en' => 'nullable|string|max:255',
             'image_path' => 'required_without:image|nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'link_url' => 'nullable|string|max:255',
@@ -61,7 +63,9 @@ class BannerController extends Controller
     {
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'subtitle_en' => 'nullable|string|max:255',
             'image_path' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480',
             'link_url' => 'nullable|string|max:255',
@@ -80,7 +84,7 @@ class BannerController extends Controller
         $oldValue = $banner->toArray();
         $banner->update($validated);
 
-        ActivityLogger::log('UPDATE', 'banners', "Updated banner '{$banner->title}'", $oldValue, $banner->toArray());
+        ActivityLogger::log('UPDATE', 'banners', "Updated banner '{$banner->title}'", $oldValue, $banner->fresh()->toArray());
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner updated successfully.');
     }
