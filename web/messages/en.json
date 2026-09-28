@@ -87,7 +87,12 @@
     "sortPriceLowHigh": "Price: Low to High",
     "sortPriceHighLow": "Price: High to Low",
     "sortBestSeller": "Best Sellers",
-    "noProductsFound": "No matching products found."
+    "noProductsFound": "No matching products found.",
+    "contactForPrice": "Contact",
+    "contactForPriceDetail": "Contact for Pricing",
+    "chatMessenger": "Chat via Facebook",
+    "callHotline": "Call Hotline Consultation",
+    "viewDetail": "View Details"
   },
   "cart": {
     "title": "Your Shopping Cart",

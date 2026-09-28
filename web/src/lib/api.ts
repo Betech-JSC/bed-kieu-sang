@@ -92,6 +92,7 @@ function mapProduct(p: any) {
     total_sales: p.total_sales ?? p.totalSales ?? 0,
     is_best_seller: Boolean(p.is_best_seller),
     has_variants: Boolean(p.has_variants),
+    is_contact_price: Boolean(p.is_contact_price),
     variants: Array.isArray(p.variants) ? p.variants.map((variant: any) => ({
       ...variant,
       name_en: variant.name_en ?? undefined,

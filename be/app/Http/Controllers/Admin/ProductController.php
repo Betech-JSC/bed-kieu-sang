@@ -100,6 +100,7 @@ class ProductController extends Controller
     private function rules(?Product $product = null): array
     {
         $productId = $product?->id;
+        $isContact = request()->boolean('is_contact_price');
 
         $rules = [
             'category_id' => 'required|exists:categories,id',
@@ -107,7 +108,8 @@ class ProductController extends Controller
             'name_en' => 'nullable|string|max:255',
             'slug' => 'required|string|unique:products,slug'.($productId ? ','.$productId : ''),
             'slug_en' => 'nullable|string|unique:products,slug_en'.($productId ? ','.$productId : ''),
-            'price' => 'required|numeric|min:0',
+            'is_contact_price' => 'boolean',
+            'price' => $isContact ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
             'description_en' => 'nullable|string',
@@ -193,6 +195,11 @@ class ProductController extends Controller
         $data['benefits'] = $data['benefits'] ?? [];
         $data['benefits_en'] = !empty($data['benefits_en']) ? $data['benefits_en'] : null;
         $data['is_best_seller'] = $request->boolean('is_best_seller');
+
+        if ($request->boolean('is_contact_price')) {
+            $data['price'] = (!isset($data['price']) || $data['price'] === '' || $data['price'] === null) ? 0 : $data['price'];
+        }
+        $data['is_contact_price'] = $request->boolean('is_contact_price');
 
         // Prevent null values for NOT NULL integer sales columns
         $data['channel_one_sales'] = (int) ($validated['channel_one_sales'] ?? 0);

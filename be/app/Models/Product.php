@@ -12,7 +12,7 @@ class Product extends Model
     use HasPublicImageUrl;
 
     protected $fillable = [
-        'category_id', 'slug', 'name', 'price', 'original_price', 
+        'category_id', 'slug', 'name', 'price', 'original_price', 'is_contact_price',
         'rating', 'channel_one_sales', 'channel_two_sales', 'virtual_sales',
         'real_sales', 'description', 'image_path', 'benefits', 'badge',
         'name_en', 'slug_en', 'description_en', 'benefits_en', 'badge_en',
@@ -27,6 +27,7 @@ class Product extends Model
         'benefits_en' => 'array',
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
+        'is_contact_price' => 'boolean',
         'rating' => 'decimal:2',
         'channel_one_sales' => 'integer',
         'channel_two_sales' => 'integer',

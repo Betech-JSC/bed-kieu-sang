@@ -107,6 +107,7 @@ function ProductsCatalogContent() {
   };
 
   const handleAddToCart = (product: Product) => {
+    if (product.is_contact_price) return;
     const existingIndex = cart.findIndex((item) => item.product.id === product.id);
     const newCart = [...cart];
 

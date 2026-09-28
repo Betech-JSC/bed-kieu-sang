@@ -33,6 +33,13 @@ watch(imageSourceType, (newVal) => {
     }
 });
 
+watch(() => form.is_contact_price, (newVal) => {
+    if (newVal) {
+        form.price = 0;
+        form.original_price = '';
+    }
+});
+
 const openMediaModal = (variantIndex = null) => {
     activeVariantIndex.value = variantIndex;
     isMediaModalOpen.value = true;
@@ -69,6 +76,7 @@ const form = useForm({
     slug_en: props.product?.slug_en || '',
     price: props.product?.price || 0,
     original_price: props.product?.original_price || '',
+    is_contact_price: Boolean(props.product?.is_contact_price) || false,
     description: props.product?.description || '',
     description_en: props.product?.description_en || '',
     image_path: props.product?.image_path || '',
@@ -265,16 +273,51 @@ const submit = () => {
                             </div>
                         </div>
 
+                        <!-- Contact Price Checkbox Block -->
+                        <div class="col-span-1 md:col-span-2 p-4 bg-emerald-50/50 border border-emerald-200/60 rounded-xl flex items-center justify-between">
+                            <div>
+                                <label for="is_contact_price" class="text-sm font-serif font-bold text-emerald-950 cursor-pointer">
+                                    Sản phẩm giá liên hệ (Không hiển thị giá bán)
+                                </label>
+                                <p class="text-xs text-zinc-500 mt-0.5">
+                                    Khi bật, sản phẩm sẽ hiển thị chữ "Liên hệ" và hướng dẫn khách nhắn tin Messenger / Hotline thay vì đặt hàng trực tuyến.
+                                </p>
+                            </div>
+                            <input 
+                                id="is_contact_price" 
+                                v-model="form.is_contact_price" 
+                                type="checkbox" 
+                                class="h-5 w-5 rounded text-[#043616] focus:ring-[#043616] border-zinc-300 cursor-pointer" 
+                            />
+                        </div>
+
                         <!-- Price -->
                         <div class="flex flex-col space-y-2">
-                            <label class="text-sm font-serif font-bold text-emerald-950">Giá bán (VNĐ) *</label>
-                            <input v-model="form.price" type="number" required min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <label class="text-sm font-serif font-bold text-emerald-950">
+                                Giá bán (VNĐ) <span v-if="!form.is_contact_price">*</span>
+                            </label>
+                            <input 
+                                v-model="form.price" 
+                                type="number" 
+                                :required="!form.is_contact_price" 
+                                :disabled="form.is_contact_price" 
+                                min="0" 
+                                class="border border-zinc-200 rounded-lg px-4 py-2.5 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" 
+                                :class="form.is_contact_price ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed' : 'bg-white text-zinc-950'" 
+                            />
                         </div>
 
                         <!-- Original Price -->
                         <div class="flex flex-col space-y-2">
                             <label class="text-sm font-serif font-bold text-emerald-950">Giá gốc trước giảm (VNĐ, nếu có)</label>
-                            <input v-model="form.original_price" type="number" min="0" class="border border-zinc-200 rounded-lg px-4 py-2.5 bg-white text-zinc-950 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" />
+                            <input 
+                                v-model="form.original_price" 
+                                type="number" 
+                                :disabled="form.is_contact_price" 
+                                min="0" 
+                                class="border border-zinc-200 rounded-lg px-4 py-2.5 focus:border-[#043616] focus:ring-1 focus:ring-[#043616] outline-none transition-all" 
+                                :class="form.is_contact_price ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed' : 'bg-white text-zinc-950'" 
+                            />
                         </div>
 
                         <!-- Image Source Type Selection -->

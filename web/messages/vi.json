@@ -87,7 +87,12 @@
     "sortPriceLowHigh": "Giá: Thấp đến cao",
     "sortPriceHighLow": "Giá: Cao đến thấp",
     "sortBestSeller": "Bán chạy nhất",
-    "noProductsFound": "Không tìm thấy sản phẩm phù hợp."
+    "noProductsFound": "Không tìm thấy sản phẩm phù hợp.",
+    "contactForPrice": "Liên hệ",
+    "contactForPriceDetail": "Liên hệ để nhận báo giá",
+    "chatMessenger": "Nhắn tin qua Facebook",
+    "callHotline": "Gọi hotline tư vấn",
+    "viewDetail": "Xem chi tiết"
   },
   "cart": {
     "title": "Giỏ hàng của bạn",

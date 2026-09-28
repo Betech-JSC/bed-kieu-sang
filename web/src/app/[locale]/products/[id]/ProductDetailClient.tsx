@@ -6,7 +6,7 @@
 "use client";
 import { useState, useEffect, type FormEvent } from "react";
 import Image from "next/image";
-import { ChevronLeft, ShoppingBag, Plus, Minus, Check, Star } from "lucide-react";
+import { ChevronLeft, ShoppingBag, Plus, Minus, Check, Star, MessageCircle, PhoneCall } from "lucide-react";
 import Header from "@/components/kieu-sang/header";
 import Footer from "@/components/kieu-sang/footer";
 import ProductCard, { Product, ProductVariant } from "@/components/product-card";
@@ -117,7 +117,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
   };
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product || product.is_contact_price) return;
     const selectedVariant = product.variants?.find((variant) => variant.id === selectedVariantId);
     if (product.has_variants && !selectedVariant) {
       setVariantMessage(locale === "en" ? "Please select a variant before adding to cart." : "Vui lòng chọn đầy đủ phân loại sản phẩm trước khi thêm vào giỏ.");
@@ -152,6 +152,7 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
   };
 
   const handleQuickAdd = (p: Product) => {
+    if (p.is_contact_price) return;
     const existingIndex = cart.findIndex((item) => item.product.id === p.id);
     const newCart = [...cart];
 
@@ -379,29 +380,42 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                 </div>
 
                 {/* Price block */}
-                <div className="bg-[#FAF6EE] rounded-2xl p-5 border border-border/30 flex items-center justify-between">
-                  <div>
-                    <span className="text-sm text-muted-foreground uppercase tracking-wider block mb-1">
-                      {t("price")}
+                {product.is_contact_price ? (
+                  <div className="bg-[#FAF6EE] rounded-2xl p-5 border border-border/30">
+                    <span className="font-serif text-lg font-bold text-primary block">
+                      {t("contactForPriceDetail")}
                     </span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-primary font-sans leading-none">
-                        {formatPrice(displayPrice)}
-                      </span>
-                      {displayOriginalPrice && (
-                        <span className="text-sm text-muted-foreground/60 line-through font-sans">
-                          {formatPrice(displayOriginalPrice)}
-                        </span>
-                      )}
-                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {locale === "en"
+                        ? "Please contact our herbal consultant for personalized guidance and detailed pricing."
+                        : "Vui lòng liên hệ với chuyên viên thảo mộc của Kiều Sang để được tư vấn lộ trình và nhận báo giá chi tiết."}
+                    </p>
                   </div>
-                  {displayOriginalPrice && (
-                    <span className="text-sm font-bold text-[#043616] bg-[#2d6a3e]/10 border border-[#2d6a3e]/20 px-3 py-1 rounded-full uppercase">
-                      {locale === "en" ? "Save " : "Tiết kiệm "}
-                      {formatPrice(displayOriginalPrice - displayPrice)}
-                    </span>
-                  )}
-                </div>
+                ) : (
+                  <div className="bg-[#FAF6EE] rounded-2xl p-5 border border-border/30 flex items-center justify-between">
+                    <div>
+                      <span className="text-sm text-muted-foreground uppercase tracking-wider block mb-1">
+                        {t("price")}
+                      </span>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-bold text-primary font-sans leading-none">
+                          {formatPrice(displayPrice)}
+                        </span>
+                        {displayOriginalPrice && (
+                          <span className="text-sm text-muted-foreground/60 line-through font-sans">
+                            {formatPrice(displayOriginalPrice)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {displayOriginalPrice && (
+                      <span className="text-sm font-bold text-[#043616] bg-[#2d6a3e]/10 border border-[#2d6a3e]/20 px-3 py-1 rounded-full uppercase">
+                        {locale === "en" ? "Save " : "Tiết kiệm "}
+                        {formatPrice(displayOriginalPrice - displayPrice)}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 {/* Description */}
                 <div className="space-y-3">
@@ -453,50 +467,71 @@ export default function ProductDetailClient({ id, initialProduct }: ProductDetai
                 )}
 
                 {/* Action panel */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/40">
-                  {/* Quantity selector */}
-                  <div className="flex items-center justify-between border border-border/80 rounded-full px-4 py-2 bg-white sm:w-36">
+                {product.is_contact_price ? (
+                  <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/40">
+                    <a
+                      href="https://m.me/xongnhatayue.vn"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3.5 px-6 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      <span>{t("chatMessenger")}</span>
+                    </a>
+                    <a
+                      href="tel:0987654321"
+                      className="flex items-center justify-center gap-2 bg-white text-primary border border-primary/30 py-3.5 px-6 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-neutral-50 hover:border-primary transition-all duration-300"
+                    >
+                      <PhoneCall className="h-4 w-4" />
+                      <span>{t("callHotline")}</span>
+                    </a>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/40">
+                    {/* Quantity selector */}
+                    <div className="flex items-center justify-between border border-border/80 rounded-full px-4 py-2 bg-white sm:w-36">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={quantity <= 1}
+                        className="h-8 w-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-primary disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <span className="font-bold text-sm text-primary w-8 text-center">{quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(quantity + 1)}
+                        disabled={Boolean(selectedVariant && quantity >= selectedVariant.stock)}
+                        className="h-8 w-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-primary transition-colors cursor-pointer disabled:opacity-35"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    {/* Add to cart CTA */}
                     <button
                       type="button"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1}
-                      className="h-8 w-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-primary disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                      aria-label="Decrease quantity"
+                      onClick={handleAddToCart}
+                      disabled={Boolean(product.has_variants && selectedVariant?.stock === 0)}
+                      className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3.5 px-8 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                     >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="font-bold text-sm text-primary w-8 text-center">{quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity(quantity + 1)}
-                      disabled={Boolean(selectedVariant && quantity >= selectedVariant.stock)}
-                      className="h-8 w-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-primary transition-colors cursor-pointer disabled:opacity-35"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus className="h-4 w-4" />
+                      {isAddedSuccessfully ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          <span>{locale === "en" ? "Added to Cart" : "Đã thêm vào giỏ"}</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag className="h-4 w-4" />
+                          <span>{t("addToCart")}</span>
+                        </>
+                      )}
                     </button>
                   </div>
-
-                  {/* Add to cart CTA */}
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    disabled={Boolean(product.has_variants && selectedVariant?.stock === 0)}
-                    className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-3.5 px-8 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-secondary hover:shadow-[0_4px_12px_rgba(4,54,22,0.15)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                  >
-                    {isAddedSuccessfully ? (
-                      <>
-                        <Check className="h-4 w-4" />
-                        <span>{locale === "en" ? "Added to Cart" : "Đã thêm vào giỏ"}</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="h-4 w-4" />
-                        <span>{t("addToCart")}</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+                )}
               </div>
             </div>
           </div>
