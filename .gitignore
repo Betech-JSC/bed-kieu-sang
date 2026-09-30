@@ -32,3 +32,6 @@ others
 .claude
 .agents
 config.bat
+
+# Local IDE settings
+.vscode/
