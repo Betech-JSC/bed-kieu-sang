@@ -4,6 +4,7 @@ Thumbs.db
 
 # IDE / Editor
 .idea/
+/.vscode
 .cursor/
 .zed/
 .nova/
@@ -28,3 +29,4 @@ tests
 others
 .claude
 config.bat
+.env
